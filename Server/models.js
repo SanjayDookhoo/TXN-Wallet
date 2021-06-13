@@ -5,19 +5,19 @@ export const base_models = {
 	// Example parent table
 	customer: {
 		name: {
-			type: STRING,
+			type: 'string',
 		},
 		address: {
-			type: STRING,
+			type: 'string',
 		},
 		age: {
-			type: INTEGER,
+			type: 'integer',
 		},
 	},
 	// Example related table
 	invoice: {
 		amount: {
-			type: INTEGER,
+			type: 'integer',
 		},
 		_foreign_key: {
 			table: 'customer',
@@ -32,10 +32,31 @@ const models = (sequelize_session) => {
 	Object.entries(base_models).forEach(([table_name, table_meta]) => {
 		const { _foreign_key, ...table_fields } = table_meta;
 
+		// type replace
+		const temp_table_fields = { ...table_fields };
+		Object.keys(temp_table_fields).forEach((table_field) => {
+			switch (temp_table_fields[table_field].type) {
+				case 'string':
+					temp_table_fields[table_field].type = STRING;
+					break;
+				case 'integer':
+					temp_table_fields[table_field].type = INTEGER;
+					break;
+				case 'float':
+					temp_table_fields[table_field].type = FLOAT;
+					break;
+				case 'date':
+					temp_table_fields[table_field].type = DATE;
+					break;
+				default:
+					break;
+			}
+		});
+
 		schema[capitalize(table_name)] = sequelize_session.define(
 			table_name,
 			{
-				...table_fields,
+				...temp_table_fields,
 			},
 			{ underscored: true }
 		);
