@@ -117,6 +117,7 @@ const general_router = async (req, res) => {
 		}
 	} else if (method === 'POST') {
 		if (body.inserts && body.inserts.length !== 0) {
+			const transaction = await sequelize_session.transaction();
 			try {
 				const promises = body.inserts.map((insert) => {
 					let columns = '';
@@ -135,6 +136,7 @@ const general_router = async (req, res) => {
 					// console.log({query})
 					return sequelize_session.query(query, {
 						type: sequelize.QueryTypes.INSERT,
+						transaction,
 					});
 				});
 
@@ -146,6 +148,7 @@ const general_router = async (req, res) => {
 				res.status(200).json({ result: data });
 			} catch (err) {
 				console.log(err);
+				transaction.rollback();
 				res.status(500).json({ message: 'Something Went Wrong' });
 			}
 		} else {
@@ -153,6 +156,7 @@ const general_router = async (req, res) => {
 		}
 	} else if (method === 'PATCH') {
 		if (body.updates && body.updates.length !== 0) {
+			const transaction = await sequelize_session.transaction();
 			try {
 				Object.entries(body.updates).forEach(
 					async ([id, id_updates]) => {
@@ -171,6 +175,7 @@ const general_router = async (req, res) => {
 						// console.log({query})
 						const updated = await sequelize_session.query(query, {
 							type: sequelize.QueryTypes.UPDATE,
+							transaction,
 						});
 					}
 				);
@@ -178,6 +183,7 @@ const general_router = async (req, res) => {
 				res.status(200).json({ result: 'Updated Successfully' });
 			} catch (err) {
 				console.log(err);
+				transaction.rollback();
 				res.status(500).json({ message: 'Something Went Wrong' });
 			}
 		} else {
@@ -194,16 +200,19 @@ const general_router = async (req, res) => {
 			});
 			// console.log(filter);
 
+			const transaction = await sequelize_session.transaction();
 			try {
 				const query = `DELETE FROM ${table_name} WHERE ${filter}`;
 				// console.log({query})
 				const deleted = await sequelize_session.query(query, {
 					type: sequelize.QueryTypes.DELETE,
+					transaction,
 				});
 
 				res.status(200).json({ result: 'Deleted Successfully' });
 			} catch (err) {
 				console.log(err);
+				transaction.rollback();
 				res.status(500).json({ message: 'Something Went Wrong' });
 			}
 		} else {
