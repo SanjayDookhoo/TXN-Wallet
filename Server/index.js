@@ -19,6 +19,7 @@ const sequelize_session = new sequelize(
 		define: {
 			timestamps: false,
 		},
+		logging: false,
 	}
 );
 
@@ -29,7 +30,7 @@ console.log(schema.Customer);
 sequelize_session
 	.sync({
 		logging: false,
-		force: true,
+		force: false,
 	})
 	.then(() => console.log('Database Connected'))
 	.catch((err) => console.log('Error: ' + err));

@@ -15,6 +15,7 @@ const general_router = async (req, res) => {
 			define: {
 				timestamps: false,
 			},
+			logging: false,
 		}
 	);
 
@@ -22,23 +23,51 @@ const general_router = async (req, res) => {
 	const table_name = baseUrl.substring(1); // strips out first character forward slash
 
 	if (method === 'GET') {
-		const _recursiveRetrievalOfChildren = ({
-			result,
-			parent_table_name,
-		}) => {
-			console.log({ parent_table_name });
-			const children_tables = Object.entries(base_models)
-				.filter(
-					([table_name, table_meta]) =>
-						table_meta?._foreign_key?.table === parent_table_name
-				)
-				.map(([table_name, table_meta]) => table_name + 's');
-			console.log(children_tables);
-		};
+		if (body.filters) {
+			const _childrenTables = (parent_table_name) => {
+				return Object.entries(base_models)
+					.filter(
+						([table_name, table_meta]) =>
+							table_meta?._foreign_key?.table ===
+							parent_table_name.slice(0, -1)
+					)
+					.map(([table_name, table_meta]) => table_name + 's');
+			};
 
-		if (body.filters && Object.entries(body.filters).length !== 0) {
-			try {
-				const result = {};
+			const _getDirectchildrenTables = async ({
+				result,
+				parent_table_name,
+			}) => {
+				const children_tables = _childrenTables(parent_table_name);
+				console.log(children_tables);
+
+				let filter = '';
+				const temp = result[parent_table_name].map(
+					(records) => records.id
+				);
+				temp.forEach((value, i) => {
+					if (i !== 0) {
+						filter += ' or ';
+					}
+					filter += `${parent_table_name.slice(0, -1)}_id="${value}"`;
+				});
+				// console.log({ filter });
+
+				const promises = children_tables.map((table_name) => {
+					// const query = `SELECT * FROM ${table_name} WHERE ${filter}`;
+					const query = `SELECT * FROM ${table_name} WHERE ${filter}`;
+					return sequelize_session.query(query, {
+						type: sequelize.QueryTypes.SELECT,
+					});
+				});
+
+				const temp_arr = await Promise.all(promises);
+				children_tables.forEach((children_table, i) => {
+					result[children_table] = temp_arr[i];
+				});
+			};
+
+			const _getRootTable = async ({ result, table_name }) => {
 				let filter = '';
 				Object.entries(body.filters).forEach(([field, value], i) => {
 					if (i !== 0) {
@@ -53,12 +82,30 @@ const general_router = async (req, res) => {
 				const selected = await sequelize_session.query(query, {
 					type: sequelize.QueryTypes.SELECT,
 				});
-				result[table_name] = selected;
 
-				_recursiveRetrievalOfChildren({
+				result[table_name] = selected;
+			};
+
+			try {
+				let result = {};
+				let temp;
+				await _getRootTable({
 					result,
-					parent_table_name: table_name.slice(0, -1),
+					table_name,
 				});
+				await _getDirectchildrenTables({
+					result,
+					parent_table_name: table_name,
+				});
+
+				// use _getDirectchildrenTables specific to a call, could not get recursive soln working, quick fall back
+				switch (table_name) {
+					case 'customers':
+						break;
+
+					default:
+						break;
+				}
 
 				res.status(200).json({ result });
 			} catch (err) {
@@ -71,29 +118,32 @@ const general_router = async (req, res) => {
 	} else if (method === 'POST') {
 		if (body.inserts && body.inserts.length !== 0) {
 			try {
-				body.inserts.forEach(async (insert) => {
+				const promises = body.inserts.map((insert) => {
 					let columns = '';
 					let values = '';
 
-					Object.entries(insert).forEach(
-						async ([field, value], i) => {
-							if (i !== 0) {
-								columns += ' , ';
-								values += ' , ';
-							}
-							columns += `${field}`;
-							values += `"${value}"`;
+					Object.entries(insert).forEach(([field, value], i) => {
+						if (i !== 0) {
+							columns += ' , ';
+							values += ' , ';
 						}
-					);
+						columns += `${field}`;
+						values += `"${value}"`;
+					});
 					// console.log({ columns, values });
 					const query = `INSERT INTO ${table_name} (${columns}) VALUES (${values})`;
 					// console.log({query})
-					const inserted = await sequelize_session.query(query, {
+					return sequelize_session.query(query, {
 						type: sequelize.QueryTypes.INSERT,
 					});
 				});
 
-				res.status(200).json({ result: 'Created Successfully' });
+				const temp_arr = await Promise.all(promises);
+				const data = temp_arr.map((temp) => ({
+					id: temp[0],
+				}));
+
+				res.status(200).json({ result: data });
 			} catch (err) {
 				console.log(err);
 				res.status(500).json({ message: 'Something Went Wrong' });
@@ -109,7 +159,7 @@ const general_router = async (req, res) => {
 						let set = '';
 
 						Object.entries(id_updates).forEach(
-							async ([field, value], i) => {
+							([field, value], i) => {
 								if (i !== 0) {
 									set += ' , ';
 								}
