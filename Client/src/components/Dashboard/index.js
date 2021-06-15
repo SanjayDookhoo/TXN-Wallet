@@ -8,7 +8,7 @@ const Dashboard = () => {
 	const history = useHistory();
 
 	const handleSignOut = () => {
-		dispatch(signOut(history));
+		dispatch(signOut({ history }));
 	};
 
 	return (

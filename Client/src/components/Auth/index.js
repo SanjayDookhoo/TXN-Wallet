@@ -1,10 +1,9 @@
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-
 import Input from 'src/components/Input';
-
 import { signIn, signUp } from 'actions/auth';
+import { useSnackbar } from 'notistack';
 
 const initialState = {
 	email: '',
@@ -13,16 +12,17 @@ const initialState = {
 };
 
 const Auth = () => {
-	const [form, updateForm] = useState(initialState);
-	const [is_signup, updateIsSignup] = useState(false);
 	const dispatch = useDispatch();
 	const history = useHistory();
+	const { enqueueSnackbar } = useSnackbar();
 
+	const [form_data, updateFormData] = useState(initialState);
+	const [is_signup, updateIsSignup] = useState(false);
 	const [show_password, updateShowPassword] = useState(false);
 	const handleShowPassword = () => updateShowPassword(!show_password);
 
 	const switchMode = () => {
-		updateForm(initialState);
+		updateFormData(initialState);
 		updateIsSignup((prevIsSignup) => !prevIsSignup);
 		updateShowPassword(false);
 	};
@@ -33,14 +33,38 @@ const Auth = () => {
 		console.log({ is_signup });
 
 		if (is_signup) {
-			dispatch(signUp(form, history));
+			if (form_data.password === form_data.confirm_password) {
+				dispatch(
+					signUp({
+						form_data,
+						history,
+						onFailure: () =>
+							enqueueSnackbar('Email already in use', {
+								variant: 'error',
+							}),
+					})
+				);
+			} else {
+				enqueueSnackbar('Passwords do not match, try again', {
+					variant: 'error',
+				});
+			}
 		} else {
-			dispatch(signIn(form, history));
+			dispatch(
+				signIn({
+					form_data,
+					history,
+					onFailure: () =>
+						enqueueSnackbar('Incorrect credentials', {
+							variant: 'error',
+						}),
+				})
+			);
 		}
 	};
 
 	const handleChange = (e) =>
-		updateForm({ ...form, [e.target.name]: e.target.value });
+		updateFormData({ ...form_data, [e.target.name]: e.target.value });
 
 	return (
 		<div className="w-1/3 mx-auto card flex flex-col justify-center items-center">
@@ -50,14 +74,14 @@ const Auth = () => {
 					<Input
 						name="email"
 						label="Email Address"
-						value={form.email}
+						value={form_data.email}
 						handleChange={handleChange}
 						type="email"
 					/>
 					<Input
 						name="password"
 						label="Password"
-						value={form.password}
+						value={form_data.password}
 						handleChange={handleChange}
 						type={show_password ? 'text' : 'password'}
 						handleShowPassword={handleShowPassword}
@@ -66,7 +90,7 @@ const Auth = () => {
 						<Input
 							name="confirm_password"
 							label="Repeat Password"
-							value={form.confirm_password}
+							value={form_data.confirm_password}
 							handleChange={handleChange}
 							type="password"
 						/>

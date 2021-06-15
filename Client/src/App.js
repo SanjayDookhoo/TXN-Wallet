@@ -38,7 +38,7 @@ const AuthHandler = () => {
 	);
 
 	const logout = () => {
-		dispatch(signOut(history));
+		dispatch(signOut({ history }));
 
 		updateUser(null);
 	};

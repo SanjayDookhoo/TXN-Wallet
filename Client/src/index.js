@@ -7,14 +7,17 @@ import { reducers } from './ducks/reducers';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+import { SnackbarProvider } from 'notistack';
 
 const store = createStore(reducers, compose(applyMiddleware(thunk)));
 
 ReactDOM.render(
 	<Provider store={store}>
-		<React.StrictMode>
-			<App />
-		</React.StrictMode>
+		<SnackbarProvider maxSnack={3}>
+			<React.StrictMode>
+				<App />
+			</React.StrictMode>
+		</SnackbarProvider>
 	</Provider>,
 	document.getElementById('root')
 );
