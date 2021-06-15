@@ -46,26 +46,31 @@ const general = async (req, res) => {
 				const temp = result[parent_table_name].map(
 					(records) => records.id
 				);
-				temp.forEach((value, i) => {
-					if (i !== 0) {
-						filter += ' or ';
-					}
-					filter += `${parent_table_name.slice(0, -1)}_id="${value}"`;
-				});
-				// console.log({ filter });
-
-				const promises = children_tables.map((table_name) => {
-					// const query = `SELECT * FROM ${table_name} WHERE ${filter}`;
-					const query = `SELECT * FROM ${table_name} WHERE ${filter}`;
-					return sequelize_session.query(query, {
-						type: sequelize.QueryTypes.SELECT,
+				if (temp.length !== 0) {
+					// if no records were found, then there is no information to use to search with
+					temp.forEach((value, i) => {
+						if (i !== 0) {
+							filter += ' or ';
+						}
+						filter += `${parent_table_name.slice(
+							0,
+							-1
+						)}_id="${value}"`;
 					});
-				});
+					console.log({ filter });
 
-				const temp_arr = await Promise.all(promises);
-				children_tables.forEach((children_table, i) => {
-					result[children_table] = temp_arr[i];
-				});
+					const promises = children_tables.map((table_name) => {
+						const query = `SELECT * FROM ${table_name} WHERE ${filter}`;
+						return sequelize_session.query(query, {
+							type: sequelize.QueryTypes.SELECT,
+						});
+					});
+
+					const temp_arr = await Promise.all(promises);
+					children_tables.forEach((children_table, i) => {
+						result[children_table] = temp_arr[i];
+					});
+				}
 			};
 
 			const _getRootTable = async ({ result, table_name }) => {
@@ -78,7 +83,8 @@ const general = async (req, res) => {
 				});
 				// console.log(filter);
 
-				const query = `SELECT * FROM ${table_name} WHERE ${filter}`;
+				let query = `SELECT * FROM ${table_name}`; // constructed in such a way that if no params is passed, gets all
+				if (filter !== '') query += ` WHERE ${filter}`;
 				// console.log({query});
 				const selected = await sequelize_session.query(query, {
 					type: sequelize.QueryTypes.SELECT,
@@ -161,23 +167,28 @@ const general = async (req, res) => {
 			try {
 				Object.entries(body.updates).forEach(
 					async ([id, id_updates]) => {
-						let set = '';
+						if (Object.entries(id_updates).length !== 0) {
+							let set = '';
 
-						Object.entries(id_updates).forEach(
-							([field, value], i) => {
-								if (i !== 0) {
-									set += ' , ';
+							Object.entries(id_updates).forEach(
+								([field, value], i) => {
+									if (i !== 0) {
+										set += ' , ';
+									}
+									set += `${field}="${value}"`;
 								}
-								set += `${field}="${value}"`;
-							}
-						);
-						// console.log({ set });
-						const query = `UPDATE ${table_name} SET ${set} WHERE id=${id}`;
-						// console.log({query})
-						const updated = await sequelize_session.query(query, {
-							type: sequelize.QueryTypes.UPDATE,
-							transaction,
-						});
+							);
+							// console.log({ set });
+							const query = `UPDATE ${table_name} SET ${set} WHERE id=${id}`;
+							// console.log({query})
+							const updated = await sequelize_session.query(
+								query,
+								{
+									type: sequelize.QueryTypes.UPDATE,
+									transaction,
+								}
+							);
+						}
 					}
 				);
 
