@@ -1,10 +1,11 @@
 import express from 'express';
 import sequelize from 'sequelize';
-import { base_models } from '../models.js';
+import { base_models } from '../models/other.js';
 
 // console.log(base_models);
 
-const general_router = async (req, res) => {
+const general = async (req, res) => {
+	console.log('**general');
 	const sequelize_session = new sequelize(
 		process.env.DATABASE_NAME,
 		process.env.DATABASE_USERNAME,
@@ -221,4 +222,4 @@ const general_router = async (req, res) => {
 	}
 };
 
-export default general_router;
+export default general;

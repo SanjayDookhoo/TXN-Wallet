@@ -26,7 +26,7 @@ export const base_models = {
 	},
 };
 
-const models = (sequelize_session) => {
+const other = (sequelize_session) => {
 	const schema = {};
 
 	Object.entries(base_models).forEach(([table_name, table_meta]) => {
@@ -73,7 +73,7 @@ const models = (sequelize_session) => {
 	return schema;
 };
 
-export default models;
+export default other;
 
 //  'table_name' => 'Table_name'
 const capitalize = (str) => {
