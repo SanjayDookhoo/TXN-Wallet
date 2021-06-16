@@ -37,7 +37,7 @@ const Auth = () => {
 				dispatch(
 					signUp({
 						form_data,
-						history,
+						onSuccess: () => history.push('/'),
 						onFailure: () =>
 							enqueueSnackbar('Email already in use', {
 								variant: 'error',
@@ -53,7 +53,7 @@ const Auth = () => {
 			dispatch(
 				signIn({
 					form_data,
-					history,
+					onSuccess: () => history.push('/'),
 					onFailure: () =>
 						enqueueSnackbar('Incorrect credentials', {
 							variant: 'error',
