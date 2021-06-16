@@ -36,7 +36,7 @@ const Auth = () => {
 			if (form_data.password === form_data.confirm_password) {
 				dispatch(
 					signUp({
-						form_data,
+						req_body: form_data,
 						onSuccess: () => history.push('/'),
 						onFailure: () =>
 							enqueueSnackbar('Email already in use', {
@@ -52,7 +52,7 @@ const Auth = () => {
 		} else {
 			dispatch(
 				signIn({
-					form_data,
+					req_body: form_data,
 					onSuccess: () => history.push('/'),
 					onFailure: () =>
 						enqueueSnackbar('Incorrect credentials', {

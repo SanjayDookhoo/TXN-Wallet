@@ -1,6 +1,6 @@
 import * as actionType from '../constants/actionTypes';
 
-const authReducer = (state = { user: null }, action) => {
+const auth = (state = { user: null }, action) => {
 	switch (action.type) {
 		case actionType.AUTH: {
 			localStorage.setItem(
@@ -25,4 +25,4 @@ const authReducer = (state = { user: null }, action) => {
 	}
 };
 
-export default authReducer;
+export default auth;

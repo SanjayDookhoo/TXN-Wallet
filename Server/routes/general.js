@@ -21,106 +21,98 @@ const general = async (req, res) => {
 	);
 
 	const { baseUrl, method, body } = req;
+	const query_obj = req.query;
 	const table_name = baseUrl.substring(1); // strips out first character forward slash
 
 	if (method === 'GET') {
-		if (body.filters) {
-			const _childrenTables = (parent_table_name) => {
-				return Object.entries(base_models)
-					.filter(
-						([table_name, table_meta]) =>
-							table_meta?._foreign_key?.table ===
-							parent_table_name.slice(0, -1)
-					)
-					.map(([table_name, table_meta]) => table_name + 's');
-			};
+		const _childrenTables = (parent_table_name) => {
+			return Object.entries(base_models)
+				.filter(
+					([table_name, table_meta]) =>
+						table_meta?._foreign_key?.table ===
+						parent_table_name.slice(0, -1)
+				)
+				.map(([table_name, table_meta]) => table_name + 's');
+		};
 
-			const _getDirectchildrenTables = async ({
-				result,
-				parent_table_name,
-			}) => {
-				const children_tables = _childrenTables(parent_table_name);
-				console.log(children_tables);
+		const _getDirectchildrenTables = async ({
+			result,
+			parent_table_name,
+		}) => {
+			const children_tables = _childrenTables(parent_table_name);
+			console.log(children_tables);
 
-				let filter = '';
-				const temp = result[parent_table_name].map(
-					(records) => records.id
-				);
-				if (temp.length !== 0) {
-					// if no records were found, then there is no information to use to search with
-					temp.forEach((value, i) => {
-						if (i !== 0) {
-							filter += ' or ';
-						}
-						filter += `${parent_table_name.slice(
-							0,
-							-1
-						)}_id="${value}"`;
-					});
-					console.log({ filter });
-
-					const promises = children_tables.map((table_name) => {
-						const query = `SELECT * FROM ${table_name} WHERE ${filter}`;
-						return sequelize_session.query(query, {
-							type: sequelize.QueryTypes.SELECT,
-						});
-					});
-
-					const temp_arr = await Promise.all(promises);
-					children_tables.forEach((children_table, i) => {
-						result[children_table] = temp_arr[i];
-					});
-				}
-			};
-
-			const _getRootTable = async ({ result, table_name }) => {
-				let filter = '';
-				Object.entries(body.filters).forEach(([field, value], i) => {
+			let filter = '';
+			const temp = result[parent_table_name].map((records) => records.id);
+			if (temp.length !== 0) {
+				// if no records were found, then there is no information to use to search with
+				temp.forEach((value, i) => {
 					if (i !== 0) {
-						filter += ' and ';
+						filter += ' or ';
 					}
-					filter += `${field}="${value}"`;
+					filter += `${parent_table_name.slice(0, -1)}_id="${value}"`;
 				});
-				// console.log(filter);
+				console.log({ filter });
 
-				let query = `SELECT * FROM ${table_name}`; // constructed in such a way that if no params is passed, gets all
-				if (filter !== '') query += ` WHERE ${filter}`;
-				// console.log({query});
-				const selected = await sequelize_session.query(query, {
-					type: sequelize.QueryTypes.SELECT,
-				});
-
-				result[table_name] = selected;
-			};
-
-			try {
-				let result = {};
-				let temp;
-				await _getRootTable({
-					result,
-					table_name,
-				});
-				await _getDirectchildrenTables({
-					result,
-					parent_table_name: table_name,
+				const promises = children_tables.map((table_name) => {
+					const query = `SELECT * FROM ${table_name} WHERE ${filter}`;
+					return sequelize_session.query(query, {
+						type: sequelize.QueryTypes.SELECT,
+					});
 				});
 
-				// use _getDirectchildrenTables specific to a call, could not get recursive soln working, quick fall back
-				switch (table_name) {
-					case 'customers':
-						break;
-
-					default:
-						break;
-				}
-
-				res.status(200).json({ result });
-			} catch (err) {
-				console.log(err);
-				res.status(500).json({ message: 'Something Went Wrong' });
+				const temp_arr = await Promise.all(promises);
+				children_tables.forEach((children_table, i) => {
+					result[children_table] = temp_arr[i];
+				});
 			}
-		} else {
-			res.status(500).json({ result: 'No filters specified' });
+		};
+
+		const _getRootTable = async ({ result, table_name }) => {
+			let filter = '';
+			Object.entries(query_obj).forEach(([field, value], i) => {
+				if (i !== 0) {
+					filter += ' and ';
+				}
+				filter += `${field}="${value}"`;
+			});
+			// console.log(filter);
+
+			let query = `SELECT * FROM ${table_name}`; // constructed in such a way that if no params is passed, gets all
+			if (filter !== '') query += ` WHERE ${filter}`;
+			// console.log({query});
+			const selected = await sequelize_session.query(query, {
+				type: sequelize.QueryTypes.SELECT,
+			});
+
+			result[table_name] = selected;
+		};
+
+		try {
+			let result = {};
+			let temp;
+			await _getRootTable({
+				result,
+				table_name,
+			});
+			await _getDirectchildrenTables({
+				result,
+				parent_table_name: table_name,
+			});
+
+			// use _getDirectchildrenTables specific to a call, could not get recursive soln working, quick fall back
+			switch (table_name) {
+				case 'customers':
+					break;
+
+				default:
+					break;
+			}
+
+			res.status(200).json({ result });
+		} catch (err) {
+			console.log(err);
+			res.status(500).json({ message: 'Something Went Wrong' });
 		}
 	} else if (method === 'POST') {
 		if (body.inserts && body.inserts.length !== 0) {
