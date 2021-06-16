@@ -11,8 +11,8 @@ import decode from 'jwt-decode';
 
 import { signOut } from 'actions/auth';
 
-import Auth from 'src/components/Auth';
-import Dashboard from 'src/components/Dashboard';
+import Auth from 'src/pages/Auth';
+import Dashboard from 'src/pages/Dashboard';
 
 const App = () => {
 	return (
