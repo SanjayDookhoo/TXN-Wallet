@@ -1,6 +1,6 @@
 import * as actionType from '../constants/actionTypes';
 
-const authReducer = (state = { authData: null }, action) => {
+const authReducer = (state = { user: null }, action) => {
 	switch (action.type) {
 		case actionType.AUTH: {
 			localStorage.setItem(
@@ -10,7 +10,7 @@ const authReducer = (state = { authData: null }, action) => {
 
 			return {
 				...state,
-				authData: action.payload,
+				user: action.payload,
 				loading: false,
 				errors: null,
 			};
@@ -18,7 +18,7 @@ const authReducer = (state = { authData: null }, action) => {
 		case actionType.SIGN_OUT: {
 			localStorage.clear();
 
-			return { ...state, authData: null, loading: false, errors: null };
+			return { ...state, user: null, loading: false, errors: null };
 		}
 		default:
 			return state;

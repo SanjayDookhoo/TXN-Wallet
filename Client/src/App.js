@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useDispatch } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import {
 	BrowserRouter,
 	Switch,
@@ -33,14 +33,10 @@ const AuthHandler = () => {
 	const location = useLocation();
 	const history = useHistory();
 
-	const [user, updateUser] = useState(
-		JSON.parse(localStorage.getItem('profile'))
-	);
+	const user = useSelector((state) => state.auth.user);
 
 	const logout = () => {
 		dispatch(signOut({ onSuccess: () => history.push('/auth') }));
-
-		updateUser(null);
 	};
 
 	useEffect(() => {
@@ -57,9 +53,7 @@ const AuthHandler = () => {
 		if (location.pathname !== '/auth' && !token) {
 			logout();
 		}
-
-		updateUser(JSON.parse(localStorage.getItem('profile')));
-	}, [location]);
+	}, [location, user]);
 
 	return <></>;
 };
