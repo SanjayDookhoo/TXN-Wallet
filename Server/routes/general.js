@@ -78,7 +78,8 @@ const general = async (req, res) => {
 			// console.log(filter);
 
 			let query = `SELECT * FROM ${table_name}`; // constructed in such a way that if no params is passed, gets all
-			if (filter !== '') query += ` WHERE ${filter}`;
+			if (filter !== '')
+				query += ` WHERE ${filter} and created_by_user=${req.user_id}`;
 			// console.log({query});
 			const selected = await sequelize_session.query(query, {
 				type: sequelize.QueryTypes.SELECT,
@@ -121,14 +122,20 @@ const general = async (req, res) => {
 					let columns = '';
 					let values = '';
 
-					Object.entries(insert).forEach(([field, value], i) => {
-						if (i !== 0) {
-							columns += ' , ';
-							values += ' , ';
+					const insert_w_extra = {
+						...insert,
+						created_by_user: req.user_id,
+					};
+					Object.entries(insert_w_extra).forEach(
+						([field, value], i) => {
+							if (i !== 0) {
+								columns += ' , ';
+								values += ' , ';
+							}
+							columns += `${field}`;
+							values += `"${value}"`;
 						}
-						columns += `${field}`;
-						values += `"${value}"`;
-					});
+					);
 					// console.log({ columns, values });
 					const query = `INSERT INTO ${table_name} (${columns}) VALUES (${values})`;
 					// console.log({query})
@@ -171,7 +178,7 @@ const general = async (req, res) => {
 								}
 							);
 							// console.log({ set });
-							const query = `UPDATE ${table_name} SET ${set} WHERE id=${id}`;
+							const query = `UPDATE ${table_name} SET ${set} WHERE id=${id} and created_by_user=${req.user_id}`;
 							// console.log({query})
 							return sequelize_session.query(query, {
 								type: sequelize.QueryTypes.UPDATE,
@@ -206,7 +213,7 @@ const general = async (req, res) => {
 
 			const transaction = await sequelize_session.transaction();
 			try {
-				const query = `DELETE FROM ${table_name} WHERE ${filter}`;
+				const query = `DELETE FROM ${table_name} WHERE ${filter} and created_by_user=${req.user_id}`;
 				// console.log({query})
 				const deleted = await sequelize_session.query(query, {
 					type: sequelize.QueryTypes.DELETE,

@@ -33,7 +33,10 @@ const other = (sequelize_session) => {
 		const { _foreign_key, ...table_fields } = table_meta;
 
 		// type replace
-		const temp_table_fields = { ...table_fields };
+		const temp_table_fields = {
+			...table_fields,
+			created_by_user: { type: 'integer' }, // use for authenticating CRUD operations for the user
+		};
 		Object.keys(temp_table_fields).forEach((table_field) => {
 			switch (temp_table_fields[table_field].type) {
 				case 'string':

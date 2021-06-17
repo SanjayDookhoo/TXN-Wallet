@@ -27,7 +27,7 @@ const Dashboard = () => {
 			databaseGet({
 				table_name: 'customers',
 				req_params: {
-					// name: 'sanjay',
+					name: 'sanjay',
 				},
 			})
 		);
@@ -54,7 +54,7 @@ const Dashboard = () => {
 				table_name: 'customers',
 				req_body: {
 					updates: {
-						19: {
+						1: {
 							name: 'bobss',
 							age: 13,
 						},
@@ -68,7 +68,7 @@ const Dashboard = () => {
 			databaseDelete({
 				table_name: 'customers',
 				req_body: {
-					ids: [33],
+					ids: [3],
 				},
 			})
 		);
