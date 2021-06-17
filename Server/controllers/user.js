@@ -62,7 +62,7 @@ export const signUp = async (req, res) => {
 
 	const { email, password } = req.body;
 
-	// const transaction = await sequelize_session.transaction();
+	const transaction = await sequelize_session.transaction();
 	try {
 		let query;
 		query = `SELECT * FROM users WHERE email="${email}"`;
@@ -81,7 +81,7 @@ export const signUp = async (req, res) => {
 		// console.log({query})
 		const result = await sequelize_session.query(query, {
 			type: sequelize.QueryTypes.INSERT,
-			// transaction,
+			transaction,
 		});
 		console.log(result);
 
@@ -93,9 +93,10 @@ export const signUp = async (req, res) => {
 			}
 		);
 
+		await transaction.commit();
 		res.status(201).json({ result: { id: result[0] }, token });
 	} catch (error) {
-		// transaction.rollback();
+		transaction.rollback();
 		res.status(500).json({ message: 'Something went wrong' });
 
 		console.log(error);

@@ -27,7 +27,7 @@ const Dashboard = () => {
 			databaseGet({
 				table_name: 'customers',
 				req_params: {
-					name: 'sanjay',
+					// name: 'sanjay',
 				},
 			})
 		);
@@ -52,7 +52,14 @@ const Dashboard = () => {
 		dispatch(
 			databasePatch({
 				table_name: 'customers',
-				req_body: {},
+				req_body: {
+					updates: {
+						19: {
+							name: 'bobss',
+							age: 13,
+						},
+					},
+				},
 			})
 		);
 	};
@@ -60,7 +67,9 @@ const Dashboard = () => {
 		dispatch(
 			databaseDelete({
 				table_name: 'customers',
-				req_body: {},
+				req_body: {
+					ids: [33],
+				},
 			})
 		);
 	};

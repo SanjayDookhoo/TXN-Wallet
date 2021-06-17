@@ -22,4 +22,4 @@ export const databasePost = ({ table_name, req_body }) =>
 export const databasePatch = ({ table_name, req_body }) =>
 	API.patch(`/${table_name}`, req_body);
 export const databaseDelete = ({ table_name, req_body }) =>
-	API.delete(`/${table_name}`, req_body);
+	API.delete(`/${table_name}`, { data: req_body });

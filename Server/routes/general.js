@@ -144,6 +144,7 @@ const general = async (req, res) => {
 					id: temp[0],
 				}));
 
+				await transaction.commit();
 				res.status(200).json({ result: data });
 			} catch (err) {
 				console.log(err);
@@ -157,8 +158,8 @@ const general = async (req, res) => {
 		if (body.updates && body.updates.length !== 0) {
 			const transaction = await sequelize_session.transaction();
 			try {
-				Object.entries(body.updates).forEach(
-					async ([id, id_updates]) => {
+				const promises = Object.entries(body.updates).map(
+					([id, id_updates]) => {
 						if (Object.entries(id_updates).length !== 0) {
 							let set = '';
 
@@ -173,17 +174,17 @@ const general = async (req, res) => {
 							// console.log({ set });
 							const query = `UPDATE ${table_name} SET ${set} WHERE id=${id}`;
 							// console.log({query})
-							const updated = await sequelize_session.query(
-								query,
-								{
-									type: sequelize.QueryTypes.UPDATE,
-									transaction,
-								}
-							);
+							return sequelize_session.query(query, {
+								type: sequelize.QueryTypes.UPDATE,
+								transaction,
+							});
 						}
 					}
 				);
 
+				await Promise.all(promises);
+
+				await transaction.commit();
 				res.status(200).json({ result: 'Updated Successfully' });
 			} catch (err) {
 				console.log(err);
@@ -194,6 +195,7 @@ const general = async (req, res) => {
 			res.status(500).json({ result: 'No updates specified' });
 		}
 	} else if (method === 'DELETE') {
+		console.log({ body });
 		if (body.ids && body.ids.length !== 0) {
 			let filter = '';
 			body.ids.forEach((id, i) => {
@@ -213,6 +215,7 @@ const general = async (req, res) => {
 					transaction,
 				});
 
+				await transaction.commit();
 				res.status(200).json({ result: 'Deleted Successfully' });
 			} catch (err) {
 				console.log(err);
