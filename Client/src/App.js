@@ -33,13 +33,12 @@ const AuthHandler = () => {
 	const location = useLocation();
 	const history = useHistory();
 
-	const user = useSelector((state) => state.auth.user);
-
 	const logout = () => {
 		dispatch(signOut({ onSuccess: () => history.push('/auth') }));
 	};
 
 	useEffect(() => {
+		const user = JSON.parse(localStorage.getItem('profile'));
 		const token = user?.token;
 
 		if (token) {
@@ -53,7 +52,7 @@ const AuthHandler = () => {
 		if (location.pathname !== '/auth' && !token) {
 			logout();
 		}
-	}, [location, user]);
+	}, [location]);
 
 	return <></>;
 };
