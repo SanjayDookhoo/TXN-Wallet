@@ -1,26 +1,18 @@
 import React, { useState, useEffect } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import {
-	BrowserRouter,
-	Switch,
-	Route,
-	useHistory,
-	useLocation,
-} from 'react-router-dom';
+import { BrowserRouter, Switch, Route, Redirect } from 'react-router-dom';
 import decode from 'jwt-decode';
-
-import { signOut } from 'actions/auth';
 
 import Auth from 'src/pages/Auth';
 import Dashboard from 'src/pages/Dashboard';
+import NotFound from 'src/pages/NotFound';
 
 const App = () => {
 	return (
 		<BrowserRouter>
-			<AuthHandler />
 			<Switch>
-				<Route path="/" exact component={Dashboard} />
+				<PrivateRoute path="/" exact component={Dashboard} />
 				<Route path="/auth" exact component={Auth} />
+				<Route component={NotFound} />
 			</Switch>
 		</BrowserRouter>
 	);
@@ -28,14 +20,9 @@ const App = () => {
 
 export default App;
 
-const AuthHandler = () => {
-	const dispatch = useDispatch();
-	const location = useLocation();
-	const history = useHistory();
-
-	const logout = () => {
-		dispatch(signOut({ onSuccess: () => history.push('/auth') }));
-	};
+const PrivateRoute = ({ component: Component, ...other_params }) => {
+	const [signed_in, updateSignedIn] = useState(false);
+	const [loading, updateLoading] = useState(true);
 
 	useEffect(() => {
 		const user = JSON.parse(localStorage.getItem('profile'));
@@ -45,14 +32,36 @@ const AuthHandler = () => {
 			const decoded_token = decode(token);
 
 			if (decoded_token.exp * 1000 < new Date().getTime()) {
-				logout();
+				updateSignedIn(false);
+			} else {
+				updateSignedIn(true);
 			}
+		} else {
+			updateSignedIn(false);
 		}
 
-		if (location.pathname !== '/auth' && !token) {
-			logout();
-		}
+		updateLoading(false);
 	}, [location]);
 
-	return <></>;
+	return (
+		<>
+			{!loading && (
+				<Route
+					{...other_params}
+					render={(props) =>
+						signed_in ? (
+							<Component {...props} />
+						) : (
+							<Redirect
+								to={{
+									pathname: '/auth',
+									state: { from: props.location },
+								}}
+							/>
+						)
+					}
+				/>
+			)}
+		</>
+	);
 };
