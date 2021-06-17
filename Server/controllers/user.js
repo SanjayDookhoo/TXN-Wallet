@@ -21,7 +21,6 @@ const getSequelizeSession = () => {
 
 export const signIn = async (req, res) => {
 	const sequelize_session = getSequelizeSession();
-	console.log('**signin');
 	const { email, password } = req.body;
 
 	try {
@@ -52,13 +51,13 @@ export const signIn = async (req, res) => {
 
 		res.status(200).json({ result: old_user, token });
 	} catch (err) {
+		console.log(error);
 		res.status(500).json({ message: 'Something went wrong' });
 	}
 };
 
 export const signUp = async (req, res) => {
 	const sequelize_session = getSequelizeSession();
-	console.log('**signUp');
 
 	const { email, password } = req.body;
 
@@ -83,7 +82,6 @@ export const signUp = async (req, res) => {
 			type: sequelize.QueryTypes.INSERT,
 			transaction,
 		});
-		console.log(result);
 
 		const token = jwt.sign(
 			{ email: result.email, id: result[0] },
@@ -96,9 +94,8 @@ export const signUp = async (req, res) => {
 		await transaction.commit();
 		res.status(201).json({ result: { id: result[0] }, token });
 	} catch (error) {
+		console.log(error);
 		transaction.rollback();
 		res.status(500).json({ message: 'Something went wrong' });
-
-		console.log(error);
 	}
 };

@@ -5,7 +5,6 @@ import { base_models } from '../models/other.js';
 // console.log(base_models);
 
 const general = async (req, res) => {
-	console.log('**general');
 	const sequelize_session = new sequelize(
 		process.env.DATABASE_NAME,
 		process.env.DATABASE_USERNAME,
@@ -40,7 +39,7 @@ const general = async (req, res) => {
 			parent_table_name,
 		}) => {
 			const children_tables = _childrenTables(parent_table_name);
-			console.log(children_tables);
+			// console.log(children_tables);
 
 			let filter = '';
 			const temp = result[parent_table_name].map((records) => records.id);
@@ -52,7 +51,7 @@ const general = async (req, res) => {
 					}
 					filter += `${parent_table_name.slice(0, -1)}_id="${value}"`;
 				});
-				console.log({ filter });
+				// console.log({ filter });
 
 				const promises = children_tables.map((table_name) => {
 					const query = `SELECT * FROM ${table_name} WHERE ${filter}`;
@@ -195,7 +194,6 @@ const general = async (req, res) => {
 			res.status(500).json({ result: 'No updates specified' });
 		}
 	} else if (method === 'DELETE') {
-		console.log({ body });
 		if (body.ids && body.ids.length !== 0) {
 			let filter = '';
 			body.ids.forEach((id, i) => {
