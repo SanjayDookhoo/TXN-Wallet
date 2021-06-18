@@ -11,14 +11,12 @@ const auth = (state = { user: null }, action) => {
 			return {
 				...state,
 				user: action.payload,
-				loading: false,
-				errors: null,
 			};
 		}
 		case actionType.SIGN_OUT: {
 			localStorage.clear();
 
-			return { ...state, user: null, loading: false, errors: null };
+			return { ...state, user: null };
 		}
 		default:
 			return state;
