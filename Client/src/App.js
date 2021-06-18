@@ -10,8 +10,13 @@ const App = () => {
 	return (
 		<BrowserRouter>
 			<Switch>
-				<PrivateRoute path="/" exact component={Dashboard} />
-				<Route path="/auth" exact component={Auth} />
+				<CustomRoute path="/" exact component={Dashboard} />
+				<CustomRoute
+					path="/auth"
+					exact
+					component={Auth}
+					auth_route_type={true}
+				/>
 				<Route component={NotFound} />
 			</Switch>
 		</BrowserRouter>
@@ -20,7 +25,13 @@ const App = () => {
 
 export default App;
 
-const PrivateRoute = ({ component: Component, ...other_params }) => {
+// defaults to private route
+const CustomRoute = ({
+	path,
+	component: Component,
+	auth_route_type,
+	...other_params
+}) => {
 	const [signed_in, updateSignedIn] = useState(false);
 	const [loading, updateLoading] = useState(true);
 
@@ -41,25 +52,42 @@ const PrivateRoute = ({ component: Component, ...other_params }) => {
 		}
 
 		updateLoading(false);
-	}, [location]);
+	}, [path]);
 
 	return (
 		<>
 			{!loading && (
 				<Route
 					{...other_params}
-					render={(props) =>
-						signed_in ? (
-							<Component {...props} />
-						) : (
-							<Redirect
-								to={{
-									pathname: '/auth',
-									state: { from: props.location },
-								}}
-							/>
-						)
-					}
+					render={(props) => (
+						<>
+							{auth_route_type && !signed_in && (
+								<Component {...props} />
+							)}
+
+							{auth_route_type && signed_in && (
+								<Redirect
+									to={{
+										pathname: '/',
+										state: { from: props.location },
+									}}
+								/>
+							)}
+
+							{!auth_route_type && signed_in && (
+								<Component {...props} />
+							)}
+
+							{!auth_route_type && !signed_in && (
+								<Redirect
+									to={{
+										pathname: '/auth',
+										state: { from: props.location },
+									}}
+								/>
+							)}
+						</>
+					)}
 				/>
 			)}
 		</>
