@@ -74,6 +74,24 @@ const Dashboard = () => {
 		);
 	};
 
+	const handleQRCodeScan = () => {
+		window.QRScanner.scan(displayContents);
+
+		function displayContents(err, text) {
+			if (err) {
+				// an error occurred, or the scan was canceled (error code `6`)
+				console.log(err);
+			} else {
+				// The scan completed, display the contents of the QR code:
+				console.log(text);
+				window.QRScanner.destroy((status) => {
+					console.log(status);
+				});
+			}
+		}
+		window.QRScanner.show();
+	};
+
 	return (
 		<>
 			<div className="text-red-500">Dashboard</div>
@@ -82,6 +100,7 @@ const Dashboard = () => {
 			<button onClick={handlePost}>post button</button> <br />
 			<button onClick={handlePatch}>patch button</button> <br />
 			<button onClick={handleDelete}>delete button</button> <br />
+			<button onClick={handleQRCodeScan}>delete button</button> <br />
 		</>
 	);
 };
