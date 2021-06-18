@@ -21,11 +21,11 @@ const getSequelizeSession = () => {
 
 export const signIn = async (req, res) => {
 	const sequelize_session = getSequelizeSession();
-	const { email, password } = req.body;
+	const { user_name, password } = req.body;
 
 	try {
 		let query;
-		query = `SELECT * FROM users WHERE email="${email}"`;
+		query = `SELECT * FROM users WHERE user_name="${user_name}"`;
 		// console.log({query})
 		const old_users = await sequelize_session.query(query, {
 			type: sequelize.QueryTypes.SELECT,
@@ -44,7 +44,11 @@ export const signIn = async (req, res) => {
 			return res.status(400).json({ message: 'Invalid credentials' });
 
 		const token = jwt.sign(
-			{ email: old_user.email, id: old_user.id },
+			{
+				user_name: old_user.user_name,
+				email: old_user.email,
+				id: old_user.id,
+			},
 			process.env.JWT_SECRET,
 			{ expiresIn: '1h' }
 		);
@@ -59,12 +63,12 @@ export const signIn = async (req, res) => {
 export const signUp = async (req, res) => {
 	const sequelize_session = getSequelizeSession();
 
-	const { email, password } = req.body;
+	const { user_name, email, password } = req.body;
 
 	const transaction = await sequelize_session.transaction();
 	try {
 		let query;
-		query = `SELECT * FROM users WHERE email="${email}"`;
+		query = `SELECT * FROM users WHERE email="${email}" or user_name="${user_name}"`;
 		// console.log({query})
 		const old_users = await sequelize_session.query(query, {
 			type: sequelize.QueryTypes.SELECT,
@@ -72,11 +76,13 @@ export const signUp = async (req, res) => {
 		const old_user = old_users.length !== 0 ? old_users[0] : null;
 
 		if (old_user)
-			return res.status(400).json({ message: 'User already exists' });
+			return res
+				.status(400)
+				.json({ message: 'Username or Email already in use' });
 
 		const hashed_password = await bcrypt.hash(password, 12);
 
-		query = `INSERT INTO users (email, password) VALUES ("${email}", "${hashed_password}")`;
+		query = `INSERT INTO users (user_name, email, password) VALUES ("${user_name}", "${email}", "${hashed_password}")`;
 		// console.log({query})
 		const result = await sequelize_session.query(query, {
 			type: sequelize.QueryTypes.INSERT,

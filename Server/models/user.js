@@ -6,6 +6,9 @@ const user = (sequelize_session) => {
 		User: sequelize_session.define(
 			'user',
 			{
+				user_name: {
+					type: STRING,
+				},
 				email: {
 					type: STRING,
 				},

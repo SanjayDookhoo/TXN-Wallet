@@ -6,6 +6,7 @@ import Input from '../../components/Input';
 import { signIn, signUp } from '../../ducks/actions/auth';
 
 const initialState = {
+	user_name: '',
 	email: '',
 	password: '',
 	confirm_password: '',
@@ -38,10 +39,18 @@ const Auth = () => {
 					signUp({
 						req_body: form_data,
 						onSuccess: () => history.push('/'),
-						onFailure: () =>
-							enqueueSnackbar('Email already in use', {
-								variant: 'error',
-							}),
+						onFailure: (err) => {
+							const message = err?.response?.data?.message;
+							if (message) {
+								enqueueSnackbar(message, {
+									variant: 'error',
+								});
+							} else {
+								enqueueSnackbar('Something went wrong', {
+									variant: 'error',
+								});
+							}
+						},
 					})
 				);
 			} else {
@@ -54,10 +63,18 @@ const Auth = () => {
 				signIn({
 					req_body: form_data,
 					onSuccess: () => history.push('/'),
-					onFailure: () =>
-						enqueueSnackbar('Incorrect credentials', {
-							variant: 'error',
-						}),
+					onFailure: (err) => {
+						const message = err?.response?.data?.message;
+						if (message) {
+							enqueueSnackbar(message, {
+								variant: 'error',
+							});
+						} else {
+							enqueueSnackbar('Something went wrong', {
+								variant: 'error',
+							});
+						}
+					},
 				})
 			);
 		}
@@ -71,12 +88,21 @@ const Auth = () => {
 			<div className="text-lg">{is_signup ? 'Sign up' : 'Sign in'}</div>
 			<form onSubmit={handleSubmit}>
 				<div className="flex-col justify-center items-center">
+					{is_signup && (
+						<Input
+							name="email"
+							label="Email Address"
+							value={form_data.email}
+							handleChange={handleChange}
+							type="email"
+						/>
+					)}
 					<Input
-						name="email"
-						label="Email Address"
-						value={form_data.email}
+						name="user_name"
+						label="User Name"
+						value={form_data.user_name}
 						handleChange={handleChange}
-						type="email"
+						type="text"
 					/>
 					<Input
 						name="password"
