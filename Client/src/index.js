@@ -11,16 +11,30 @@ import { SnackbarProvider } from 'notistack';
 
 const store = createStore(reducers, compose(applyMiddleware(thunk)));
 
-ReactDOM.render(
-	<Provider store={store}>
-		<SnackbarProvider maxSnack={3}>
-			<React.StrictMode>
-				<App />
-			</React.StrictMode>
-		</SnackbarProvider>
-	</Provider>,
-	document.getElementById('root')
-);
+const renderReactDom = () => {
+	ReactDOM.render(
+		<Provider store={store}>
+			<SnackbarProvider maxSnack={3}>
+				<React.StrictMode>
+					<App />
+				</React.StrictMode>
+			</SnackbarProvider>
+		</Provider>,
+		document.getElementById('root')
+	);
+};
+
+if (window.cordova) {
+	document.addEventListener(
+		'deviceready',
+		() => {
+			renderReactDom();
+		},
+		false
+	);
+} else {
+	renderReactDom();
+}
 
 // If you want to start measuring performance in your app, pass a function
 // to log results (for example: reportWebVitals(console.log))

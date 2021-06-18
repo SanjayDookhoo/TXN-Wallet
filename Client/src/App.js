@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter, Switch, Route, Redirect } from 'react-router-dom';
+import { HashRouter, Switch, Route, Redirect } from 'react-router-dom';
 import decode from 'jwt-decode';
 
 import Auth from '../src/pages/Auth';
@@ -8,7 +8,7 @@ import NotFound from '../src/pages/NotFound';
 
 const App = () => {
 	return (
-		<BrowserRouter>
+		<HashRouter>
 			<Switch>
 				<CustomRoute path="/" exact component={Dashboard} />
 				<CustomRoute
@@ -19,7 +19,7 @@ const App = () => {
 				/>
 				<Route component={NotFound} />
 			</Switch>
-		</BrowserRouter>
+		</HashRouter>
 	);
 };
 
