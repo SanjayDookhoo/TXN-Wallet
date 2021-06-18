@@ -2,9 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { BrowserRouter, Switch, Route, Redirect } from 'react-router-dom';
 import decode from 'jwt-decode';
 
-import Auth from 'src/pages/Auth';
-import Dashboard from 'src/pages/Dashboard';
-import NotFound from 'src/pages/NotFound';
+import Auth from '../src/pages/Auth';
+import Dashboard from '../src/pages/Dashboard';
+import NotFound from '../src/pages/NotFound';
 
 const App = () => {
 	return (

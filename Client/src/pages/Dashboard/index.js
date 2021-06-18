@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import { signOut } from 'actions/auth';
+import { signOut } from '../../ducks/actions/auth';
 import {
 	databaseGet,
 	databasePost,
 	databasePatch,
 	databaseDelete,
-} from 'actions/database';
+} from '../../ducks/actions/database';
 
 const Dashboard = () => {
 	const dispatch = useDispatch();
@@ -76,7 +76,7 @@ const Dashboard = () => {
 
 	return (
 		<>
-			<div>Dashboard</div>
+			<div className="text-red-500">Dashboard</div>
 			<button onClick={handleSignOut}>sign out button</button> <br />
 			<button onClick={handleGet}>get button</button> <br />
 			<button onClick={handlePost}>post button</button> <br />

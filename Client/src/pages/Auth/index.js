@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import Input from 'src/pages/Input';
-import { signIn, signUp } from 'actions/auth';
 import { useSnackbar } from 'notistack';
+import Input from '../../components/Input';
+import { signIn, signUp } from '../../ducks/actions/auth';
 
 const initialState = {
 	email: '',

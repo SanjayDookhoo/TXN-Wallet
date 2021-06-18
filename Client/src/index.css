@@ -2,3 +2,5 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* place tailwind generated css in this file after building for the web, because cordova does not seem to be working well with the postcss and is not generating the necessary files*/
