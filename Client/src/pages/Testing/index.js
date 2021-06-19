@@ -1,17 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {
-	faSignOutAlt,
-	faCog,
-	faChartLine,
-	faHistory,
-	faMoneyBill,
-	faCalculator,
-} from '@fortawesome/free-solid-svg-icons';
-import MainContainer from '../../components/MainContainer';
-import NavButton from '../../components/NavButton';
 import { signOut } from '../../ducks/actions/auth';
 import {
 	databaseGet,
@@ -19,9 +8,8 @@ import {
 	databasePatch,
 	databaseDelete,
 } from '../../ducks/actions/database';
-import logo from '../../assets/logo.svg';
 
-const Dashboard = () => {
+const Testing = () => {
 	const dispatch = useDispatch();
 	const history = useHistory();
 	const database = useSelector((state) => state.database);
@@ -105,44 +93,16 @@ const Dashboard = () => {
 	};
 
 	return (
-		<MainContainer>
-			<div className="navbar w-24 flex flex-col justify-between items-center text-5xl">
-				<div>
-					<button>
-						<img src={logo} />
-					</button>
-				</div>
-				<div className="flex flex-col justify-between items-center">
-					<NavButton>
-						<FontAwesomeIcon icon={faMoneyBill} />
-					</NavButton>
-					<NavButton>
-						<FontAwesomeIcon icon={faChartLine} />
-					</NavButton>
-					<NavButton>
-						<FontAwesomeIcon icon={faCalculator} />
-					</NavButton>
-					<NavButton>
-						<FontAwesomeIcon icon={faHistory} />
-					</NavButton>
-					<NavButton>
-						<FontAwesomeIcon icon={faCog} />
-					</NavButton>
-				</div>
-				<div>
-					<NavButton onClick={handleSignOut}>
-						<FontAwesomeIcon icon={faSignOutAlt} />
-					</NavButton>
-				</div>
-			</div>
-			<div className="content p-16 flex-grow">
-				<div className="content-heading text-5xl pb-4">
-					content heading
-				</div>
-				<div className="content-body">content body</div>
-			</div>
-		</MainContainer>
+		<>
+			<div className="text-red-500">Dashboard</div>
+			<button onClick={handleSignOut}>sign out button</button> <br />
+			<button onClick={handleGet}>get button</button> <br />
+			<button onClick={handlePost}>post button</button> <br />
+			<button onClick={handlePatch}>patch button</button> <br />
+			<button onClick={handleDelete}>delete button</button> <br />
+			<button onClick={handleQRCodeScan}>delete button</button> <br />
+		</>
 	);
 };
 
-export default Dashboard;
+export default Testing;
