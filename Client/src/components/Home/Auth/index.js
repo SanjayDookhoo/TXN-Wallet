@@ -2,10 +2,10 @@ import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { useSnackbar } from 'notistack';
-import Input from '../../components/Input';
-import Button from '../../components/Button';
-import { signIn, signUp } from '../../ducks/actions/auth';
-import logo from '../../assets/logo.svg';
+import Input from '../../Input';
+import Button from '../../Button';
+import { signIn, signUp } from '../../../ducks/actions/auth';
+import logo from '../../../assets/logo.svg';
 
 const initialState = {
 	user_name: '',
@@ -66,7 +66,6 @@ const Auth = () => {
 			dispatch(
 				signIn({
 					req_body: form_data,
-					onSuccess: () => history.push('/'),
 					onFailure: (err) => {
 						const message = err?.response?.data?.message;
 						if (message) {

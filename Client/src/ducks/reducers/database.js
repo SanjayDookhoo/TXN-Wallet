@@ -2,8 +2,6 @@ import * as actionType from '../constants/actionTypes';
 import { base_models } from './database_base_models';
 
 const database = (state = {}, action) => {
-	console.log({ payload: action.payload });
-
 	switch (action.type) {
 		case actionType.GET: {
 			const { result } = action.payload.res;

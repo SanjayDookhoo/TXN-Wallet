@@ -1,95 +1,47 @@
 import React, { useState, useEffect } from 'react';
-import { HashRouter, Switch, Route, Redirect } from 'react-router-dom';
-import decode from 'jwt-decode';
+import { useDispatch, useSelector } from 'react-redux';
+import {
+	BrowserRouter,
+	HashRouter,
+	Switch,
+	Route,
+	Redirect,
+} from 'react-router-dom';
+import Home from '../src/components/Home';
+import NotFound from '../src/components/NotFound';
+import { routeStateApp } from '../src/ducks/actions/app';
 
-import Auth from '../src/pages/Auth';
-import Dashboard from '../src/pages/Dashboard';
-import NotFound from '../src/pages/NotFound';
+const App = ({ cordova }) => {
+	const state = useSelector((state) => state);
+	const MyRouter = cordova ? HashRouter : BrowserRouter; // cordova works with HashRouter, BrowserRouter URL is familiar to desktop users
 
-const App = () => {
+	useEffect(() => {
+		console.log({ state });
+	}, [state]);
+
 	return (
-		<HashRouter>
+		<MyRouter>
 			<Switch>
-				<CustomRoute path="/" exact component={Dashboard} />
-				<CustomRoute
-					path="/auth"
-					exact
-					component={Auth}
-					auth_route_type={true}
-				/>
+				<CustomRoute path="/" exact component={Home} />
+				<CustomRoute path="/active" exact component={Home} />
+				<CustomRoute path="/scanning" exact component={Home} />
 				<Route component={NotFound} />
 			</Switch>
-		</HashRouter>
+		</MyRouter>
 	);
 };
 
 export default App;
 
 // defaults to private route
-const CustomRoute = ({
-	path,
-	component: Component,
-	auth_route_type,
-	...other_params
-}) => {
-	const [signed_in, updateSignedIn] = useState(false);
-	const [loading, updateLoading] = useState(true);
+const CustomRoute = ({ path, component: Component, ...other_params }) => {
+	const dispatch = useDispatch();
 
 	useEffect(() => {
-		const user = JSON.parse(localStorage.getItem('profile'));
-		const token = user?.token;
-
-		if (token) {
-			const decoded_token = decode(token);
-
-			if (decoded_token.exp * 1000 < new Date().getTime()) {
-				updateSignedIn(false);
-			} else {
-				updateSignedIn(true);
-			}
-		} else {
-			updateSignedIn(false);
-		}
-
-		updateLoading(false);
+		dispatch(routeStateApp({ path }));
 	}, [path]);
 
 	return (
-		<>
-			{!loading && (
-				<Route
-					{...other_params}
-					render={(props) => (
-						<>
-							{auth_route_type && !signed_in && (
-								<Component {...props} />
-							)}
-
-							{auth_route_type && signed_in && (
-								<Redirect
-									to={{
-										pathname: '/',
-										state: { from: props.location },
-									}}
-								/>
-							)}
-
-							{!auth_route_type && signed_in && (
-								<Component {...props} />
-							)}
-
-							{!auth_route_type && !signed_in && (
-								<Redirect
-									to={{
-										pathname: '/auth',
-										state: { from: props.location },
-									}}
-								/>
-							)}
-						</>
-					)}
-				/>
-			)}
-		</>
+		<Route {...other_params} render={(props) => <Component {...props} />} />
 	);
 };
