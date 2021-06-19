@@ -5,6 +5,7 @@ import logo from '../../assets/logo.svg';
 import NavButton from './NavButton';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
+import { signOut } from '../../ducks/actions/auth';
 
 const MainContainer = ({ body, navbar, ...props }) => {
 	return (
