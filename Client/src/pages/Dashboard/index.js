@@ -108,7 +108,7 @@ const Dashboard = () => {
 		<MainContainer>
 			<div className="navbar w-24 flex flex-col justify-between items-center text-5xl">
 				<div>
-					<button>
+					<button className="waves-effect rounded-br-lg shadow ripple hover:shadow-lg focus:outline-none bg-yellow-500">
 						<img src={logo} />
 					</button>
 				</div>
@@ -125,7 +125,7 @@ const Dashboard = () => {
 					<NavButton>
 						<FontAwesomeIcon icon={faHistory} />
 					</NavButton>
-					<NavButton>
+					<NavButton active={true}>
 						<FontAwesomeIcon icon={faCog} />
 					</NavButton>
 				</div>
@@ -135,7 +135,7 @@ const Dashboard = () => {
 					</NavButton>
 				</div>
 			</div>
-			<div className="content p-16 flex-grow">
+			<div className="content p-16 border-l-4 border-gray-600 flex-grow">
 				<div className="content-heading text-5xl pb-4">
 					content heading
 				</div>

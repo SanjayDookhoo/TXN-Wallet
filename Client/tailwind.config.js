@@ -4,10 +4,10 @@ module.exports = {
 	theme: {
 		extend: {
 			height: (theme) => ({
-				'main-cont': 'calc(100% - 40px)',
+				'main-cont': 'calc(100% - 20px)',
 			}),
 			width: (theme) => ({
-				'main-cont': 'calc(100% - 40px)',
+				'main-cont': 'calc(100% - 20px)',
 			}),
 		},
 	},
