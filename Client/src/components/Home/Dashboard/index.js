@@ -34,64 +34,108 @@ const Dashboard = () => {
 		}
 	};
 
+	// swiping navigation for mobile
 	useEffect(() => {
-		// window.addEventListener(
-		// 	'touchstart',
-		// 	function (evt) {
-		// 		console.log('touchstart');
-		// 	},
-		// 	false
-		// );
-	}, []);
+		if (app.is_mobile_app) {
+			let original_screen_x;
+			let mouse_down = false;
+			let direction = null;
 
-	useEffect(() => {
-		let original_screen_x;
-		let direction = null;
-		const endMove = () => {
-			console.log('ened');
-			window.removeEventListener('mousemove', whileMove);
-			window.removeEventListener('mouseup', endMove);
-		};
+			const dashboardItemIndex = () => {
+				if (app.dashboard_item === '') {
+					if (app.is_mobile_app) return 0;
+					else return 1;
+				}
+				return dashboard_items.findIndex(
+					(dashboard_item) =>
+						dashboard_item.name === app.dashboard_item
+				);
+			};
 
-		const whileMove = (event) => {
-			console.log({ original_screen_x, new_screen_x: event.screenX });
+			const mouseMove = (event) => {
+				if (mouse_down) {
+					if (!direction && event.screenX > original_screen_x) {
+						direction = 'right';
+					}
 
-			window.removeEventListener('mousemove', whileMove);
-			window.removeEventListener('mouseup', endMove);
-			if (!direction && direction > original_screen_x) {
-				direction = 'right';
-			}
+					if (!direction && event.screenX < original_screen_x) {
+						direction = 'left';
+					}
 
-			if (!direction && direction < original_screen_x) {
-				direction = 'left';
-			}
+					if (
+						direction === 'right' &&
+						event.screenX < original_screen_x
+					) {
+						direction = null;
+					}
 
-			if (direction === 'right' && direction < original_screen_x) {
-				endMove();
-			}
+					if (
+						direction === 'left' &&
+						event.screenX > original_screen_x
+					) {
+						direction = null;
+					}
 
-			if (direction === 'left' && direction > original_screen_x) {
-				endMove();
-			}
+					if (direction && event.screenX > original_screen_x + 100) {
+						mouse_down = false;
+						direction = null;
 
-			if (!direction && event.screenX + 100 > original_screen_x) {
-				console.log('swipe right');
-			}
+						const index = dashboardItemIndex();
+						if (index !== dashboard_items.length - 1) {
+							dispatch(
+								updateApp({
+									dashboard_item:
+										dashboard_items[index + 1].name,
+								})
+							);
+						}
 
-			if (!direction && event.screenX + 100 < original_screen_x) {
-				console.log('swipe left');
-			}
-		};
+						console.log('swipe right');
+					}
 
-		const mouseDown = (event) => {
-			original_screen_x = event.screenX;
-			// event.stopPropagation();
-			window.addEventListener('mousemove', whileMove);
-			window.addEventListener('mouseup', endMove);
-		};
+					if (direction && event.screenX < original_screen_x - 100) {
+						mouse_down = false;
+						direction = null;
 
-		window.addEventListener('mousedown', mouseDown);
-	}, []);
+						const index = dashboardItemIndex();
+						if (
+							(app.is_mobile_app && index !== 0) ||
+							(!app.is_mobile_app && index !== 1)
+						) {
+							dispatch(
+								updateApp({
+									dashboard_item:
+										dashboard_items[index - 1].name,
+								})
+							);
+						}
+
+						console.log('swipe left');
+					}
+				}
+			};
+
+			const mouseDown = (event) => {
+				original_screen_x = event.screenX;
+				mouse_down = true;
+				direction = null;
+			};
+			const mouseUp = (event) => {
+				mouse_down = false;
+			};
+
+			window.addEventListener('mousemove', mouseMove);
+			window.addEventListener('mousedown', mouseDown);
+			window.addEventListener('mouseup', mouseUp);
+
+			return () => {
+				//removing old event listeners
+				window.removeEventListener('mousemove', mouseMove);
+				window.removeEventListener('mousedown', mouseDown);
+				window.removeEventListener('mouseup', mouseUp);
+			};
+		}
+	}, [app]);
 
 	const dashboard_items = [
 		{
