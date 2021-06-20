@@ -4,46 +4,45 @@ const initial_state = {
 	loaded: false,
 	scanning: false,
 	dashboard_item: '',
+	is_mobile_app: true,
 };
 
 const app = (state = initial_state, action) => {
 	switch (action.type) {
 		case actionType.ROUTE_STATE_APP: {
-			const { path } = action.payload;
+			const { path, is_mobile_app } = action.payload;
+			console.log(action.payload);
+
+			let new_state = { ...initial_state };
 
 			switch (path) {
-				case '/':
-					return {
-						...initial_state,
-						loaded: true,
-					};
 				case '/active':
 					if (state.loaded) {
-						return {
+						new_state = {
 							...state,
 							scanning: false,
 						};
-					} else {
-						return {
-							...initial_state,
-							loaded: true,
-						};
 					}
+					break;
 				case '/scanning':
 					if (state.loaded) {
-						return {
+						new_state = {
 							...state,
 							scanning: true,
 						};
-					} else {
-						return {
-							...initial_state,
-							loaded: true,
-						};
 					}
+					break;
 				default:
-					return initial_state;
+					new_state = {
+						...initial_state,
+					};
+					break;
 			}
+			return {
+				...new_state,
+				loaded: true,
+				is_mobile_app,
+			};
 		}
 		case actionType.UPDATE_APP: {
 			return {

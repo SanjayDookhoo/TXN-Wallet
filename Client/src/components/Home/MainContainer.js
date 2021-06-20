@@ -32,7 +32,10 @@ const MainContainer = ({ body, navbar, ...props }) => {
 						<LogoButton />
 						<LogoutButton />
 					</div>
-					<div className="content p-16 border-t-4 border-b-4 border-gray-600 flex-grow">
+					<div
+						id="mobile-content-swipe-anchor"
+						className="content p-2 border-t-4 border-b-4 border-gray-600 flex-grow"
+					>
 						{body}
 					</div>
 					<div className="flex flex-row justify-between items-center">

@@ -11,12 +11,12 @@ import { SnackbarProvider } from 'notistack';
 
 const store = createStore(reducers, compose(applyMiddleware(thunk)));
 
-const renderReactDom = ({ cordova }) => {
+const renderReactDom = ({ is_mobile_app }) => {
 	ReactDOM.render(
 		<Provider store={store}>
 			<SnackbarProvider maxSnack={3}>
 				<React.StrictMode>
-					<App cordove={cordova} />
+					<App is_mobile_app={is_mobile_app} />
 				</React.StrictMode>
 			</SnackbarProvider>
 		</Provider>,
@@ -28,12 +28,14 @@ if (window.cordova) {
 	document.addEventListener(
 		'deviceready',
 		() => {
-			renderReactDom({ cordova: true });
+			console.log('deviceready');
+			renderReactDom({ is_mobile_app: true });
 		},
 		false
 	);
 } else {
-	renderReactDom({ cordova: false });
+	console.log('normal');
+	renderReactDom({ is_mobile_app: false });
 }
 
 // If you want to start measuring performance in your app, pass a function
