@@ -15,9 +15,9 @@ const renderReactDom = ({ is_mobile_app }) => {
 	ReactDOM.render(
 		<Provider store={store}>
 			<SnackbarProvider maxSnack={3}>
-				<React.StrictMode>
-					<App is_mobile_app={is_mobile_app} />
-				</React.StrictMode>
+				{/* <React.StrictMode> */}
+				<App is_mobile_app={is_mobile_app} />
+				{/* </React.StrictMode> */}
 			</SnackbarProvider>
 		</Provider>,
 		document.getElementById('root')

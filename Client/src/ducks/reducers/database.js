@@ -85,8 +85,7 @@ const database = (state = {}, action) => {
 							direct_children_table_name,
 							direct_children_table_meta,
 						]) =>
-							direct_children_table_meta?._foreign_key?.table +
-								's' ===
+							direct_children_table_meta?._foreign_key?.table ===
 								table_name &&
 							direct_children_table_meta?._foreign_key
 								?.on_delete === 'cascade'
@@ -95,7 +94,7 @@ const database = (state = {}, action) => {
 						([
 							direct_children_table_name,
 							direct_children_table_meta,
-						]) => direct_children_table_name + 's'
+						]) => direct_children_table_name
 					);
 
 				direct_children_tables.forEach((direct_children_table) => {

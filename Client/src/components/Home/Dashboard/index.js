@@ -20,10 +20,25 @@ import Portfolio from './Portfolio';
 import Notifications from './Notifications';
 import Settings from './Settings';
 
+import covalentAPI from '../../../ducks/api/covalent';
+
 const Dashboard = () => {
 	const dispatch = useDispatch();
 	const history = useHistory();
+
+	const [chains, updateChains] = useState([]);
 	const app = useSelector((state) => state.app);
+
+	// get covalent data
+	useEffect(async () => {
+		const { data, status } = await covalentAPI.get(`/chains/`, {
+			params: {},
+		});
+		const arr = data.data.items.filter(
+			(item) => !item.label.toLowerCase().includes('testnet')
+		);
+		updateChains(arr);
+	}, []);
 
 	const handleNav = (dashboard_item) => {
 		dispatch(updateApp({ dashboard_item }));
@@ -131,40 +146,44 @@ const Dashboard = () => {
 		}
 	}, [app]);
 
+	const dashboard_item_params = {
+		chains,
+	};
+
 	const dashboard_items = [
 		{
 			name: 'portfolio',
 			condition: (app_dashboard_item) =>
 				app_dashboard_item === 'portfolio' || app_dashboard_item === '',
 			icon: faMoneyBill,
-			component: <Portfolio />,
+			component: <Portfolio {...dashboard_item_params} />,
 		},
 		{
 			name: 'analytics',
 			condition: (app_dashboard_item) =>
 				app_dashboard_item === 'analytics',
 			icon: faChartLine,
-			component: <Analytics />,
+			component: <Analytics {...dashboard_item_params} />,
 		},
 		{
 			name: 'notifications',
 			condition: (app_dashboard_item) =>
 				app_dashboard_item === 'notifications',
 			icon: faExclamationTriangle,
-			component: <Notifications />,
+			component: <Notifications {...dashboard_item_params} />,
 		},
 		{
 			name: 'history',
 			condition: (app_dashboard_item) => app_dashboard_item === 'history',
 			icon: faHistory,
-			component: <History />,
+			component: <History {...dashboard_item_params} />,
 		},
 		{
 			name: 'settings',
 			condition: (app_dashboard_item) =>
 				app_dashboard_item === 'settings',
 			icon: faCog,
-			component: <Settings />,
+			component: <Settings {...dashboard_item_params} />,
 		},
 	];
 

@@ -1,23 +1,15 @@
 export const base_models = {
-	// Example parent table
-	customer: {
-		name: {
-			type: 'string',
-		},
-		address: {
-			type: 'string',
-		},
-		age: {
+	chain: {
+		covalent_chain_id: {
 			type: 'integer',
 		},
 	},
-	// Example related table
-	invoice: {
-		amount: {
-			type: 'integer',
+	address: {
+		address_hash: {
+			type: 'string',
 		},
 		_foreign_key: {
-			table: 'customer',
+			table: 'chain',
 			on_delete: 'cascade',
 		},
 	},
