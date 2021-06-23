@@ -16,7 +16,7 @@ const user = (sequelize_session) => {
 					type: STRING,
 				},
 			},
-			{ underscored: true }
+			{ underscored: true, freezeTableName: true }
 		),
 	};
 };

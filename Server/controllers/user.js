@@ -25,7 +25,7 @@ export const signIn = async (req, res) => {
 
 	try {
 		let query;
-		query = `SELECT * FROM users WHERE user_name="${user_name}"`;
+		query = `SELECT * FROM user WHERE user_name="${user_name}"`;
 		// console.log({query})
 		const old_users = await sequelize_session.query(query, {
 			type: sequelize.QueryTypes.SELECT,
@@ -68,7 +68,7 @@ export const signUp = async (req, res) => {
 	const transaction = await sequelize_session.transaction();
 	try {
 		let query;
-		query = `SELECT * FROM users WHERE email="${email}" or user_name="${user_name}"`;
+		query = `SELECT * FROM user WHERE email="${email}" or user_name="${user_name}"`;
 		// console.log({query})
 		const old_users = await sequelize_session.query(query, {
 			type: sequelize.QueryTypes.SELECT,
@@ -82,7 +82,7 @@ export const signUp = async (req, res) => {
 
 		const hashed_password = await bcrypt.hash(password, 12);
 
-		query = `INSERT INTO users (user_name, email, password) VALUES ("${user_name}", "${email}", "${hashed_password}")`;
+		query = `INSERT INTO user (user_name, email, password) VALUES ("${user_name}", "${email}", "${hashed_password}")`;
 		// console.log({query})
 		const result = await sequelize_session.query(query, {
 			type: sequelize.QueryTypes.INSERT,

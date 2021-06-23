@@ -28,10 +28,9 @@ const general = async (req, res) => {
 			return Object.entries(base_models)
 				.filter(
 					([table_name, table_meta]) =>
-						table_meta?._foreign_key?.table ===
-						parent_table_name.slice(0, -1)
+						table_meta?._foreign_key?.table === parent_table_name
 				)
-				.map(([table_name, table_meta]) => table_name + 's');
+				.map(([table_name, table_meta]) => table_name);
 		};
 
 		const _getDirectchildrenTables = async ({
@@ -40,31 +39,37 @@ const general = async (req, res) => {
 		}) => {
 			const children_tables = _childrenTables(parent_table_name);
 			// console.log(children_tables);
+			children_tables.forEach((children_table) => {
+				result[children_table] = [];
+			});
 
 			let filter = '';
 			const temp = result[parent_table_name].map((records) => records.id);
-			if (temp.length !== 0) {
-				// if no records were found, then there is no information to use to search with
-				temp.forEach((value, i) => {
-					if (i !== 0) {
-						filter += ' or ';
-					}
-					filter += `${parent_table_name.slice(0, -1)}_id="${value}"`;
-				});
-				// console.log({ filter });
 
-				const promises = children_tables.map((table_name) => {
-					const query = `SELECT * FROM ${table_name} WHERE ${filter}`;
-					return sequelize_session.query(query, {
-						type: sequelize.QueryTypes.SELECT,
-					});
-				});
+			// if (temp.length !== 0) {
+			// if no records were found, then there is no information to use to search with
+			temp.forEach((value, i) => {
+				if (i !== 0) {
+					filter += ' or ';
+				}
+				filter += `${parent_table_name}_id="${value}"`;
+			});
+			// console.log({ filter });
 
-				const temp_arr = await Promise.all(promises);
-				children_tables.forEach((children_table, i) => {
-					result[children_table] = temp_arr[i];
+			const promises = children_tables.map((table_name) => {
+				const query = `SELECT * FROM ${table_name} ${
+					temp.length !== 0 ? 'WHERE' : ''
+				} ${filter}`;
+				return sequelize_session.query(query, {
+					type: sequelize.QueryTypes.SELECT,
 				});
-			}
+			});
+
+			const temp_arr = await Promise.all(promises);
+			children_tables.forEach((children_table, i) => {
+				result[children_table] = temp_arr[i];
+			});
+			// }
 		};
 
 		const _getRootTable = async ({ result, table_name }) => {

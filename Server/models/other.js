@@ -2,25 +2,17 @@ import sequelize from 'sequelize';
 const { STRING, INTEGER, FLOAT, DATE } = sequelize.DataTypes;
 
 export const base_models = {
-	// Example parent table
-	customer: {
-		name: {
-			type: 'string',
-		},
-		address: {
-			type: 'string',
-		},
-		age: {
+	chain: {
+		covalent_chain_id: {
 			type: 'integer',
 		},
 	},
-	// Example related table
-	invoice: {
-		amount: {
-			type: 'integer',
+	address: {
+		address_hash: {
+			type: 'string',
 		},
 		_foreign_key: {
-			table: 'customer',
+			table: 'chain',
 			on_delete: 'cascade',
 		},
 	},
@@ -61,7 +53,7 @@ const other = (sequelize_session) => {
 			{
 				...temp_table_fields,
 			},
-			{ underscored: true }
+			{ underscored: true, freezeTableName: true }
 		);
 		if (_foreign_key) {
 			oneToMany({
