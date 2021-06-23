@@ -6,6 +6,7 @@ import Input from '../../Input';
 import Button from '../../Button';
 import { signIn, signUp } from '../../../ducks/actions/auth';
 import logo from '../../../assets/logo.svg';
+import logo_mobile from '../../../assets/logo_mobile.svg';
 
 const initialState = {
 	user_name: '',
@@ -90,7 +91,9 @@ const Auth = () => {
 		<div className="window-container h-screen flex flex-col justify-center items-center bg-gray-200">
 			<div className="auth-component flex flex-col md:flex-row justify-center items-center rounded-lg overflow-hidden shadow-2xl">
 				<div className="logo w-96 h-16 md:h-full border-gray-600 border-b-2 md:border-b-0 md:border-r-2 flex justify-center items-center bg-yellow-500">
-					<img className="h-full" src={logo} />
+					{/* <img className="h-full" src={logo} /> */}
+					<img className="hidden md:block" src={logo} />
+					<img className="md:hidden h-full" src={logo_mobile} />
 				</div>
 				<div className="form w-96 h-full border-gray-600 border-t-2 md:border-t-0 md:border-l-2 p-4">
 					<form onSubmit={handleSubmit}>

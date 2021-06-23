@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import logo from '../../assets/logo.svg';
+import logo_mobile from '../../assets/logo_mobile.svg';
 import NavButton from './NavButton';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
@@ -28,9 +29,8 @@ const MainContainer = ({ body, navbar, ...props }) => {
 			{/* mobile container */}
 			<div className="w-96 h-main-cont md:hidden bg-gray-200 rounded-lg overflow-hidden shadow-2xl">
 				<div className="w-full h-full flex flex-col justify-start">
-					<div className="navbar h-16 flex flex-row justify-between items-center">
+					<div className="navbar h-12 flex flex-row justify-center items-center rounded-tr-lg rounded-tl-lg border-t-2 border-l-2 border-r-2 border-gray-600 bg-yellow-500">
 						<LogoButton />
-						<LogoutButton />
 					</div>
 					<div
 						id="mobile-content-swipe-anchor"
@@ -40,6 +40,7 @@ const MainContainer = ({ body, navbar, ...props }) => {
 					</div>
 					<div className="flex flex-row justify-between items-center">
 						{navbar}
+						<LogoutButton />
 					</div>
 				</div>
 			</div>
@@ -60,10 +61,11 @@ const LogoButton = () => {
 
 	return (
 		<button
-			className="waves-effect w-16 md:w-24 h-16 md:h-24 rounded-br-lg shadow ripple hover:shadow-lg focus:outline-none bg-yellow-500"
+			className="waves-effect w-24 md:w-24 h-10 md:h-24 md:rounded-br-lg shadow ripple hover:shadow-lg focus:outline-none bg-yellow-500"
 			onClick={handleLogoButtonClick}
 		>
-			<img src={logo} />
+			<img className="hidden md:block" src={logo} />
+			<img className="md:hidden" src={logo_mobile} />
 		</button>
 	);
 };
