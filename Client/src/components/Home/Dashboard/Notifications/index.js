@@ -12,13 +12,13 @@ import {
 import ContentHeading from '../ContentHeading';
 import ContentBody from '../ContentBody';
 
-const QRScanner = () => {
+const Notifications = () => {
 	return (
 		<>
-			<ContentHeading>QRScanner</ContentHeading>
+			<ContentHeading>Notifications</ContentHeading>
 			<ContentBody>Body</ContentBody>
 		</>
 	);
 };
 
-export default QRScanner;
+export default Notifications;

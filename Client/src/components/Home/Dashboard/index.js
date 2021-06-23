@@ -3,8 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
-	faQrcode,
-	faCamera,
+	faExclamationTriangle,
 	faCog,
 	faChartLine,
 	faHistory,
@@ -15,11 +14,10 @@ import MainContainer from '../MainContainer';
 import NavButton from '../NavButton';
 import { updateApp } from '../../../ducks/actions/app';
 
-import QRScanner from './QRScanner';
 import Analytics from './Analytics';
 import History from './History';
 import Portfolio from './Portfolio';
-import POSSetup from './POSSetup';
+import Notifications from './Notifications';
 import Settings from './Settings';
 
 const Dashboard = () => {
@@ -43,8 +41,7 @@ const Dashboard = () => {
 
 			const dashboardItemIndex = () => {
 				if (app.dashboard_item === '') {
-					if (app.is_mobile_app) return 0;
-					else return 1;
+					return 0;
 				}
 				return dashboard_items.findIndex(
 					(dashboard_item) =>
@@ -98,10 +95,7 @@ const Dashboard = () => {
 						direction = null;
 
 						const index = dashboardItemIndex();
-						if (
-							(app.is_mobile_app && index !== 0) ||
-							(!app.is_mobile_app && index !== 1)
-						) {
+						if (index !== 0) {
 							dispatch(
 								updateApp({
 									dashboard_item:
@@ -139,13 +133,6 @@ const Dashboard = () => {
 
 	const dashboard_items = [
 		{
-			name: 'qr_scanning',
-			condition: (app_dashboard_item) =>
-				app_dashboard_item === 'qr_scanning',
-			icon: faQrcode,
-			component: <QRScanner />,
-		},
-		{
 			name: 'portfolio',
 			condition: (app_dashboard_item) =>
 				app_dashboard_item === 'portfolio' || app_dashboard_item === '',
@@ -160,11 +147,11 @@ const Dashboard = () => {
 			component: <Analytics />,
 		},
 		{
-			name: 'POS_setup',
+			name: 'notifications',
 			condition: (app_dashboard_item) =>
-				app_dashboard_item === 'POS_setup',
-			icon: faCalculator,
-			component: <POSSetup />,
+				app_dashboard_item === 'notifications',
+			icon: faExclamationTriangle,
+			component: <Notifications />,
 		},
 		{
 			name: 'history',
@@ -194,24 +181,17 @@ const Dashboard = () => {
 			}
 			navbar={
 				<>
-					{dashboard_items
-						.filter(
-							(dashboard_item) =>
-								(!app.is_mobile_app &&
-									dashboard_item.name !== 'qr_scanning') ||
-								app.is_mobile_app
-						)
-						.map((dashboard_item, i) => (
-							<NavButton
-								key={i}
-								active={dashboard_item.condition(
-									app.dashboard_item
-								)}
-								onClick={() => handleNav(dashboard_item.name)}
-							>
-								<FontAwesomeIcon icon={dashboard_item.icon} />
-							</NavButton>
-						))}
+					{dashboard_items.map((dashboard_item, i) => (
+						<NavButton
+							key={i}
+							active={dashboard_item.condition(
+								app.dashboard_item
+							)}
+							onClick={() => handleNav(dashboard_item.name)}
+						>
+							<FontAwesomeIcon icon={dashboard_item.icon} />
+						</NavButton>
+					))}
 				</>
 			}
 		/>
