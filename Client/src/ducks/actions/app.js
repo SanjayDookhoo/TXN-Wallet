@@ -1,7 +1,6 @@
 import * as actionType from '../constants/actionTypes';
 
 export const routeStateApp = (data) => (dispatch) => {
-	console.log('test');
 	try {
 		dispatch({ type: actionType.ROUTE_STATE_APP, payload: data });
 	} catch (error) {

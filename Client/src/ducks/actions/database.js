@@ -1,5 +1,5 @@
 import * as actionType from '../constants/actionTypes';
-import * as api from '../api/index.js';
+import * as databaseApi from '../api/database.js';
 
 // as of right now only the dispatch statement differs for all actions, may need to change later
 
@@ -7,7 +7,7 @@ export const databaseGet =
 	({ table_name, req_params, onSuccess, onFailure }) =>
 	async (dispatch) => {
 		try {
-			const { data } = await api.databaseGet({
+			const { data } = await databaseApi.databaseGet({
 				table_name,
 				req_params,
 			});
@@ -28,7 +28,7 @@ export const databasePost =
 	({ table_name, req_body, onSuccess, onFailure }) =>
 	async (dispatch) => {
 		try {
-			const { data } = await api.databasePost({
+			const { data } = await databaseApi.databasePost({
 				table_name,
 				req_body,
 			});
@@ -49,7 +49,7 @@ export const databasePatch =
 	({ table_name, req_body, onSuccess, onFailure }) =>
 	async (dispatch) => {
 		try {
-			const { data } = await api.databasePatch({
+			const { data } = await databaseApi.databasePatch({
 				table_name,
 				req_body,
 			});
@@ -70,7 +70,7 @@ export const databaseDelete =
 	({ table_name, req_body, onSuccess, onFailure }) =>
 	async (dispatch) => {
 		try {
-			const { data } = await api.databaseDelete({
+			const { data } = await databaseApi.databaseDelete({
 				table_name,
 				req_body,
 			});

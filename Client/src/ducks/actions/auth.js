@@ -1,11 +1,11 @@
 import * as actionType from '../constants/actionTypes';
-import * as api from '../api/index.js';
+import * as databaseApi from '../api/database.js';
 
 export const signIn =
 	({ req_body, onSuccess, onFailure }) =>
 	async (dispatch) => {
 		try {
-			const { data } = await api.signIn({ req_body });
+			const { data } = await databaseApi.signIn({ req_body });
 
 			dispatch({ type: actionType.AUTH, payload: data });
 
@@ -20,7 +20,7 @@ export const signUp =
 	({ req_body, onSuccess, onFailure }) =>
 	async (dispatch) => {
 		try {
-			const { data } = await api.signUp({ req_body });
+			const { data } = await databaseApi.signUp({ req_body });
 
 			dispatch({ type: actionType.AUTH, payload: data });
 
