@@ -104,9 +104,7 @@ const database = (state = {}, action) => {
 						.filter((direct_children_table_record) => {
 							console.log({ direct_children_table_record });
 							return ids.includes(
-								direct_children_table_record[
-									`${table_name.slice(0, -1)}_id`
-								]
+								direct_children_table_record[`${table_name}_id`]
 							);
 						})
 						.map(
@@ -120,7 +118,6 @@ const database = (state = {}, action) => {
 					});
 				});
 			};
-
 			_recursiveDelete({ table_name, ids: req_body.ids });
 
 			return new_state;
