@@ -9,7 +9,7 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { SnackbarProvider } from 'notistack';
 
-const store = createStore(reducers, compose(applyMiddleware(thunk)));
+export const store = createStore(reducers, compose(applyMiddleware(thunk)));
 
 const renderReactDom = ({ is_mobile_app }) => {
 	ReactDOM.render(

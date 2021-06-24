@@ -18,6 +18,7 @@ import {
 import { InputLabel, Select, MenuItem } from '@material-ui/core';
 import Input from '../../../Input';
 import Button from '../../../Button';
+import { createDeleteModal } from '../../DeleteModal';
 
 const initialState = {
 	name: '',
@@ -146,18 +147,21 @@ const BlockchainAddressGroup = ({ database, chains, chains_map, chain }) => {
 	const [form_data, updateFormData] = useState(initialState);
 	const [form_mode_add, updateFormModeAdd] = useState(true);
 	const [editing_id, updateEditingId] = useState(null);
-	const [collapsed, updateCollapsed] = useState(true);
+	const [collapsed, updateCollapsed] = useState(false);
 
 	const handleBlockchainRemove = (e) => {
 		e.stopPropagation();
-		dispatch(
-			databaseDelete({
-				table_name: 'chain',
-				req_body: {
-					ids: [chain.id],
-				},
-			})
-		);
+		const callback = () =>
+			dispatch(
+				databaseDelete({
+					table_name: 'chain',
+					req_body: {
+						ids: [chain.id],
+					},
+				})
+			);
+
+		createDeleteModal({ callback });
 	};
 
 	const handleChange = (e) =>
@@ -228,14 +232,17 @@ const BlockchainAddressGroup = ({ database, chains, chains_map, chain }) => {
 		updateFormModeAdd(true);
 		updateEditingId(null);
 
-		dispatch(
-			databaseDelete({
-				table_name: 'address',
-				req_body: {
-					ids: [id],
-				},
-			})
-		);
+		const callback = () =>
+			dispatch(
+				databaseDelete({
+					table_name: 'address',
+					req_body: {
+						ids: [id],
+					},
+				})
+			);
+
+		createDeleteModal({ callback });
 	};
 
 	const handleAddressUpdate = (id) => {
@@ -267,18 +274,18 @@ const BlockchainAddressGroup = ({ database, chains, chains_map, chain }) => {
 	};
 
 	return (
-		<div
-			className="blockchain-address-group my-4 p-2 bg-green-300 cursor-pointer"
-			onClick={toggleCollapsible}
-		>
-			<div className="blockchain-address-group-header flex justify-between items-center h-12 group">
+		<div className="blockchain-address-group my-4 p-2 bg-green-300 cursor-pointer">
+			<div
+				className="blockchain-address-group-header flex justify-between items-center h-12 group"
+				onClick={toggleCollapsible}
+			>
 				<div className="blockchain-icon">
 					<img
 						className="h-10"
 						src={chains_map[chain.covalent_chain_id]?.logo_url}
 					/>
 				</div>
-				<div className="blockchain-name cursor-pointer waves-effect rounded-lg p-2 group-hover:text-lg">
+				<div className="blockchain-name cursor-pointer rounded-lg p-2 group-hover:text-lg">
 					{collapsed ? (
 						<FontAwesomeIcon icon={faPlus} />
 					) : (

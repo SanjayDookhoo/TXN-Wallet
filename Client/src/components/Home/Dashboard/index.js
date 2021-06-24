@@ -21,6 +21,7 @@ import Notifications from './Notifications';
 import Settings from './Settings';
 
 import covalentAPI from '../../../ducks/api/covalent';
+import { DeleteModal } from '../DeleteModal';
 
 const Dashboard = () => {
 	const dispatch = useDispatch();
@@ -192,28 +193,31 @@ const Dashboard = () => {
 	}, [app]);
 
 	return (
-		<MainContainer
-			body={
-				dashboard_items.find((dashboard_item) =>
-					dashboard_item.condition(app.dashboard_item)
-				)?.component
-			}
-			navbar={
-				<>
-					{dashboard_items.map((dashboard_item, i) => (
-						<NavButton
-							key={i}
-							active={dashboard_item.condition(
-								app.dashboard_item
-							)}
-							onClick={() => handleNav(dashboard_item.name)}
-						>
-							<FontAwesomeIcon icon={dashboard_item.icon} />
-						</NavButton>
-					))}
-				</>
-			}
-		/>
+		<>
+			<MainContainer
+				body={
+					dashboard_items.find((dashboard_item) =>
+						dashboard_item.condition(app.dashboard_item)
+					)?.component
+				}
+				navbar={
+					<>
+						{dashboard_items.map((dashboard_item, i) => (
+							<NavButton
+								key={i}
+								active={dashboard_item.condition(
+									app.dashboard_item
+								)}
+								onClick={() => handleNav(dashboard_item.name)}
+							>
+								<FontAwesomeIcon icon={dashboard_item.icon} />
+							</NavButton>
+						))}
+					</>
+				}
+			/>
+			<DeleteModal />
+		</>
 	);
 };
 
