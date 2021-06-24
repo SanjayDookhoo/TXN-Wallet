@@ -7,6 +7,7 @@ import {
 	faPlus,
 	faMinus,
 } from '@fortawesome/free-solid-svg-icons';
+import { useSnackbar } from 'notistack';
 import ContentHeading from '../ContentHeading';
 import ContentBody from '../ContentBody';
 import {
@@ -19,6 +20,7 @@ import { InputLabel, Select, MenuItem } from '@material-ui/core';
 import Input from '../../../Input';
 import Button from '../../../Button';
 import { createDeleteModal } from '../../DeleteModal';
+import covalentAPI from '../../../../ducks/api/covalent';
 
 const initialState = {
 	name: '',
@@ -27,6 +29,7 @@ const initialState = {
 
 const Settings = ({ chains }) => {
 	const dispatch = useDispatch();
+
 	const database = useSelector((state) => state.database);
 	const [user, updateUser] = useState(
 		JSON.parse(localStorage.getItem('profile'))
@@ -144,6 +147,8 @@ export default Settings;
 
 const BlockchainAddressGroup = ({ database, chains, chains_map, chain }) => {
 	const dispatch = useDispatch();
+	const { enqueueSnackbar } = useSnackbar();
+
 	const [form_data, updateFormData] = useState(initialState);
 	const [form_mode_add, updateFormModeAdd] = useState(true);
 	const [editing_id, updateEditingId] = useState(null);
@@ -167,58 +172,101 @@ const BlockchainAddressGroup = ({ database, chains, chains_map, chain }) => {
 	const handleChange = (e) =>
 		updateFormData({ ...form_data, [e.target.name]: e.target.value });
 
-	const handleSubmit = (e) => {
+	const handleSubmit = async (e) => {
 		e.preventDefault();
 
-		if (form_mode_add) {
-			dispatch(
-				databasePost({
-					table_name: 'address',
-					req_body: {
-						inserts: [
-							{
-								...form_data,
-								chain_id: chain.id,
-							},
-						],
+		try {
+			// check if address_hash is valid
+			const { data, status } = await covalentAPI.get(
+				`/${chain.covalent_chain_id}/address/${form_data.address_hash}/transactions_v2/`,
+				{
+					params: {
+						limit: 1,
 					},
-					onSuccess: () => {
-						console.log('test');
-						updateFormData(initialState);
-					},
-				})
+				}
 			);
-		} else {
-			const updates = {
-				[editing_id]: {},
-			};
 
-			if (form_data.name !== database.address[editing_id].name) {
-				updates[editing_id] = {
-					...updates[editing_id],
-					name: form_data.name,
-				};
+			// if no error was thrown then the address provided is valid
+
+			let flag = false;
+			// check if this name is already existing for the user
+			const found_name = Object.values(database.address).find(
+				(address) => address.name === form_data.name
+			);
+			if (found_name) {
+				enqueueSnackbar('Name already added', {
+					variant: 'error',
+				});
+				flag = true;
 			}
-			if (
-				form_data.address_hash !==
-				database.address[editing_id].address_hash
-			) {
-				updates[editing_id] = {
-					...updates[editing_id],
-					address_hash: form_data.address_hash,
-				};
+			// check if this address_hash is already existing for the user
+			const found_address_hash = Object.values(database.address).find(
+				(address) => address.address_hash === form_data.address_hash
+			);
+			if (found_address_hash) {
+				enqueueSnackbar('Address already added', {
+					variant: 'error',
+				});
+				flag = true;
 			}
 
-			if (Object.values(updates[editing_id]).length !== 0) {
-				dispatch(
-					databasePatch({
-						table_name: 'address',
-						req_body: {
-							updates,
-						},
-					})
-				);
+			if (!flag) {
+				if (form_mode_add) {
+					dispatch(
+						databasePost({
+							table_name: 'address',
+							req_body: {
+								inserts: [
+									{
+										...form_data,
+										chain_id: chain.id,
+									},
+								],
+							},
+							onSuccess: () => {
+								console.log('test');
+								updateFormData(initialState);
+							},
+						})
+					);
+				} else {
+					const updates = {
+						[editing_id]: {},
+					};
+
+					if (form_data.name !== database.address[editing_id].name) {
+						updates[editing_id] = {
+							...updates[editing_id],
+							name: form_data.name,
+						};
+					}
+					if (
+						form_data.address_hash !==
+						database.address[editing_id].address_hash
+					) {
+						updates[editing_id] = {
+							...updates[editing_id],
+							address_hash: form_data.address_hash,
+						};
+					}
+
+					if (Object.values(updates[editing_id]).length !== 0) {
+						dispatch(
+							databasePatch({
+								table_name: 'address',
+								req_body: {
+									updates,
+								},
+							})
+						);
+					}
+				}
 			}
+		} catch (error) {
+			console.log({ error });
+			enqueueSnackbar('Malformed Address', {
+				variant: 'error',
+			});
 		}
 	};
 

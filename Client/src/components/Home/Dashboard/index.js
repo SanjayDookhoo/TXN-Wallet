@@ -10,6 +10,7 @@ import {
 	faMoneyBill,
 	faCalculator,
 } from '@fortawesome/free-solid-svg-icons';
+import { useSnackbar } from 'notistack';
 import MainContainer from '../MainContainer';
 import NavButton from '../NavButton';
 import { updateApp } from '../../../ducks/actions/app';
@@ -26,19 +27,27 @@ import { DeleteModal } from '../DeleteModal';
 const Dashboard = () => {
 	const dispatch = useDispatch();
 	const history = useHistory();
+	const { enqueueSnackbar } = useSnackbar();
 
 	const [chains, updateChains] = useState([]);
 	const app = useSelector((state) => state.app);
 
 	// get covalent data
 	useEffect(async () => {
-		const { data, status } = await covalentAPI.get(`/chains/`, {
-			params: {},
-		});
-		const arr = data.data.items.filter(
-			(item) => !item.label.toLowerCase().includes('testnet')
-		);
-		updateChains(arr);
+		try {
+			const { data, status } = await covalentAPI.get(`/chains/`, {
+				params: {},
+			});
+			const arr = data.data.items.filter(
+				(item) => !item.label.toLowerCase().includes('testnet')
+			);
+			updateChains(arr);
+		} catch (error) {
+			console.log({ error });
+			enqueueSnackbar('Something went wrong', {
+				variant: 'error',
+			});
+		}
 	}, []);
 
 	const handleNav = (dashboard_item) => {
