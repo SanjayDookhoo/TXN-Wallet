@@ -13,7 +13,7 @@ module.exports = {
 	},
 	variants: {
 		extend: {
-			fontSize: ['hover'],
+			fontSize: ['group-hover'],
 		},
 	},
 	plugins: [],
