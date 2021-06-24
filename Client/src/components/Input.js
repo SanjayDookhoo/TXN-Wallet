@@ -12,6 +12,7 @@ const Input = ({
 	autoFocus,
 	type,
 	handleShowPassword,
+	value,
 }) => (
 	<Grid item xs={12} sm={half ? 6 : 12}>
 		<div className="py-4">
@@ -24,6 +25,7 @@ const Input = ({
 				label={label}
 				autoFocus={autoFocus}
 				type={type}
+				value={value}
 				InputProps={
 					name === 'password'
 						? {

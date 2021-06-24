@@ -4,10 +4,13 @@ const { STRING, INTEGER, FLOAT, DATE } = sequelize.DataTypes;
 export const base_models = {
 	chain: {
 		covalent_chain_id: {
-			type: 'integer',
+			type: 'string',
 		},
 	},
 	address: {
+		name: {
+			type: 'string',
+		},
 		address_hash: {
 			type: 'string',
 		},

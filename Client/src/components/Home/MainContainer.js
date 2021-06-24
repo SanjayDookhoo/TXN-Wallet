@@ -21,7 +21,7 @@ const MainContainer = ({ body, navbar, ...props }) => {
 						</div>
 						<LogoutButton />
 					</div>
-					<div className="content p-16 border-l-4 border-gray-600 flex-grow">
+					<div className="content overflow-y-auto p-16 border-l-4 border-gray-600 flex-grow">
 						{body}
 					</div>
 				</div>
@@ -34,7 +34,7 @@ const MainContainer = ({ body, navbar, ...props }) => {
 					</div>
 					<div
 						id="mobile-content-swipe-anchor"
-						className="content p-2 border-t-4 border-b-4 border-gray-600 flex-grow"
+						className="content overflow-y-auto p-2 border-t-4 border-b-4 border-gray-600 flex-grow"
 					>
 						{body}
 					</div>
