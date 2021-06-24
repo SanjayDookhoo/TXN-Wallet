@@ -274,9 +274,9 @@ const BlockchainAddressGroup = ({ database, chains, chains_map, chain }) => {
 	};
 
 	return (
-		<div className="blockchain-address-group my-4 p-2 bg-green-300 cursor-pointer">
+		<div className="blockchain-address-group my-4 p-2 bg-green-300">
 			<div
-				className="blockchain-address-group-header flex justify-between items-center h-12 group"
+				className="blockchain-address-group-header flex justify-between items-center h-12 group cursor-pointer"
 				onClick={toggleCollapsible}
 			>
 				<div className="blockchain-icon">
