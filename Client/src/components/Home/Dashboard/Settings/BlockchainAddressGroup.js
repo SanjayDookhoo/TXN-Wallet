@@ -19,6 +19,7 @@ import Button from '../../../Button';
 import { createDeleteModal } from '../../DeleteModal';
 import covalentAPI from '../../../../ducks/api/covalent';
 import Address from './Address';
+import coin_fallback from '../../../../assets/coin_fallback.png';
 
 const initialState = {
 	name: '',
@@ -211,6 +212,10 @@ const BlockchainAddressGroup = ({ database, chains, chains_map, chain }) => {
 					<img
 						className="h-10"
 						src={chains_map[chain.covalent_chain_id]?.logo_url}
+						onError={(e) => {
+							e.target.onerror = null;
+							e.target.src = coin_fallback;
+						}}
 					/>
 				</div>
 				<div className="blockchain-name cursor-pointer rounded-lg p-2 group-hover:text-lg">
