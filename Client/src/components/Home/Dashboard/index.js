@@ -30,6 +30,7 @@ const Dashboard = () => {
 	const { enqueueSnackbar } = useSnackbar();
 
 	const [chains, updateChains] = useState([]);
+	const [chart_touch_start, updateChartTouchstart] = useState(null);
 	const app = useSelector((state) => state.app);
 
 	// get covalent data
@@ -137,7 +138,10 @@ const Dashboard = () => {
 			};
 
 			const touchstart = (event) => {
-				original_screen_x = event.changedTouches[0].screenX;
+				const curr_screenX = event.changedTouches[0].screenX;
+				if (curr_screenX === chart_touch_start) return; // allows chart touch to work and not conflict with gesture swipe, this charting library seems to use a further up event listener so an event stop propagation wasnt working
+
+				original_screen_x = curr_screenX;
 				touch_down = true;
 				direction = null;
 			};
@@ -156,7 +160,7 @@ const Dashboard = () => {
 				window.removeEventListener('touchstart', touchstart);
 			};
 		}
-	}, [app]);
+	}, [app, chart_touch_start]);
 
 	const dashboard_item_params = {
 		chains,
@@ -168,7 +172,12 @@ const Dashboard = () => {
 			condition: (app_dashboard_item) =>
 				app_dashboard_item === 'portfolio' || app_dashboard_item === '',
 			icon: faMoneyBill,
-			component: <Portfolio {...dashboard_item_params} />,
+			component: (
+				<Portfolio
+					{...dashboard_item_params}
+					updateChartTouchstart={updateChartTouchstart}
+				/>
+			),
 		},
 		// {
 		// 	name: 'analytics',

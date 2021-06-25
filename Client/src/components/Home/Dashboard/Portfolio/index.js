@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
@@ -20,8 +20,11 @@ import Button from '../../../Button';
 import Input from '../../../Input';
 import covalentAPI from '../../../../ducks/api/covalent';
 import coin_fallback from '../../../../assets/coin_fallback.png';
+import { createChart } from 'lightweight-charts';
 
-const Portfolio = ({ chains }) => {
+const chart_color_arr = ['#ff8a65', '#4fc3f7', '#9575cd', '#ba68c8', '#e57373'];
+
+const Portfolio = ({ chains, updateChartTouchstart }) => {
 	const dispatch = useDispatch();
 
 	const database = useSelector((state) => state.database);
@@ -32,6 +35,9 @@ const Portfolio = ({ chains }) => {
 	const [show_graphs, updateShowGraphs] = useState(true);
 	const [token_filter, updateTokenFilter] = useState('');
 	const [tokens_map, updateTokensMap] = useState({}); // maps address to tokens
+	const chart_ref = useRef(null);
+	const [chart_obj, updateChartObj] = useState(null);
+	const [chart_obj_series, updateChartObjSeries] = useState([]);
 
 	useEffect(() => {
 		console.log({ tokens_map });
@@ -114,12 +120,39 @@ const Portfolio = ({ chains }) => {
 		chains_map,
 		tokens_map,
 		token_filter,
+		chart_obj,
+		chart_obj_series,
+		updateChartObjSeries,
 	};
+
+	useEffect(() => {
+		if (chart_ref && chart_ref.current) {
+			const chart = createChart(chart_ref.current, {
+				width: 600,
+				height: 300,
+				rightPriceScale: {
+					scaleMargins: {
+						top: 0.1,
+						bottom: 0.1,
+					},
+					autoScale: true,
+				},
+			});
+			updateChartObj(chart);
+
+			// used to stop propagation of touch gestures, due to the way this charting library handles touch, stopPropagation cant be used without breaking both
+			const handleTouchstart = (e) => {
+				updateChartTouchstart(e.changedTouches[0].screenX);
+			};
+			chart_ref.current.addEventListener('touchstart', handleTouchstart);
+		}
+	}, [chart_ref]);
 
 	return (
 		<>
 			<ContentHeading>Portfolio</ContentHeading>
 			<ContentBody>
+				<div ref={chart_ref}></div>
 				<Input
 					name="filter"
 					label="Filter"
@@ -216,6 +249,7 @@ const AddressGroup = ({
 	address,
 	tokens_map,
 	token_filter,
+	...other_params
 }) => {
 	const [collapsed, updateCollapsed] = useState(false);
 	const [historical_prices_map, updateHistoricalPricesMap] = useState({}); // contract-address => today / 1d => price
@@ -261,6 +295,8 @@ const AddressGroup = ({
 
 	const token_params = {
 		historical_prices_map,
+		chain,
+		...other_params,
 	};
 
 	return (
@@ -305,7 +341,14 @@ const AddressGroup = ({
 	);
 };
 
-const Token = ({ token, historical_prices_map }) => {
+const Token = ({
+	token,
+	historical_prices_map,
+	chain,
+	chart_obj,
+	chart_obj_series,
+	updateChartObjSeries,
+}) => {
 	const [token_increased_percent, updateTokenIncreasedPercent] =
 		useState(null);
 	const [token_increased_value, updateTokenIncreasedValue] = useState(null);
@@ -419,8 +462,104 @@ const Token = ({ token, historical_prices_map }) => {
 		updateDollarIncreasedValue(temp_dollar_increased_value);
 	}, [token, historical_prices_map]);
 
+	const toggleSeriesInChart = async () => {
+		console.log({ token });
+		let found_in_series = chart_obj_series.findIndex(
+			(one_series) =>
+				one_series.contract_address === token.contract_address
+		);
+
+		if (found_in_series === -1) {
+			const currency = 'usd';
+			const to = new Date();
+			const from = new Date();
+			from.setMonth(from.getMonth() - 12);
+			const { data, status } = await covalentAPI.get(
+				`/pricing/historical_by_addresses_v2/${chain.covalent_chain_id}/${currency}/${token.contract_address}/`,
+				{
+					params: {
+						to: to.toISOString().split('T')[0],
+						from: from.toISOString().split('T')[0],
+					},
+				}
+			);
+
+			console.log({ data });
+			const prices = data.data[0].prices
+				.filter((price) => price.date != null)
+				.map((price) => ({
+					time: price.date,
+					value: price.price.toFixed(0),
+				}));
+			const avail_color = chart_color_arr.find(
+				(color) =>
+					!chart_obj_series
+						.map((one_series) => one_series.color)
+						.includes(color)
+			);
+
+			if (avail_color) {
+				!chart_obj_series
+					.map((one_series) => one_series.color)
+					.includes(avail_color);
+
+				const new_series = chart_obj.addAreaSeries({
+					topColor: `${avail_color}00`,
+					bottomColor: `${avail_color}00`,
+					lineColor: `${avail_color}`,
+					lineWidth: 2,
+				});
+
+				console.log({ prices });
+				console.log({ avail_color });
+				console.log(token.contract_address);
+
+				new_series.setData(prices);
+
+				updateChartObjSeries([
+					...chart_obj_series,
+					{
+						contract_address: token.contract_address,
+						color: avail_color,
+						series: new_series,
+					},
+				]);
+
+				chart_obj.timeScale().fitContent();
+			}
+		} else {
+			chart_obj.removeSeries(chart_obj_series[found_in_series].series);
+			updateChartObjSeries(
+				chart_obj_series.filter(
+					(one_series) =>
+						one_series.contract_address !==
+						chart_obj_series[found_in_series].contract_address
+				)
+			);
+		}
+	};
+
+	const backgroundColorOnClick = () => {
+		const found = chart_obj_series.findIndex(
+			(one_series) =>
+				one_series.contract_address === token.contract_address
+		);
+
+		if (found !== -1) {
+			return chart_obj_series[found].color;
+		} else {
+			return '';
+		}
+	};
+
 	return (
-		<div className="token flex justify-start items-center border-t-2 border-yellow-200">
+		<div
+			className={`token flex justify-start items-center border-t-2 border-yellow-200 waves-effect cursor-pointer`}
+			style={{
+				backgroundColor: backgroundColorOnClick(),
+			}}
+			onClick={toggleSeriesInChart}
+		>
 			<div className="token-logo">
 				<img
 					className="h-10"
