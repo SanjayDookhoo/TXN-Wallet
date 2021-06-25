@@ -113,6 +113,7 @@ const Portfolio = ({ chains }) => {
 		chains,
 		chains_map,
 		tokens_map,
+		token_filter,
 	};
 
 	return (
@@ -126,9 +127,9 @@ const Portfolio = ({ chains }) => {
 					handleChange={(e) => updateTokenFilter(e.target.value)}
 					type="text"
 				/>
-				<Button onClick={handleShowGraphsToggle}>
+				{/* <Button onClick={handleShowGraphsToggle}>
 					{show_graphs ? 'Show' : 'Hide'} Graphs
-				</Button>
+				</Button> */}
 				<div className="">
 					{database.chain &&
 						Object.values(database.chain).map((chain) => (
@@ -209,7 +210,13 @@ const BlockchainAddressGroup = ({
 	);
 };
 
-const AddressGroup = ({ database, chain, address, tokens_map }) => {
+const AddressGroup = ({
+	database,
+	chain,
+	address,
+	tokens_map,
+	token_filter,
+}) => {
 	const [collapsed, updateCollapsed] = useState(false);
 	const [historical_prices_map, updateHistoricalPricesMap] = useState({}); // contract-address => today / 1d => price
 
@@ -276,13 +283,23 @@ const AddressGroup = ({ database, chain, address, tokens_map }) => {
 			<div className={`p-2 ${collapsed && 'hidden'}`}>
 				{tokens_map &&
 					tokens_map[address.id] &&
-					Object.values(tokens_map[address.id]).map((token) => (
-						<Token
-							key={token.contract_address}
-							token={token}
-							{...token_params}
-						/>
-					))}
+					Object.values(tokens_map[address.id])
+						.filter(
+							(token) =>
+								token.contract_name
+									.toLowerCase()
+									.includes(token_filter.toLowerCase()) ||
+								token.contract_ticker_symbol
+									.toLowerCase()
+									.includes(token_filter.toLowerCase())
+						)
+						.map((token) => (
+							<Token
+								key={token.contract_address}
+								token={token}
+								{...token_params}
+							/>
+						))}
 			</div>
 		</div>
 	);
@@ -398,7 +415,6 @@ const Token = ({ token, historical_prices_map }) => {
 		if (today != null && yesterday != null) {
 			temp_dollar_increased_value =
 				today * token.balance - yesterday * token.balance;
-			console.log({ temp_dollar_increased_value });
 		}
 		updateDollarIncreasedValue(temp_dollar_increased_value);
 	}, [token, historical_prices_map]);
