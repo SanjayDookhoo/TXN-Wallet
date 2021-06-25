@@ -289,14 +289,24 @@ const AddressGroup = ({ database, chain, address, tokens_map }) => {
 };
 
 const Token = ({ token, historical_prices_map }) => {
-	const token_col = 'token-col flex flex-col justify-start items-center';
-	const token_data = 'token-data p-2';
+	const [token_increased_percent, updateTokenIncreasedPercent] =
+		useState(null);
+	const [token_increased_value, updateTokenIncreasedValue] = useState(null);
+	const [dollar_increased_percent, updateDollarIncreasedPercent] =
+		useState(null);
+	const [dollar_increased_value, updateDollarIncreasedValue] = useState(null);
+
+	const token_col =
+		'token-col flex flex-col justify-center items-start flex-basis-0 flex-grow';
+	const token_data = 'token-data p-2 h-8 overflow-hidden';
 
 	useEffect(() => {
 		console.log({ token });
 	}, [token]);
 
 	const valueLengthPreProcessing = (value) => {
+		if (value == null) return '';
+
 		const max_val = 999999;
 		const to_fixed = 2;
 
@@ -339,18 +349,62 @@ const Token = ({ token, historical_prices_map }) => {
 			const post_fix = post_fix_arr[i];
 
 			const new_value = value / post_fix.modifier;
-			if (new_value <= max_val) {
-				return `${new_value.toFixed(to_fixed).toLocaleString()} ${
-					post_fix.post_fix
-				}`;
+			if (Math.abs(new_value) <= max_val) {
+				return `${new_value.toLocaleString(undefined, {
+					minimumFractionDigits: 2,
+					maximumFractionDigits: 2,
+				})} ${post_fix.post_fix}`;
 			}
 		}
 
 		return `LARGE`;
 	};
 
+	useEffect(() => {
+		const today = historical_prices_map[token.contract_address]?.['today'];
+		const yesterday = historical_prices_map[token.contract_address]?.['1d'];
+
+		let temp_token_increased_percent = null;
+		if (today != null && yesterday != null) {
+			if (yesterday === 0) {
+				temp_token_increased_percent = null;
+			} else {
+				temp_token_increased_percent =
+					(100 * (today - yesterday)) / yesterday;
+			}
+		}
+		updateTokenIncreasedPercent(temp_token_increased_percent);
+
+		let temp_token_increased_value = null;
+		if (today != null && yesterday != null) {
+			temp_token_increased_value = today - yesterday;
+		}
+		updateTokenIncreasedValue(temp_token_increased_value);
+
+		let temp_dollar_increased_percent = null;
+		if (today != null && yesterday != null) {
+			const val_today = today * token.balance;
+			const val_yesterday = yesterday * token.balance;
+			if (val_yesterday === 0) {
+				temp_dollar_increased_percent = null;
+			} else {
+				temp_dollar_increased_percent =
+					(100 * (val_today - val_yesterday)) / val_yesterday;
+			}
+		}
+		updateDollarIncreasedPercent(temp_dollar_increased_percent);
+
+		let temp_dollar_increased_value = null;
+		if (today != null && yesterday != null) {
+			temp_dollar_increased_value =
+				today * token.balance - yesterday * token.balance;
+			console.log({ temp_dollar_increased_value });
+		}
+		updateDollarIncreasedValue(temp_dollar_increased_value);
+	}, [token, historical_prices_map]);
+
 	return (
-		<div className="token flex justify-start items-center">
+		<div className="token flex justify-start items-center border-t-2 border-yellow-200">
 			<div className="token-logo">
 				<img
 					className="h-10"
@@ -371,15 +425,41 @@ const Token = ({ token, historical_prices_map }) => {
 			</div>
 			<div className={`${token_col}`}>
 				<div className={`${token_data}`}>
-					{historical_prices_map[token.contract_address]?.[
-						'today'
-					]?.toLocaleString() ?? 'N/A'}
+					{valueLengthPreProcessing(
+						historical_prices_map[token.contract_address]?.['today']
+					)}
 				</div>
-				<div className={`${token_data}`}></div>
+				<div
+					className={`${token_data} ${
+						token_increased_percent > 0 && 'text-green-800'
+					} ${token_increased_percent < 0 && 'text-red-800'}`}
+				>
+					{valueLengthPreProcessing(token_increased_value)}
+					{token_increased_percent &&
+						'(' +
+							valueLengthPreProcessing(token_increased_percent) +
+							'%)'}
+				</div>
 			</div>
 			<div className={`${token_col}`}>
-				<div className={`${token_data}`}></div>
-				<div className={`${token_data}`}></div>
+				<div className={`${token_data}`}>
+					{valueLengthPreProcessing(
+						historical_prices_map[token.contract_address]?.[
+							'today'
+						] * token.balance
+					)}
+				</div>
+				<div
+					className={`${token_data} ${
+						dollar_increased_percent > 0 && 'text-green-800'
+					} ${dollar_increased_percent < 0 && 'text-red-800'}`}
+				>
+					{valueLengthPreProcessing(dollar_increased_value)}
+					{dollar_increased_percent &&
+						'(' +
+							valueLengthPreProcessing(dollar_increased_percent) +
+							'%)'}
+				</div>
 			</div>
 		</div>
 	);
