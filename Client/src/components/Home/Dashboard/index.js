@@ -168,13 +168,13 @@ const Dashboard = () => {
 			icon: faMoneyBill,
 			component: <Portfolio {...dashboard_item_params} />,
 		},
-		{
-			name: 'analytics',
-			condition: (app_dashboard_item) =>
-				app_dashboard_item === 'analytics',
-			icon: faChartLine,
-			component: <Analytics {...dashboard_item_params} />,
-		},
+		// {
+		// 	name: 'analytics',
+		// 	condition: (app_dashboard_item) =>
+		// 		app_dashboard_item === 'analytics',
+		// 	icon: faChartLine,
+		// 	component: <Analytics {...dashboard_item_params} />,
+		// },
 		{
 			name: 'notifications',
 			condition: (app_dashboard_item) =>
