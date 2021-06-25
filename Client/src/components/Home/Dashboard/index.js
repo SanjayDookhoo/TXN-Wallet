@@ -61,7 +61,7 @@ const Dashboard = () => {
 	useEffect(() => {
 		if (app.is_mobile_app) {
 			let original_screen_x;
-			let mouse_down = false;
+			let touch_down = false;
 			let direction = null;
 
 			const dashboardItemIndex = () => {
@@ -74,32 +74,34 @@ const Dashboard = () => {
 				);
 			};
 
-			const mouseMove = (event) => {
-				if (mouse_down) {
-					if (!direction && event.screenX > original_screen_x) {
+			const touchmove = (event) => {
+				const curr_screenX = event.changedTouches[0].screenX;
+				// console.log({ original_screen_x, curr_screenX });
+				if (touch_down) {
+					if (!direction && curr_screenX > original_screen_x) {
 						direction = 'right';
 					}
 
-					if (!direction && event.screenX < original_screen_x) {
+					if (!direction && curr_screenX < original_screen_x) {
 						direction = 'left';
 					}
 
 					if (
 						direction === 'right' &&
-						event.screenX < original_screen_x
+						curr_screenX < original_screen_x
 					) {
 						direction = null;
 					}
 
 					if (
 						direction === 'left' &&
-						event.screenX > original_screen_x
+						curr_screenX > original_screen_x
 					) {
 						direction = null;
 					}
 
-					if (direction && event.screenX > original_screen_x + 100) {
-						mouse_down = false;
+					if (direction && curr_screenX > original_screen_x + 100) {
+						touch_down = false;
 						direction = null;
 
 						const index = dashboardItemIndex();
@@ -112,11 +114,11 @@ const Dashboard = () => {
 							);
 						}
 
-						console.log('swipe right');
+						// console.log('swipe right');
 					}
 
-					if (direction && event.screenX < original_screen_x - 100) {
-						mouse_down = false;
+					if (direction && curr_screenX < original_screen_x - 100) {
+						touch_down = false;
 						direction = null;
 
 						const index = dashboardItemIndex();
@@ -129,29 +131,29 @@ const Dashboard = () => {
 							);
 						}
 
-						console.log('swipe left');
+						// console.log('swipe left');
 					}
 				}
 			};
 
-			const mouseDown = (event) => {
-				original_screen_x = event.screenX;
-				mouse_down = true;
+			const touchstart = (event) => {
+				original_screen_x = event.changedTouches[0].screenX;
+				touch_down = true;
 				direction = null;
 			};
-			const mouseUp = (event) => {
-				mouse_down = false;
+			const touchend = (event) => {
+				touch_down = false;
 			};
 
-			window.addEventListener('mousemove', mouseMove);
-			window.addEventListener('mousedown', mouseDown);
-			window.addEventListener('mouseup', mouseUp);
+			window.addEventListener('touchmove', touchmove);
+			window.addEventListener('touchend', touchend);
+			window.addEventListener('touchstart', touchstart);
 
 			return () => {
 				//removing old event listeners
-				window.removeEventListener('mousemove', mouseMove);
-				window.removeEventListener('mousedown', mouseDown);
-				window.removeEventListener('mouseup', mouseUp);
+				window.removeEventListener('touchmove', touchmove);
+				window.removeEventListener('touchend', touchend);
+				window.removeEventListener('touchstart', touchstart);
 			};
 		}
 	}, [app]);
