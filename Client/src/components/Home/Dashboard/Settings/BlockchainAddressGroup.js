@@ -71,9 +71,9 @@ const BlockchainAddressGroup = ({ database, chains, chains_map, chain }) => {
 
 			let flag = false;
 			// check if this name is already existing for the user
-			const found_name = Object.values(database.address).find(
-				(address) => address.name === form_data.name
-			);
+			const found_name = Object.values(database.address)
+				.filter((address) => address.id !== editing_id)
+				.find((address) => address.name === form_data.name);
 			if (found_name) {
 				enqueueSnackbar('Name already added', {
 					variant: 'error',
@@ -81,9 +81,11 @@ const BlockchainAddressGroup = ({ database, chains, chains_map, chain }) => {
 				flag = true;
 			}
 			// check if this address_hash is already existing for the user
-			const found_address_hash = Object.values(database.address).find(
-				(address) => address.address_hash === form_data.address_hash
-			);
+			const found_address_hash = Object.values(database.address)
+				.filter((address) => address.id !== editing_id)
+				.find(
+					(address) => address.address_hash === form_data.address_hash
+				);
 			if (found_address_hash) {
 				enqueueSnackbar('Address already added', {
 					variant: 'error',
@@ -105,7 +107,6 @@ const BlockchainAddressGroup = ({ database, chains, chains_map, chain }) => {
 								],
 							},
 							onSuccess: () => {
-								console.log('test');
 								updateFormData(initialState);
 							},
 						})
@@ -138,7 +139,17 @@ const BlockchainAddressGroup = ({ database, chains, chains_map, chain }) => {
 								req_body: {
 									updates,
 								},
+								onSuccess: () => {
+									updateFormData(initialState);
+								},
 							})
+						);
+					} else {
+						enqueueSnackbar(
+							'Data did not change, please cancel instead',
+							{
+								variant: 'error',
+							}
 						);
 					}
 				}
