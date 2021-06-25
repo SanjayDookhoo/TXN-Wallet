@@ -145,6 +145,13 @@ const Portfolio = ({ chains, updateChartTouchstart }) => {
 				updateChartTouchstart(e.changedTouches[0].screenX);
 			};
 			chart_ref.current.addEventListener('touchstart', handleTouchstart);
+
+			return () => {
+				chart_ref.current.removeEventListener(
+					'touchstart',
+					handleTouchstart
+				);
+			};
 		}
 	}, [chart_ref]);
 
