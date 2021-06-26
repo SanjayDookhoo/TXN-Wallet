@@ -84,10 +84,36 @@ const Portfolio = ({ chains, updateChartTouchstart }) => {
 				}
 				const promise_res = promise.data.data.items;
 				const token_map = Object.fromEntries(
-					promise_res.map((promise_token) => [
-						promise_token.contract_address,
-						promise_token,
-					])
+					promise_res.map((promise_token) => {
+						let { balance, contract_decimals } = promise_token;
+						let processed_balance;
+
+						if (balance.length > contract_decimals) {
+							const whole = balance.slice(
+								0,
+								balance.length - contract_decimals
+							);
+							const integral = balance.slice(
+								balance.length - contract_decimals
+							);
+							processed_balance = whole + '.' + integral;
+						} else {
+							processed_balance =
+								'.' +
+								new Array(contract_decimals - balance.length)
+									.fill(0)
+									.join('') +
+								balance;
+						}
+
+						return [
+							promise_token.contract_address,
+							{
+								...promise_token,
+								processed_balance,
+							},
+						];
+					})
 				);
 				temp_tokens_map[address_arr[i].id] = {
 					...temp_tokens_map[address_arr[i].id],
@@ -404,7 +430,7 @@ const Token = ({
 	}, [token]);
 
 	const valueLengthPreProcessing = (value) => {
-		if (value == null) return '';
+		if (value == null || isNaN(value)) return '';
 
 		const max_val = 999999;
 		const to_fixed = 2;
@@ -456,6 +482,7 @@ const Token = ({
 			}
 		}
 
+		console.log({ value });
 		return `LARGE`;
 	};
 
@@ -482,8 +509,8 @@ const Token = ({
 
 		let temp_dollar_increased_percent = null;
 		if (today != null && yesterday != null) {
-			const val_today = today * token.balance;
-			const val_yesterday = yesterday * token.balance;
+			const val_today = today * token.processed_balance;
+			const val_yesterday = yesterday * token.processed_balance;
 			if (val_yesterday === 0) {
 				temp_dollar_increased_percent = null;
 			} else {
@@ -496,7 +523,8 @@ const Token = ({
 		let temp_dollar_increased_value = null;
 		if (today != null && yesterday != null) {
 			temp_dollar_increased_value =
-				today * token.balance - yesterday * token.balance;
+				today * token.processed_balance -
+				yesterday * token.processed_balance;
 		}
 		updateDollarIncreasedValue(temp_dollar_increased_value);
 	}, [token, historical_prices_map]);
@@ -606,6 +634,14 @@ const Token = ({
 		}
 	};
 
+	const prependPlus = (val) => {
+		if (val > 0) {
+			return '+';
+		} else {
+			return '';
+		}
+	};
+
 	return (
 		<div
 			className={`token flex justify-start items-center border-t-2 border-yellow-200 waves-effect cursor-pointer`}
@@ -629,7 +665,7 @@ const Token = ({
 					{token.contract_ticker_symbol}
 				</div>
 				<div className={`${token_data}`}>
-					{valueLengthPreProcessing(token.balance)}
+					{valueLengthPreProcessing(token.processed_balance)}
 				</div>
 			</div>
 			<div className={`${token_col}`}>
@@ -643,9 +679,11 @@ const Token = ({
 						token_increased_percent > 0 && 'text-green-800'
 					} ${token_increased_percent < 0 && 'text-red-800'}`}
 				>
+					{prependPlus(token_increased_value)}
 					{valueLengthPreProcessing(token_increased_value)}
 					{token_increased_percent &&
 						'(' +
+							prependPlus(token_increased_percent) +
 							valueLengthPreProcessing(token_increased_percent) +
 							'%)'}
 				</div>
@@ -655,7 +693,7 @@ const Token = ({
 					{valueLengthPreProcessing(
 						historical_prices_map[token.contract_address]?.[
 							'today'
-						] * token.balance
+						] * token.processed_balance
 					)}
 				</div>
 				<div
@@ -663,9 +701,11 @@ const Token = ({
 						dollar_increased_percent > 0 && 'text-green-800'
 					} ${dollar_increased_percent < 0 && 'text-red-800'}`}
 				>
+					{prependPlus(dollar_increased_value)}
 					{valueLengthPreProcessing(dollar_increased_value)}
 					{dollar_increased_percent &&
 						'(' +
+							prependPlus(dollar_increased_percent) +
 							valueLengthPreProcessing(dollar_increased_percent) +
 							'%)'}
 				</div>
