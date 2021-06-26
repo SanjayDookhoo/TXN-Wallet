@@ -2,8 +2,10 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
-	faTrash,
-	faEdit,
+	faSortUp,
+	faSortDown,
+	faSort,
+	faRecycle,
 	faPlus,
 	faMinus,
 } from '@fortawesome/free-solid-svg-icons';
@@ -23,6 +25,11 @@ import coin_fallback from '../../../../assets/coin_fallback.png';
 import { createChart } from 'lightweight-charts';
 
 const chart_color_arr = ['#ff8a65', '#4fc3f7', '#9575cd', '#ba68c8', '#e57373'];
+const token_col =
+	'token-col flex flex-col justify-center items-start flex-basis-0 flex-grow';
+const token_data =
+	'token-data p-2 h-8 overflow-hidden flex justify-start items-center';
+const token_data_layout = `${token_data} waves-effect cursor-pointer w-full rounded-lg`;
 
 const Portfolio = ({ chains, updateChartTouchstart }) => {
 	const dispatch = useDispatch();
@@ -38,6 +45,10 @@ const Portfolio = ({ chains, updateChartTouchstart }) => {
 	const chart_ref = useRef(null);
 	const [chart_obj, updateChartObj] = useState(null);
 	const [chart_obj_series, updateChartObjSeries] = useState([]);
+	const [sort_criteria, updateSortCriteria] = useState(
+		'contract_ticker_symbol'
+	);
+	const [asc_order, updateAscOrder] = useState(true);
 
 	useEffect(() => {
 		console.log({ tokens_map });
@@ -136,10 +147,6 @@ const Portfolio = ({ chains, updateChartTouchstart }) => {
 		);
 	}, [user]);
 
-	const handleShowGraphsToggle = () => {
-		updateShowGraphs(!show_graphs);
-	};
-
 	const blockchain_address_group_params = {
 		database,
 		chains,
@@ -148,6 +155,8 @@ const Portfolio = ({ chains, updateChartTouchstart }) => {
 		token_filter,
 		chart_obj,
 		chart_obj_series,
+		sort_criteria,
+		asc_order,
 		updateChartObjSeries,
 	};
 
@@ -207,6 +216,33 @@ const Portfolio = ({ chains, updateChartTouchstart }) => {
 		}
 	}, [chart_obj]);
 
+	const toggleSort = (toggle_criteria) => {
+		if (sort_criteria === toggle_criteria) {
+			updateAscOrder(!asc_order);
+		} else {
+			if (toggle_criteria === 'contract_ticker_symbol') {
+				// only string value starts at ascending order
+				updateAscOrder(true);
+			} else {
+				// any other value starts at descending order
+				updateAscOrder(false);
+			}
+			updateSortCriteria(toggle_criteria);
+		}
+	};
+
+	const sortIconRender = (toggle_criteria) => {
+		if (sort_criteria !== toggle_criteria) {
+			return <FontAwesomeIcon icon={faSort} />;
+		} else {
+			if (asc_order) {
+				return <FontAwesomeIcon icon={faSortUp} />;
+			} else {
+				return <FontAwesomeIcon icon={faSortDown} />;
+			}
+		}
+	};
+
 	return (
 		<>
 			<ContentHeading>Portfolio</ContentHeading>
@@ -224,9 +260,76 @@ const Portfolio = ({ chains, updateChartTouchstart }) => {
 					handleChange={(e) => updateTokenFilter(e.target.value)}
 					type="text"
 				/>
-				{/* <Button onClick={handleShowGraphsToggle}>
-					{show_graphs ? 'Show' : 'Hide'} Graphs
-				</Button> */}
+				<div className="text-center text-gray-500">
+					Layout Understanding and Sorting
+				</div>
+				<div className="bg-green-600">
+					<div
+						className={`token flex justify-start items-center border-t-2 border-yellow-200`}
+					>
+						<div className="token-logo">
+							<img className="h-10" src={coin_fallback} />
+						</div>
+						<div className={`${token_col}`}>
+							<div
+								className={`${token_data_layout}`}
+								onClick={() =>
+									toggleSort('contract_ticker_symbol')
+								}
+							>
+								{sortIconRender('contract_ticker_symbol')}{' '}
+								&nbsp; Coin Name
+							</div>
+							<div
+								className={`${token_data_layout}`}
+								onClick={() => toggleSort('processed_balance')}
+							>
+								{sortIconRender('processed_balance')} &nbsp; Qty
+								of Coins
+							</div>
+						</div>
+						<div className={`${token_col}`}>
+							<div
+								className={`${token_data_layout}`}
+								onClick={() => toggleSort('token_price_today')}
+							>
+								{' '}
+								{sortIconRender('token_price_today')} &nbsp; One
+								Coin Value
+							</div>
+							<div
+								className={`${token_data_layout}`}
+								onClick={() =>
+									toggleSort('token_increased_value')
+								}
+							>
+								{sortIconRender('token_increased_value')} &nbsp;
+								24h &nbsp; <FontAwesomeIcon icon={faRecycle} />{' '}
+								&nbsp; One Coin Calue
+							</div>
+						</div>
+						<div className={`${token_col}`}>
+							<div
+								className={`${token_data_layout}`}
+								onClick={() => toggleSort('tokens_price_today')}
+							>
+								{sortIconRender('tokens_price_today')} &nbsp;
+								Coin Values
+							</div>
+							<div
+								className={`${token_data_layout}`}
+								onClick={() =>
+									toggleSort('dollar_increased_value')
+								}
+							>
+								{sortIconRender('dollar_increased_value')}{' '}
+								&nbsp; 24h &nbsp;{' '}
+								<FontAwesomeIcon icon={faRecycle} /> &nbsp; Coin
+								Values
+							</div>
+						</div>
+					</div>
+				</div>
 				<div className="">
 					{database.chain &&
 						Object.values(database.chain).map((chain) => (
@@ -313,10 +416,13 @@ const AddressGroup = ({
 	address,
 	tokens_map,
 	token_filter,
+	sort_criteria,
+	asc_order,
 	...other_params
 }) => {
 	const [collapsed, updateCollapsed] = useState(false);
 	const [historical_prices_map, updateHistoricalPricesMap] = useState({}); // contract-address => today / 1d => price
+	const [tokens_w_prices, updateTokensWPrices] = useState([]);
 
 	// get covalent data
 	useEffect(async () => {
@@ -353,12 +459,72 @@ const AddressGroup = ({
 		}
 	}, [tokens_map, address]);
 
+	useEffect(() => {
+		const temp_tokens_w_prices = [];
+
+		if (tokens_map[address.id]) {
+			Object.values(tokens_map[address.id]).forEach((token) => {
+				const { processed_balance } = token;
+				const today =
+					historical_prices_map[token.contract_address]?.['today'];
+				const yesterday =
+					historical_prices_map[token.contract_address]?.['1d'];
+
+				let token_increased_percent = null;
+				if (today != null && yesterday != null) {
+					if (yesterday === 0) {
+						token_increased_percent = null;
+					} else {
+						token_increased_percent =
+							(100 * (today - yesterday)) / yesterday;
+					}
+				}
+				let token_increased_value = null;
+				if (today != null && yesterday != null) {
+					token_increased_value = today - yesterday;
+				}
+
+				let dollar_increased_percent = null;
+				if (today != null && yesterday != null) {
+					const val_today = today * processed_balance;
+					const val_yesterday = yesterday * processed_balance;
+					if (val_yesterday === 0) {
+						dollar_increased_percent = null;
+					} else {
+						dollar_increased_percent =
+							(100 * (val_today - val_yesterday)) / val_yesterday;
+					}
+				}
+
+				let dollar_increased_value = null;
+				if (today != null && yesterday != null) {
+					dollar_increased_value =
+						today * processed_balance -
+						yesterday * processed_balance;
+				}
+
+				const temp_token = {
+					...token,
+					token_price_today: today,
+					tokens_price_today: today * processed_balance,
+					token_increased_percent,
+					token_increased_value,
+					dollar_increased_percent,
+					dollar_increased_value,
+				};
+
+				temp_tokens_w_prices.push(temp_token);
+			});
+
+			updateTokensWPrices(temp_tokens_w_prices);
+		}
+	}, [tokens_map, historical_prices_map]);
+
 	const toggleCollapsible = () => {
 		updateCollapsed(!collapsed);
 	};
 
 	const token_params = {
-		historical_prices_map,
 		chain,
 		...other_params,
 	};
@@ -381,25 +547,46 @@ const AddressGroup = ({
 				<div></div>
 			</div>
 			<div className={`p-2 ${collapsed && 'hidden'}`}>
-				{tokens_map &&
-					tokens_map[address.id] &&
-					Object.values(tokens_map[address.id])
-						.filter(
-							(token) =>
-								token.contract_name
-									.toLowerCase()
-									.includes(token_filter.toLowerCase()) ||
-								token.contract_ticker_symbol
-									.toLowerCase()
-									.includes(token_filter.toLowerCase())
-						)
-						.map((token) => (
-							<Token
-								key={token.contract_address}
-								token={token}
-								{...token_params}
-							/>
-						))}
+				{tokens_w_prices
+					.sort((a, b) => {
+						if (sort_criteria === 'contract_ticker_symbol') {
+							const new_a = a[sort_criteria]
+								? a[sort_criteria]
+								: '';
+							const new_b = b[sort_criteria]
+								? b[sort_criteria]
+								: '';
+
+							return asc_order
+								? new_a.localeCompare(new_b)
+								: new_b.localeCompare(new_a);
+						} else {
+							const new_a = a[sort_criteria]
+								? a[sort_criteria]
+								: 0;
+							const new_b = b[sort_criteria]
+								? b[sort_criteria]
+								: 0;
+
+							return asc_order ? new_a - new_b : new_b - new_a;
+						}
+					})
+					.filter(
+						(token) =>
+							token.contract_name
+								.toLowerCase()
+								.includes(token_filter.toLowerCase()) ||
+							token.contract_ticker_symbol
+								.toLowerCase()
+								.includes(token_filter.toLowerCase())
+					)
+					.map((token) => (
+						<Token
+							key={token.contract_address}
+							token={token}
+							{...token_params}
+						/>
+					))}
 			</div>
 		</div>
 	);
@@ -407,23 +594,24 @@ const AddressGroup = ({
 
 const Token = ({
 	token,
-	historical_prices_map,
 	chain,
 	chart_obj,
 	chart_obj_series,
 	updateChartObjSeries,
 }) => {
+	const {
+		contract_address,
+		logo_url,
+		contract_ticker_symbol,
+		processed_balance,
+		token_price_today,
+		tokens_price_today,
+		token_increased_percent,
+		token_increased_value,
+		dollar_increased_percent,
+		dollar_increased_value,
+	} = token;
 	const { enqueueSnackbar } = useSnackbar();
-	const [token_increased_percent, updateTokenIncreasedPercent] =
-		useState(null);
-	const [token_increased_value, updateTokenIncreasedValue] = useState(null);
-	const [dollar_increased_percent, updateDollarIncreasedPercent] =
-		useState(null);
-	const [dollar_increased_value, updateDollarIncreasedValue] = useState(null);
-
-	const token_col =
-		'token-col flex flex-col justify-center items-start flex-basis-0 flex-grow';
-	const token_data = 'token-data p-2 h-8 overflow-hidden';
 
 	useEffect(() => {
 		console.log({ token });
@@ -483,57 +671,13 @@ const Token = ({
 		}
 
 		console.log({ value });
-		return `LARGE`;
+		return `TOO LARGE`;
 	};
-
-	useEffect(() => {
-		const today = historical_prices_map[token.contract_address]?.['today'];
-		const yesterday = historical_prices_map[token.contract_address]?.['1d'];
-
-		let temp_token_increased_percent = null;
-		if (today != null && yesterday != null) {
-			if (yesterday === 0) {
-				temp_token_increased_percent = null;
-			} else {
-				temp_token_increased_percent =
-					(100 * (today - yesterday)) / yesterday;
-			}
-		}
-		updateTokenIncreasedPercent(temp_token_increased_percent);
-
-		let temp_token_increased_value = null;
-		if (today != null && yesterday != null) {
-			temp_token_increased_value = today - yesterday;
-		}
-		updateTokenIncreasedValue(temp_token_increased_value);
-
-		let temp_dollar_increased_percent = null;
-		if (today != null && yesterday != null) {
-			const val_today = today * token.processed_balance;
-			const val_yesterday = yesterday * token.processed_balance;
-			if (val_yesterday === 0) {
-				temp_dollar_increased_percent = null;
-			} else {
-				temp_dollar_increased_percent =
-					(100 * (val_today - val_yesterday)) / val_yesterday;
-			}
-		}
-		updateDollarIncreasedPercent(temp_dollar_increased_percent);
-
-		let temp_dollar_increased_value = null;
-		if (today != null && yesterday != null) {
-			temp_dollar_increased_value =
-				today * token.processed_balance -
-				yesterday * token.processed_balance;
-		}
-		updateDollarIncreasedValue(temp_dollar_increased_value);
-	}, [token, historical_prices_map]);
 
 	const toggleSeriesInChart = async () => {
 		console.log({ token });
 		let found_in_series = chart_obj_series.findIndex(
-			(one_series) =>
-				one_series.contract_address === token.contract_address
+			(one_series) => one_series.contract_address === contract_address
 		);
 
 		if (found_in_series === -1) {
@@ -543,7 +687,7 @@ const Token = ({
 			from.setMonth(from.getMonth() - 12);
 			try {
 				const { data, status } = await covalentAPI.get(
-					`/pricing/historical_by_addresses_v2/${chain.covalent_chain_id}/${currency}/${token.contract_address}/`,
+					`/pricing/historical_by_addresses_v2/${chain.covalent_chain_id}/${currency}/${contract_address}/`,
 					{
 						params: {
 							to: to.toISOString().split('T')[0],
@@ -580,16 +724,12 @@ const Token = ({
 						lineWidth: 2,
 					});
 
-					console.log({ prices });
-					console.log({ avail_color });
-					console.log(token.contract_address);
-
 					new_series.setData(prices);
 
 					updateChartObjSeries([
 						...chart_obj_series,
 						{
-							contract_address: token.contract_address,
+							contract_address,
 							color: avail_color,
 							series: new_series,
 						},
@@ -623,8 +763,7 @@ const Token = ({
 
 	const backgroundColorOnClick = () => {
 		const found = chart_obj_series.findIndex(
-			(one_series) =>
-				one_series.contract_address === token.contract_address
+			(one_series) => one_series.contract_address === contract_address
 		);
 
 		if (found !== -1) {
@@ -653,7 +792,7 @@ const Token = ({
 			<div className="token-logo">
 				<img
 					className="h-10"
-					src={token.logo_url}
+					src={logo_url}
 					onError={(e) => {
 						e.target.onerror = null;
 						e.target.src = coin_fallback;
@@ -661,18 +800,14 @@ const Token = ({
 				/>
 			</div>
 			<div className={`${token_col}`}>
+				<div className={`${token_data}`}>{contract_ticker_symbol}</div>
 				<div className={`${token_data}`}>
-					{token.contract_ticker_symbol}
-				</div>
-				<div className={`${token_data}`}>
-					{valueLengthPreProcessing(token.processed_balance)}
+					{valueLengthPreProcessing(processed_balance)}
 				</div>
 			</div>
 			<div className={`${token_col}`}>
 				<div className={`${token_data}`}>
-					{valueLengthPreProcessing(
-						historical_prices_map[token.contract_address]?.['today']
-					)}
+					{valueLengthPreProcessing(token_price_today)}
 				</div>
 				<div
 					className={`${token_data} ${
@@ -690,11 +825,7 @@ const Token = ({
 			</div>
 			<div className={`${token_col}`}>
 				<div className={`${token_data}`}>
-					{valueLengthPreProcessing(
-						historical_prices_map[token.contract_address]?.[
-							'today'
-						] * token.processed_balance
-					)}
+					{valueLengthPreProcessing(tokens_price_today)}
 				</div>
 				<div
 					className={`${token_data} ${
