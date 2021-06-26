@@ -152,13 +152,12 @@ const Portfolio = ({ chains, updateChartTouchstart }) => {
 				updateChartTouchstart(e.changedTouches[0].screenX);
 			};
 			chart_ref.current.addEventListener('touchstart', handleTouchstart);
-
-			return () => {
-				chart_ref.current.removeEventListener(
-					'touchstart',
-					handleTouchstart
-				);
-			};
+			// return () => {
+			// 	chart_ref.current.removeEventListener(
+			// 		'touchstart',
+			// 		handleTouchstart
+			// 	);
+			// };
 		}
 	}, [chart_ref]);
 
@@ -186,7 +185,12 @@ const Portfolio = ({ chains, updateChartTouchstart }) => {
 		<>
 			<ContentHeading>Portfolio</ContentHeading>
 			<ContentBody>
-				<div ref={chart_ref}></div>
+				<div
+					className={`${
+						chart_obj_series.length === 0 ? 'hidden' : ''
+					}`}
+					ref={chart_ref}
+				></div>
 				<Input
 					name="filter"
 					label="Filter"
@@ -310,7 +314,7 @@ const AddressGroup = ({
 			);
 
 			const temp_historical_prices_map = {};
-
+			console.log(temp_historical_prices_map);
 			data.data.forEach((token_prices) => {
 				temp_historical_prices_map[token_prices.contract_address] = {
 					today: token_prices?.prices?.[0]?.price,
@@ -519,61 +523,63 @@ const Token = ({
 						},
 					}
 				);
+
+				console.log({ data });
+				const prices = data.data[0].prices
+					.filter(
+						(price) => price.date != null || price.price != null
+					)
+					.map((price) => ({
+						time: price.date,
+						value: price.price.toFixed(0),
+					}));
+				const avail_color = chart_color_arr.find(
+					(color) =>
+						!chart_obj_series
+							.map((one_series) => one_series.color)
+							.includes(color)
+				);
+
+				if (avail_color) {
+					!chart_obj_series
+						.map((one_series) => one_series.color)
+						.includes(avail_color);
+
+					const new_series = chart_obj.addAreaSeries({
+						topColor: `${avail_color}00`,
+						bottomColor: `${avail_color}00`,
+						lineColor: `${avail_color}`,
+						lineWidth: 2,
+					});
+
+					console.log({ prices });
+					console.log({ avail_color });
+					console.log(token.contract_address);
+
+					new_series.setData(prices);
+
+					updateChartObjSeries([
+						...chart_obj_series,
+						{
+							contract_address: token.contract_address,
+							color: avail_color,
+							series: new_series,
+						},
+					]);
+
+					chart_obj.timeScale().fitContent();
+				} else {
+					enqueueSnackbar(
+						`Can only add ${chart_color_arr.length} tokens in chart`,
+						{
+							variant: 'error',
+						}
+					);
+				}
 			} catch (error) {
 				enqueueSnackbar(`Something went wrong`, {
 					variant: 'error',
 				});
-			}
-
-			console.log({ data });
-			const prices = data.data[0].prices
-				.filter((price) => price.date != null || price.price != null)
-				.map((price) => ({
-					time: price.date,
-					value: price.price.toFixed(0),
-				}));
-			const avail_color = chart_color_arr.find(
-				(color) =>
-					!chart_obj_series
-						.map((one_series) => one_series.color)
-						.includes(color)
-			);
-
-			if (avail_color) {
-				!chart_obj_series
-					.map((one_series) => one_series.color)
-					.includes(avail_color);
-
-				const new_series = chart_obj.addAreaSeries({
-					topColor: `${avail_color}00`,
-					bottomColor: `${avail_color}00`,
-					lineColor: `${avail_color}`,
-					lineWidth: 2,
-				});
-
-				console.log({ prices });
-				console.log({ avail_color });
-				console.log(token.contract_address);
-
-				new_series.setData(prices);
-
-				updateChartObjSeries([
-					...chart_obj_series,
-					{
-						contract_address: token.contract_address,
-						color: avail_color,
-						series: new_series,
-					},
-				]);
-
-				chart_obj.timeScale().fitContent();
-			} else {
-				enqueueSnackbar(
-					`Can only add ${chart_color_arr.length} tokens in chart`,
-					{
-						variant: 'error',
-					}
-				);
 			}
 		} else {
 			chart_obj.removeSeries(chart_obj_series[found_in_series].series);
