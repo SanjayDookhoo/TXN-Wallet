@@ -332,13 +332,23 @@ const Portfolio = ({ chains, updateChartTouchstart }) => {
 				</div>
 				<div className="">
 					{database.chain &&
-						Object.values(database.chain).map((chain) => (
-							<BlockchainAddressGroup
-								key={chain.id}
-								chain={chain}
-								{...blockchain_address_group_params}
-							/>
-						))}
+						Object.values(database.chain)
+							.sort((a, b) =>
+								chains_map[a.covalent_chain_id]?.label
+									.toString()
+									.localeCompare(
+										chains_map[
+											b.covalent_chain_id
+										]?.label.toString()
+									)
+							)
+							.map((chain) => (
+								<BlockchainAddressGroup
+									key={chain.id}
+									chain={chain}
+									{...blockchain_address_group_params}
+								/>
+							))}
 				</div>
 			</ContentBody>
 		</>
