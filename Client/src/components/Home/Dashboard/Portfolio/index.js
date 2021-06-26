@@ -29,6 +29,8 @@ const token_col =
 	'token-col flex flex-col justify-center items-start flex-basis-0 flex-grow';
 const token_data =
 	'token-data p-2 h-8 overflow-hidden flex justify-start items-center';
+const token_data_group =
+	'token-data h-8 overflow-hidden flex justify-start items-center w-full';
 const token_data_layout = `${token_data} waves-effect cursor-pointer w-full rounded-lg`;
 
 const Portfolio = ({ chains, updateChartTouchstart }) => {
@@ -297,15 +299,29 @@ const Portfolio = ({ chains, updateChartTouchstart }) => {
 								{sortIconRender('token_price_today')} &nbsp; One
 								Coin Value
 							</div>
-							<div
-								className={`${token_data_layout}`}
-								onClick={() =>
-									toggleSort('token_increased_value')
-								}
-							>
-								{sortIconRender('token_increased_value')} &nbsp;
-								24h &nbsp; <FontAwesomeIcon icon={faRecycle} />{' '}
-								&nbsp; One Coin Calue
+
+							<div className={`${token_data_group}`}>
+								<div
+									className={`${token_data_layout} w-1/2`}
+									onClick={() =>
+										toggleSort('token_increased_value')
+									}
+								>
+									{sortIconRender('token_increased_value')}{' '}
+									&nbsp; 24h &nbsp;{' '}
+									<FontAwesomeIcon icon={faRecycle} />
+								</div>
+								<div
+									className={`${token_data_layout} w-1/2`}
+									onClick={() =>
+										toggleSort('token_increased_percent')
+									}
+								>
+									{sortIconRender('token_increased_percent')}{' '}
+									&nbsp; 24h &nbsp;{' '}
+									<FontAwesomeIcon icon={faRecycle} /> &nbsp;
+									%
+								</div>
 							</div>
 						</div>
 						<div className={`${token_col}`}>
@@ -316,16 +332,28 @@ const Portfolio = ({ chains, updateChartTouchstart }) => {
 								{sortIconRender('tokens_price_today')} &nbsp;
 								Coin Values
 							</div>
-							<div
-								className={`${token_data_layout}`}
-								onClick={() =>
-									toggleSort('dollar_increased_value')
-								}
-							>
-								{sortIconRender('dollar_increased_value')}{' '}
-								&nbsp; 24h &nbsp;{' '}
-								<FontAwesomeIcon icon={faRecycle} /> &nbsp; Coin
-								Values
+							<div className={`${token_data_group}`}>
+								<div
+									className={`${token_data_layout} w-1/2`}
+									onClick={() =>
+										toggleSort('dollar_increased_value')
+									}
+								>
+									{sortIconRender('dollar_increased_value')}{' '}
+									&nbsp; 24h &nbsp;{' '}
+									<FontAwesomeIcon icon={faRecycle} />
+								</div>
+								<div
+									className={`${token_data_layout} w-1/2`}
+									onClick={() =>
+										toggleSort('token_increased_percent')
+									}
+								>
+									{sortIconRender('token_increased_percent')}{' '}
+									&nbsp; 24h &nbsp;{' '}
+									<FontAwesomeIcon icon={faRecycle} /> &nbsp;
+									%
+								</div>
 							</div>
 						</div>
 					</div>
