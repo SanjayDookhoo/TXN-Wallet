@@ -15,10 +15,8 @@ import MainContainer from '../MainContainer';
 import NavButton from '../NavButton';
 import { updateApp } from '../../../ducks/actions/app';
 
-import Analytics from './Analytics';
 import History from './History';
 import Portfolio from './Portfolio';
-import Notifications from './Notifications';
 import Settings from './Settings';
 
 import covalentAPI from '../../../ducks/api/covalent';
@@ -178,20 +176,6 @@ const Dashboard = () => {
 					updateChartTouchstart={updateChartTouchstart}
 				/>
 			),
-		},
-		// {
-		// 	name: 'analytics',
-		// 	condition: (app_dashboard_item) =>
-		// 		app_dashboard_item === 'analytics',
-		// 	icon: faChartLine,
-		// 	component: <Analytics {...dashboard_item_params} />,
-		// },
-		{
-			name: 'notifications',
-			condition: (app_dashboard_item) =>
-				app_dashboard_item === 'notifications',
-			icon: faExclamationTriangle,
-			component: <Notifications {...dashboard_item_params} />,
 		},
 		{
 			name: 'history',
