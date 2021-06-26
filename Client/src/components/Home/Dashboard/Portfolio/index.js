@@ -127,8 +127,15 @@ const Portfolio = ({ chains, updateChartTouchstart }) => {
 
 	useEffect(() => {
 		if (chart_ref && chart_ref.current) {
+			let width = window.innerWidth;
+			if (width < 780) {
+				width = 350;
+			} else {
+				width = width - 260;
+			}
+
 			const chart = createChart(chart_ref.current, {
-				width: 600,
+				width,
 				height: 300,
 				rightPriceScale: {
 					scaleMargins: {
@@ -154,6 +161,26 @@ const Portfolio = ({ chains, updateChartTouchstart }) => {
 			};
 		}
 	}, [chart_ref]);
+
+	useEffect(() => {
+		if (chart_obj) {
+			const handleResize = () => {
+				let width = window.innerWidth;
+				if (width < 780) {
+					width = 350;
+				} else {
+					width = width - 260;
+				}
+				chart_obj.applyOptions({ width });
+			};
+
+			window.addEventListener('resize', handleResize);
+
+			return () => {
+				window.removeEventListener('resize', handleResize);
+			};
+		}
+	}, [chart_obj]);
 
 	return (
 		<>
