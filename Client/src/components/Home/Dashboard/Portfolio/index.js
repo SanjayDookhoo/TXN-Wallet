@@ -383,6 +383,7 @@ const Token = ({
 	chart_obj_series,
 	updateChartObjSeries,
 }) => {
+	const { enqueueSnackbar } = useSnackbar();
 	const [token_increased_percent, updateTokenIncreasedPercent] =
 		useState(null);
 	const [token_increased_value, updateTokenIncreasedValue] = useState(null);
@@ -508,19 +509,25 @@ const Token = ({
 			const to = new Date();
 			const from = new Date();
 			from.setMonth(from.getMonth() - 12);
-			const { data, status } = await covalentAPI.get(
-				`/pricing/historical_by_addresses_v2/${chain.covalent_chain_id}/${currency}/${token.contract_address}/`,
-				{
-					params: {
-						to: to.toISOString().split('T')[0],
-						from: from.toISOString().split('T')[0],
-					},
-				}
-			);
+			try {
+				const { data, status } = await covalentAPI.get(
+					`/pricing/historical_by_addresses_v2/${chain.covalent_chain_id}/${currency}/${token.contract_address}/`,
+					{
+						params: {
+							to: to.toISOString().split('T')[0],
+							from: from.toISOString().split('T')[0],
+						},
+					}
+				);
+			} catch (error) {
+				enqueueSnackbar(`Something went wrong`, {
+					variant: 'error',
+				});
+			}
 
 			console.log({ data });
 			const prices = data.data[0].prices
-				.filter((price) => price.date != null)
+				.filter((price) => price.date != null || price.price != null)
 				.map((price) => ({
 					time: price.date,
 					value: price.price.toFixed(0),
@@ -560,6 +567,13 @@ const Token = ({
 				]);
 
 				chart_obj.timeScale().fitContent();
+			} else {
+				enqueueSnackbar(
+					`Can only add ${chart_color_arr.length} tokens in chart`,
+					{
+						variant: 'error',
+					}
+				);
 			}
 		} else {
 			chart_obj.removeSeries(chart_obj_series[found_in_series].series);
