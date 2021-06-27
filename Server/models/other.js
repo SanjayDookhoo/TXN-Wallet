@@ -1,5 +1,5 @@
 import sequelize from 'sequelize';
-const { STRING, INTEGER, FLOAT, DATE } = sequelize.DataTypes;
+const { STRING, INTEGER, FLOAT, DATE, BLOB } = sequelize.DataTypes;
 
 export const base_models = {
 	chain: {
@@ -16,6 +16,47 @@ export const base_models = {
 		},
 		_foreign_key: {
 			table: 'chain',
+			on_delete: 'cascade',
+		},
+	},
+	transaction: {
+		category: {
+			type: 'string',
+		},
+		notes: {
+			type: 'string',
+		},
+		currency: {
+			type: 'string',
+		},
+		transaction_hash: {
+			type: 'string',
+		},
+	},
+	item: {
+		name: {
+			type: 'string',
+		},
+		price: {
+			type: 'string',
+		},
+		_foreign_key: {
+			table: 'transaction',
+			on_delete: 'cascade',
+		},
+	},
+	image: {
+		name: {
+			type: 'string',
+		},
+		image_type: {
+			type: 'string',
+		},
+		blob: {
+			type: 'blob',
+		},
+		_foreign_key: {
+			table: 'transaction',
 			on_delete: 'cascade',
 		},
 	},
@@ -45,6 +86,9 @@ const other = (sequelize_session) => {
 					break;
 				case 'date':
 					temp_table_fields[table_field].type = DATE;
+					break;
+				case 'blob':
+					temp_table_fields[table_field].type = BLOB('medium');
 					break;
 				default:
 					break;

@@ -32,9 +32,9 @@ const Token = ({
 	} = token;
 	const { enqueueSnackbar } = useSnackbar();
 
-	useEffect(() => {
-		console.log({ token });
-	}, [token]);
+	// useEffect(() => {
+	// 	console.log({ token });
+	// }, [token]);
 
 	const valueLengthPreProcessing = (value) => {
 		if (value == null || isNaN(value)) return '';

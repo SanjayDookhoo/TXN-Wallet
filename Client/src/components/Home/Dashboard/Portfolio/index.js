@@ -49,9 +49,9 @@ const Portfolio = ({ chains, updateChartTouchstart }) => {
 	);
 	const [asc_order, updateAscOrder] = useState(true);
 
-	useEffect(() => {
-		console.log({ tokens_map });
-	}, [tokens_map]);
+	// useEffect(() => {
+	// 	console.log({ tokens_map });
+	// }, [tokens_map]);
 
 	useEffect(() => {
 		console.log({ database });

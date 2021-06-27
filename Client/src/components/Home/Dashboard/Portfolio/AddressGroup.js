@@ -25,7 +25,7 @@ const AddressGroup = ({
 			const contract_addresses = Object.keys(tokens_map[address.id]).join(
 				','
 			);
-			console.log({ contract_addresses });
+			// console.log({ contract_addresses });
 
 			const { data, status } = await covalentAPI.get(
 				`/pricing/historical_by_addresses_v2/${chain.covalent_chain_id}/${currency}/${contract_addresses}/`,
@@ -40,7 +40,7 @@ const AddressGroup = ({
 			);
 
 			const temp_historical_prices_map = {};
-			console.log(temp_historical_prices_map);
+			// console.log(temp_historical_prices_map);
 			data.data.forEach((token_prices) => {
 				temp_historical_prices_map[token_prices.contract_address] = {
 					today: token_prices?.prices?.[0]?.price,
@@ -48,7 +48,7 @@ const AddressGroup = ({
 				};
 			});
 
-			console.log({ temp_historical_prices_map });
+			// console.log({ temp_historical_prices_map });
 			updateHistoricalPricesMap(temp_historical_prices_map);
 		}
 	}, [tokens_map, address]);
