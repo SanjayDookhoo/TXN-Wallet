@@ -6,12 +6,20 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 
 const modal_id = 'loading-modal';
+let minimum_time = 500;
+let minimum_time_up = false;
 
 export const LoadingModal = () => {
 	return <div id={modal_id}></div>;
 };
 
 export const createLoadingModal = () => {
+	// ensures that the loading modal doesnt flicker if it loads too fast with a minimum load time
+	minimum_time_up = false;
+	setTimeout(() => {
+		minimum_time_up = true;
+	}, minimum_time);
+
 	ReactDOM.render(
 		<Provider context={ReactReduxContext} store={store}>
 			<LoadingModalRender />
@@ -21,7 +29,14 @@ export const createLoadingModal = () => {
 };
 
 export const removeLoadingModal = () => {
-	ReactDOM.unmountComponentAtNode(document.getElementById(modal_id));
+	if (minimum_time_up) {
+		ReactDOM.unmountComponentAtNode(document.getElementById(modal_id));
+	} else {
+		// if remove requested too quickly wait at least the length of time the modal supposed to remain up
+		setTimeout(() => {
+			ReactDOM.unmountComponentAtNode(document.getElementById(modal_id));
+		}, minimum_time);
+	}
 };
 
 const LoadingModalRender = () => {
