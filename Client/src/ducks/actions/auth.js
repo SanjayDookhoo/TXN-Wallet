@@ -9,7 +9,7 @@ export const signIn =
 
 			dispatch({ type: actionType.AUTH, payload: data });
 
-			if (onSuccess) onSuccess();
+			if (onSuccess) onSuccess(data);
 		} catch (error) {
 			console.log(error);
 			if (onFailure) onFailure(error);
@@ -24,7 +24,7 @@ export const signUp =
 
 			dispatch({ type: actionType.AUTH, payload: data });
 
-			if (onSuccess) onSuccess();
+			if (onSuccess) onSuccess(data);
 		} catch (error) {
 			console.log(error);
 			if (onFailure) onFailure(error);

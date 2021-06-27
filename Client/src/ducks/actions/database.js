@@ -17,7 +17,7 @@ export const databaseGet =
 				payload: { table_name, req_params, res: data },
 			});
 
-			if (onSuccess) onSuccess();
+			if (onSuccess) onSuccess(data);
 		} catch (error) {
 			console.log(error);
 			if (onFailure) onFailure(error);
@@ -38,7 +38,7 @@ export const databasePost =
 				payload: { table_name, req_body, res: data },
 			});
 
-			if (onSuccess) onSuccess();
+			if (onSuccess) onSuccess(data);
 		} catch (error) {
 			console.log(error);
 			if (onFailure) onFailure(error);
@@ -59,7 +59,7 @@ export const databasePatch =
 				payload: { table_name, req_body, res: data },
 			});
 
-			if (onSuccess) onSuccess();
+			if (onSuccess) onSuccess(data);
 		} catch (error) {
 			console.log(error);
 			if (onFailure) onFailure(error);
@@ -80,7 +80,7 @@ export const databaseDelete =
 				payload: { table_name, req_body, res: data },
 			});
 
-			if (onSuccess) onSuccess();
+			if (onSuccess) onSuccess(data);
 		} catch (error) {
 			console.log(error);
 			if (onFailure) onFailure(error);
