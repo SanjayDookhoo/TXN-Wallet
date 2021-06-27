@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus, faMinus } from '@fortawesome/free-solid-svg-icons';
 import covalentAPI from '../../../../ducks/api/covalent';
+import Transaction from './Transaction';
 
 const AddressGroup = ({
 	database,
@@ -13,7 +14,7 @@ const AddressGroup = ({
 	...other_params
 }) => {
 	const [collapsed, updateCollapsed] = useState(false);
-	const [txn_history, updateTxnHistory] = useState([]);
+	const [transactions, updateTransactions] = useState([]);
 
 	// get covalent data
 	useEffect(async () => {
@@ -29,7 +30,7 @@ const AddressGroup = ({
 
 			console.log(data.data.items);
 
-			updateTxnHistory(
+			updateTransactions(
 				data.data.items.filter((txn) => txn.successful === true)
 			);
 		}
@@ -37,6 +38,10 @@ const AddressGroup = ({
 
 	const toggleCollapsible = () => {
 		updateCollapsed(!collapsed);
+	};
+
+	const transaction_params = {
+		address,
 	};
 
 	return (
@@ -56,7 +61,15 @@ const AddressGroup = ({
 				</div>
 				<div></div>
 			</div>
-			<div className={`p-2 ${collapsed && 'hidden'}`}>test</div>
+			<div className={`p-2 ${collapsed && 'hidden'}`}>
+				{transactions.map((transaction) => (
+					<Transaction
+						key={transaction.tx_hash}
+						transaction={transaction}
+						{...transaction_params}
+					/>
+				))}
+			</div>
 		</div>
 	);
 };

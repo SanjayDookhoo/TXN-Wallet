@@ -29,6 +29,7 @@ import {
 	token_data_layout,
 } from './utils.js';
 import BlockchainAddressGroup from './BlockchainAddressGroup';
+import { adjustDecimalPoint } from '../utils';
 
 const Portfolio = ({ chains, updateChartTouchstart }) => {
 	const dispatch = useDispatch();
@@ -96,25 +97,10 @@ const Portfolio = ({ chains, updateChartTouchstart }) => {
 				const token_map = Object.fromEntries(
 					promise_res.map((promise_token) => {
 						let { balance, contract_decimals } = promise_token;
-						let processed_balance;
-
-						if (balance.length > contract_decimals) {
-							const whole = balance.slice(
-								0,
-								balance.length - contract_decimals
-							);
-							const integral = balance.slice(
-								balance.length - contract_decimals
-							);
-							processed_balance = whole + '.' + integral;
-						} else {
-							processed_balance =
-								'.' +
-								new Array(contract_decimals - balance.length)
-									.fill(0)
-									.join('') +
-								balance;
-						}
+						const processed_balance = adjustDecimalPoint(
+							balance,
+							contract_decimals
+						);
 
 						return [
 							promise_token.contract_address,
