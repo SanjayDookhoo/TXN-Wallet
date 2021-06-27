@@ -234,39 +234,22 @@ const Portfolio = ({ chains, updateChartTouchstart }) => {
 
 	const changeBreadcrumbView = (new_breadcrumb_view) => {
 		let pathname = window.location.pathname;
-		pathname =
-			pathname.slice(-1) === '/'
-				? pathname.slice(0, pathname.length - 1)
-				: pathname;
-
-		if (
-			(pathname === '' || pathname === '/active') &&
-			new_breadcrumb_view === 'chart'
-		) {
-			console.log('test');
-			history.push(pathname + '/chart');
+		if (pathname === '/' && new_breadcrumb_view === 'chart') {
+			history.push('/chart');
 		}
 
-		if (
-			(pathname === '/chart' || pathname === '/active/chart') &&
-			new_breadcrumb_view === 'home'
-		) {
+		if (pathname === '/chart' && new_breadcrumb_view === 'home') {
 			history.goBack();
 		}
 	};
 
 	useEffect(() => {
 		let pathname = window.location.pathname;
-		pathname =
-			pathname.slice(-1) === '/'
-				? pathname.slice(0, pathname.length - 1)
-				: pathname;
-
-		if (pathname === '' || pathname === '/active') {
+		if (pathname === '/') {
 			updateBreadcrumbView('home');
 		}
 
-		if (pathname === '/chart' || pathname === '/active/chart') {
+		if (pathname === '/chart') {
 			updateBreadcrumbView('chart');
 		}
 	}, [window.location.pathname]);

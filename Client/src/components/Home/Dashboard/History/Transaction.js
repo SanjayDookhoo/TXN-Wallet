@@ -96,12 +96,7 @@ const Transaction = ({
 	const handleOnclick = () => {
 		updateTransactionSelected(transaction.tx_hash);
 
-		let pathname = window.location.pathname;
-		pathname =
-			pathname.slice(-1) === '/'
-				? pathname.slice(0, pathname.length - 1)
-				: pathname;
-		history.push(pathname + '/transaction_notes');
+		history.push('/transaction_notes');
 	};
 
 	return (

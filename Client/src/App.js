@@ -48,7 +48,7 @@ const CustomRoute = ({
 	const app = useSelector((state) => state.app);
 	const dispatch = useDispatch();
 	const history = useHistory();
-	const valid_paths = ['', '/chart', '/transaction_notes'];
+	const valid_paths = ['/', '/chart', '/transaction_notes'];
 	const [valid_path, updateValidPath] = useState(false);
 
 	useEffect(() => {
@@ -65,11 +65,6 @@ const CustomRoute = ({
 
 	useEffect(() => {
 		let pathname = other_params.location.pathname;
-		pathname =
-			pathname.slice(-1) === '/'
-				? pathname.slice(0, pathname.length - 1)
-				: pathname;
-
 		if (valid_paths.includes(pathname)) {
 			updateValidPath(true);
 		} else {

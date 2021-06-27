@@ -54,7 +54,7 @@ const LogoButton = () => {
 	const history = useHistory();
 
 	const handleLogoButtonClick = () => {
-		if (history.location.pathname === '/active') {
+		if (history.location.pathname !== '/') {
 			history.goBack();
 		}
 	};

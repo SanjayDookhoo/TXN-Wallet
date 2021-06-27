@@ -64,22 +64,13 @@ const History = ({ chains }) => {
 
 	const changeBreadcrumbView = (new_breadcrumb_view) => {
 		let pathname = window.location.pathname;
-		pathname =
-			pathname.slice(-1) === '/'
-				? pathname.slice(0, pathname.length - 1)
-				: pathname;
 
-		if (
-			(pathname === '' || pathname === '/active') &&
-			new_breadcrumb_view === 'transaction_notes'
-		) {
-			console.log('test');
-			history.push(pathname + '/transaction_notes');
+		if (pathname === '/' && new_breadcrumb_view === 'transaction_notes') {
+			history.push('/transaction_notes');
 		}
 
 		if (
-			(pathname === '/transaction_notes' ||
-				pathname === '/active/transaction_notes') &&
+			pathname === '/transaction_notes' &&
 			new_breadcrumb_view === 'home'
 		) {
 			history.goBack();
@@ -88,19 +79,11 @@ const History = ({ chains }) => {
 
 	useEffect(() => {
 		let pathname = window.location.pathname;
-		pathname =
-			pathname.slice(-1) === '/'
-				? pathname.slice(0, pathname.length - 1)
-				: pathname;
-
-		if (pathname === '' || pathname === '/active') {
+		if (pathname === '/') {
 			updateBreadcrumbView('home');
 		}
 
-		if (
-			pathname === '/transaction_notes' ||
-			pathname === '/active/transaction_notes'
-		) {
+		if (pathname === '/transaction_notes') {
 			updateBreadcrumbView('transaction_notes');
 		}
 	}, [window.location.pathname]);
