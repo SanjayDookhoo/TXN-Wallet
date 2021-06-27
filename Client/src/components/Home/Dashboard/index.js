@@ -20,7 +20,6 @@ import Portfolio from './Portfolio';
 import Settings from './Settings';
 
 import covalentAPI from '../../../ducks/api/covalent';
-import { DeleteModal } from '../DeleteModal';
 
 const Dashboard = () => {
 	const dispatch = useDispatch();
@@ -219,7 +218,6 @@ const Dashboard = () => {
 					</>
 				}
 			/>
-			<DeleteModal />
 		</>
 	);
 };

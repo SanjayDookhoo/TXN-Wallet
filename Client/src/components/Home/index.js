@@ -4,6 +4,8 @@ import decode from 'jwt-decode';
 
 import Auth from './Auth';
 import Dashboard from './Dashboard';
+import { DeleteModal } from './DeleteModal';
+import { LoadingModal } from './LoadingModal';
 
 const Home = () => {
 	const auth = useSelector((state) => state.auth);
@@ -28,7 +30,13 @@ const Home = () => {
 		}
 	}, [app, auth]);
 
-	return <>{app.loaded && <>{signed_in ? <Dashboard /> : <Auth />}</>}</>;
+	return (
+		<>
+			{app.loaded && <>{signed_in ? <Dashboard /> : <Auth />}</>}
+			<DeleteModal />
+			<LoadingModal />
+		</>
+	);
 };
 
 export default Home;
