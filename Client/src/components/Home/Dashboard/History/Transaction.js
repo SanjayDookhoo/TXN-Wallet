@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus, faMinus } from '@fortawesome/free-solid-svg-icons';
 import covalentAPI from '../../../../ducks/api/covalent';
 import { adjustDecimalPoint, valueLengthPreProcessing } from '../utils';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { updateApp } from '../../../../ducks/actions/app';
 import { useHistory } from 'react-router';
 
@@ -15,6 +15,7 @@ const Transaction = ({
 }) => {
 	const dispatch = useDispatch();
 	const history = useHistory();
+	const database = useSelector((state) => state.database);
 	const [transaction_details, updateTransactionDetails] = useState({});
 	const [found, updateFound] = useState(false);
 
@@ -36,7 +37,7 @@ const Transaction = ({
 		// console.log({ found });
 		updateFound(found ? true : false);
 
-		if (found) {
+		if (found && database.transaction) {
 			const { decoded, sender_contract_decimals } = found;
 			let param_search;
 			let value;
@@ -85,13 +86,22 @@ const Transaction = ({
 				transaction.block_signed_at
 			).toLocaleString();
 
+			const transaction_notes_found = Object.values(
+				database.transaction
+			).find(
+				(database_transcation) =>
+					database_transcation.transaction_hash ===
+					transaction.tx_hash
+			);
+
 			updateTransactionDetails({
+				category: transaction_notes_found?.category,
 				type,
 				value: new_value,
 				timestamp,
 			});
 		}
-	}, [transaction]);
+	}, [transaction, database]);
 
 	const handleOnclick = () => {
 		updateTransactionSelected(transaction.tx_hash);
@@ -106,7 +116,7 @@ const Transaction = ({
 					className="transaction flex justify-center items-center waves-effect cursor-pointer p-2"
 					onClick={handleOnclick}
 				>
-					<div className="w-1/4"></div>
+					<div className="w-1/4">{transaction_details.category}</div>
 					<div className="w-1/4">{transaction_details.type}</div>
 					<div className="w-1/4">{transaction_details.value}</div>
 					<div className="w-1/4">{transaction_details.timestamp}</div>

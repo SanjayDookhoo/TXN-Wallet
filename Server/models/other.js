@@ -26,9 +26,6 @@ export const base_models = {
 		notes: {
 			type: 'string',
 		},
-		currency: {
-			type: 'string',
-		},
 		transaction_hash: {
 			type: 'string',
 		},

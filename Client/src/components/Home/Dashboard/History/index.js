@@ -15,6 +15,12 @@ import BlockchainAddressGroup from './BlockchainAddressGroup';
 import { Breadcrumbs, Fab } from '@material-ui/core';
 import { useHistory } from 'react-router';
 import TransactionNotes from './TransactionNotes';
+import {
+	databaseGet,
+	databasePost,
+	databaseDelete,
+	databasePatch,
+} from '../../../../ducks/actions/database';
 
 const History = ({ chains }) => {
 	const dispatch = useDispatch();
@@ -29,6 +35,17 @@ const History = ({ chains }) => {
 	const [to_date, updateToDate] = useState('');
 	const [breadcrumb_view, updateBreadcrumbView] = useState('home');
 	const [transaction_selected, updateTransactionSelected] = useState(null);
+
+	useEffect(() => {
+		dispatch(
+			databaseGet({
+				table_name: 'transaction',
+				req_params: {
+					created_by_user: user?.result?.id,
+				},
+			})
+		);
+	}, [user]);
 
 	useEffect(() => {
 		let date = new Date();

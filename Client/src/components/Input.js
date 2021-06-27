@@ -13,6 +13,8 @@ const Input = ({
 	type,
 	handleShowPassword,
 	value,
+	required,
+	...other_params
 }) => (
 	<Grid item xs={12} sm={half ? 6 : 12}>
 		<div className="py-4">
@@ -20,7 +22,7 @@ const Input = ({
 				name={name}
 				onChange={handleChange}
 				variant="outlined"
-				required
+				required={required}
 				fullWidth
 				label={label}
 				autoFocus={autoFocus}
@@ -45,6 +47,7 @@ const Input = ({
 						  }
 						: null
 				}
+				{...other_params}
 			/>
 		</div>
 	</Grid>
