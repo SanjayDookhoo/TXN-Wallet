@@ -42,6 +42,7 @@ const AddressGroup = ({
 
 	const transaction_params = {
 		address,
+		...other_params,
 	};
 
 	return (

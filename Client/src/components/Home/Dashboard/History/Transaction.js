@@ -3,8 +3,18 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus, faMinus } from '@fortawesome/free-solid-svg-icons';
 import covalentAPI from '../../../../ducks/api/covalent';
 import { adjustDecimalPoint, valueLengthPreProcessing } from '../utils';
+import { useDispatch } from 'react-redux';
+import { updateApp } from '../../../../ducks/actions/app';
+import { useHistory } from 'react-router';
 
-const Transaction = ({ transaction, address, ...other_params }) => {
+const Transaction = ({
+	transaction,
+	address,
+	updateTransactionSelected,
+	...other_params
+}) => {
+	const dispatch = useDispatch();
+	const history = useHistory();
 	const [transaction_details, updateTransactionDetails] = useState({});
 	const [found, updateFound] = useState(false);
 
@@ -83,10 +93,24 @@ const Transaction = ({ transaction, address, ...other_params }) => {
 		}
 	}, [transaction]);
 
+	const handleOnclick = () => {
+		updateTransactionSelected(transaction.tx_hash);
+
+		let pathname = window.location.pathname;
+		pathname =
+			pathname.slice(-1) === '/'
+				? pathname.slice(0, pathname.length - 1)
+				: pathname;
+		history.push(pathname + '/transaction_notes');
+	};
+
 	return (
 		<>
 			{found ? (
-				<div className="transaction flex justify-center items-center waves-effect cursor-pointer p-2">
+				<div
+					className="transaction flex justify-center items-center waves-effect cursor-pointer p-2"
+					onClick={handleOnclick}
+				>
 					<div className="w-1/4"></div>
 					<div className="w-1/4">{transaction_details.type}</div>
 					<div className="w-1/4">{transaction_details.value}</div>

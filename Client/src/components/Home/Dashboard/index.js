@@ -29,6 +29,7 @@ const Dashboard = () => {
 
 	const [chains, updateChains] = useState([]);
 	const [chart_touch_start, updateChartTouchstart] = useState(null);
+	const [dashboard_item, updateDashboardItem] = useState('');
 	const app = useSelector((state) => state.app);
 
 	// get covalent data
@@ -49,10 +50,10 @@ const Dashboard = () => {
 		}
 	}, []);
 
-	const handleNav = (dashboard_item) => {
-		dispatch(updateApp({ dashboard_item }));
-		if (history.location.pathname === '/') {
-			history.push('/active');
+	const handleNav = (new_dashboard_item) => {
+		updateDashboardItem(new_dashboard_item);
+		if (history.location.pathname !== '/') {
+			history.goBack('/');
 		}
 	};
 
@@ -64,12 +65,12 @@ const Dashboard = () => {
 			let direction = null;
 
 			const dashboardItemIndex = () => {
-				if (app.dashboard_item === '') {
+				if (dashboard_item === '') {
 					return 0;
 				}
-				return dashboard_items.findIndex(
-					(dashboard_item) =>
-						dashboard_item.name === app.dashboard_item
+				return list_dashboard_items.findIndex(
+					(list_dashboard_item) =>
+						list_dashboard_item.name === dashboard_item
 				);
 			};
 
@@ -105,11 +106,8 @@ const Dashboard = () => {
 
 						const index = dashboardItemIndex();
 						if (index !== dashboard_items.length - 1) {
-							dispatch(
-								updateApp({
-									dashboard_item:
-										dashboard_items[index + 1].name,
-								})
+							updateDashboardItem(
+								dashboard_items[index + 1].name
 							);
 						}
 
@@ -122,11 +120,8 @@ const Dashboard = () => {
 
 						const index = dashboardItemIndex();
 						if (index !== 0) {
-							dispatch(
-								updateApp({
-									dashboard_item:
-										dashboard_items[index - 1].name,
-								})
+							updateDashboardItem(
+								dashboard_items[index - 1].name
 							);
 						}
 
@@ -164,7 +159,7 @@ const Dashboard = () => {
 		chains,
 	};
 
-	const dashboard_items = [
+	const list_dashboard_items = [
 		{
 			name: 'portfolio',
 			condition: (app_dashboard_item) =>
@@ -200,21 +195,25 @@ const Dashboard = () => {
 		<>
 			<MainContainer
 				body={
-					dashboard_items.find((dashboard_item) =>
-						dashboard_item.condition(app.dashboard_item)
+					list_dashboard_items.find((list_dashboard_item) =>
+						list_dashboard_item.condition(dashboard_item)
 					)?.component
 				}
 				navbar={
 					<>
-						{dashboard_items.map((dashboard_item, i) => (
+						{list_dashboard_items.map((list_dashboard_item, i) => (
 							<NavButton
 								key={i}
-								active={dashboard_item.condition(
-									app.dashboard_item
+								active={list_dashboard_item.condition(
+									dashboard_item
 								)}
-								onClick={() => handleNav(dashboard_item.name)}
+								onClick={() =>
+									handleNav(list_dashboard_item.name)
+								}
 							>
-								<FontAwesomeIcon icon={dashboard_item.icon} />
+								<FontAwesomeIcon
+									icon={list_dashboard_item.icon}
+								/>
 							</NavButton>
 						))}
 					</>

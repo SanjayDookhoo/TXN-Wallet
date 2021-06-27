@@ -6,13 +6,15 @@ import {
 	Switch,
 	Route,
 	Redirect,
+	useHistory,
 } from 'react-router-dom';
 import Home from '../src/components/Home';
 import NotFound from '../src/components/NotFound';
-import { routeStateApp } from '../src/ducks/actions/app';
+import { updateApp } from '../src/ducks/actions/app';
 
 const App = ({ is_mobile_app }) => {
 	const state = useSelector((state) => state);
+
 	const MyRouter = is_mobile_app ? HashRouter : BrowserRouter; // cordova app works with HashRouter, BrowserRouter URL is familiar to desktop users
 
 	useEffect(() => {
@@ -28,9 +30,7 @@ const App = ({ is_mobile_app }) => {
 	return (
 		<MyRouter>
 			<Switch>
-				<CustomRoute path="/" exact {...custom_route_params} />
-				<CustomRoute path="/active" {...custom_route_params} />
-				<CustomRoute path="/scanning" {...custom_route_params} />
+				<CustomRoute {...custom_route_params} />
 				<Route component={NotFound} />
 			</Switch>
 		</MyRouter>
@@ -41,19 +41,50 @@ export default App;
 
 // defaults to private route
 const CustomRoute = ({
-	path,
 	component: Component,
 	is_mobile_app,
 	...other_params
 }) => {
+	const app = useSelector((state) => state.app);
 	const dispatch = useDispatch();
+	const history = useHistory();
+	const valid_paths = ['', '/chart', '/transaction_notes'];
+	const [valid_path, updateValidPath] = useState(false);
 
 	useEffect(() => {
-		console.log({ is_mobile_app });
-		dispatch(routeStateApp({ path, is_mobile_app }));
-	}, [path, is_mobile_app]);
+		if (!app.loaded) {
+			dispatch(
+				updateApp({
+					loaded: true,
+					is_mobile_app,
+				})
+			);
+			history.replace('/');
+		}
+	}, [other_params.location.pathname, app, is_mobile_app]);
+
+	useEffect(() => {
+		let pathname = other_params.location.pathname;
+		pathname =
+			pathname.slice(-1) === '/'
+				? pathname.slice(0, pathname.length - 1)
+				: pathname;
+
+		if (valid_paths.includes(pathname)) {
+			updateValidPath(true);
+		} else {
+			updateValidPath(false);
+		}
+	}, [other_params.location.pathname]);
 
 	return (
-		<Route {...other_params} render={(props) => <Component {...props} />} />
+		<>
+			{valid_path && (
+				<Route
+					{...other_params}
+					render={(props) => <Component {...props} />}
+				/>
+			)}
+		</>
 	);
 };
