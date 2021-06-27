@@ -6,8 +6,8 @@ import {
 	faSortDown,
 	faSort,
 	faRecycle,
-	faPlus,
-	faMinus,
+	faChartLine,
+	faHome,
 } from '@fortawesome/free-solid-svg-icons';
 import { useSnackbar } from 'notistack';
 import {
@@ -30,9 +30,12 @@ import {
 } from './utils.js';
 import BlockchainAddressGroup from './BlockchainAddressGroup';
 import { adjustDecimalPoint } from '../utils';
+import { Breadcrumbs, Fab } from '@material-ui/core';
+import { useHistory } from 'react-router';
 
 const Portfolio = ({ chains, updateChartTouchstart }) => {
 	const dispatch = useDispatch();
+	const history = useHistory();
 
 	const database = useSelector((state) => state.database);
 	const [user, updateUser] = useState(
@@ -49,6 +52,7 @@ const Portfolio = ({ chains, updateChartTouchstart }) => {
 		'contract_ticker_symbol'
 	);
 	const [asc_order, updateAscOrder] = useState(true);
+	const [breadcrumb_view, updateBreadcrumbView] = useState('home');
 
 	// useEffect(() => {
 	// 	console.log({ tokens_map });
@@ -228,139 +232,224 @@ const Portfolio = ({ chains, updateChartTouchstart }) => {
 		}
 	};
 
+	const changeBreadcrumbView = (new_breadcrumb_view) => {
+		let pathname = window.location.pathname;
+		pathname =
+			pathname.slice(-1) === '/'
+				? pathname.slice(0, pathname.length - 1)
+				: pathname;
+
+		if (
+			(pathname === '' || pathname === '/active') &&
+			new_breadcrumb_view === 'chart'
+		) {
+			console.log('test');
+			history.push(pathname + '/chart');
+		}
+
+		if (
+			(pathname === '/chart' || pathname === '/active/chart') &&
+			new_breadcrumb_view === 'home'
+		) {
+			history.goBack();
+		}
+	};
+
+	useEffect(() => {
+		let pathname = window.location.pathname;
+		pathname =
+			pathname.slice(-1) === '/'
+				? pathname.slice(0, pathname.length - 1)
+				: pathname;
+
+		if (pathname === '' || pathname === '/active') {
+			updateBreadcrumbView('home');
+		}
+
+		if (pathname === '/chart' || pathname === '/active/chart') {
+			updateBreadcrumbView('chart');
+		}
+	}, [window.location.pathname]);
+
 	return (
 		<>
 			<ContentHeading>Portfolio</ContentHeading>
 			<ContentBody>
-				<div
-					className={`${
-						chart_obj_series.length === 0 ? 'hidden' : ''
-					}`}
-					ref={chart_ref}
-				></div>
-				<Input
-					name="filter"
-					label="Filter"
-					value={token_filter}
-					handleChange={(e) => updateTokenFilter(e.target.value)}
-					type="text"
-				/>
-				<div className="text-center text-gray-500">
-					Layout Understanding and Sorting
-				</div>
-				<div className="bg-green-600">
+				<Breadcrumbs aria-label="breadcrumb">
 					<div
-						className={`token flex justify-start items-center border-t-2 border-yellow-200`}
+						className="waves-effect cursor-pointer"
+						onClick={() => changeBreadcrumbView('home')}
 					>
-						<div className="token-logo">
-							<img className="h-10" src={coin_fallback} />
+						<FontAwesomeIcon icon={faHome} /> home
+					</div>
+					{breadcrumb_view === 'chart' && (
+						<div
+							className="waves-effect cursor-pointer"
+							onClick={() => changeBreadcrumbView('chart')}
+						>
+							<FontAwesomeIcon icon={faChartLine} /> Chart
 						</div>
-						<div className={`${token_col}`}>
-							<div
-								className={`${token_data_layout}`}
-								onClick={() =>
-									toggleSort('contract_ticker_symbol')
-								}
-							>
-								{sortIconRender('contract_ticker_symbol')}{' '}
-								&nbsp; Coin Name
+					)}
+				</Breadcrumbs>
+				<div
+					className={`${breadcrumb_view !== 'home' ? 'hidden' : ''}`}
+				>
+					<Input
+						name="filter"
+						label="Filter"
+						value={token_filter}
+						handleChange={(e) => updateTokenFilter(e.target.value)}
+						type="text"
+					/>
+					<div className="text-center text-gray-500">
+						Layout Understanding and Sorting
+					</div>
+					<div className="bg-green-600">
+						<div
+							className={`token flex justify-start items-center border-t-2 border-yellow-200`}
+						>
+							<div className="token-logo">
+								<img className="h-10" src={coin_fallback} />
 							</div>
-							<div
-								className={`${token_data_layout}`}
-								onClick={() => toggleSort('processed_balance')}
-							>
-								{sortIconRender('processed_balance')} &nbsp; Qty
-								of Coins
+							<div className={`${token_col}`}>
+								<div
+									className={`${token_data_layout}`}
+									onClick={() =>
+										toggleSort('contract_ticker_symbol')
+									}
+								>
+									{sortIconRender('contract_ticker_symbol')}{' '}
+									&nbsp; Coin Name
+								</div>
+								<div
+									className={`${token_data_layout}`}
+									onClick={() =>
+										toggleSort('processed_balance')
+									}
+								>
+									{sortIconRender('processed_balance')} &nbsp;
+									Qty of Coins
+								</div>
 							</div>
-						</div>
-						<div className={`${token_col}`}>
-							<div
-								className={`${token_data_layout}`}
-								onClick={() => toggleSort('token_price_today')}
-							>
-								{' '}
-								{sortIconRender('token_price_today')} &nbsp; One
-								Coin Value
-							</div>
+							<div className={`${token_col}`}>
+								<div
+									className={`${token_data_layout}`}
+									onClick={() =>
+										toggleSort('token_price_today')
+									}
+								>
+									{' '}
+									{sortIconRender('token_price_today')} &nbsp;
+									One Coin Value
+								</div>
 
-							<div className={`${token_data_group}`}>
-								<div
-									className={`${token_data_layout} w-1/2`}
-									onClick={() =>
-										toggleSort('token_increased_value')
-									}
-								>
-									{sortIconRender('token_increased_value')}{' '}
-									&nbsp; 24h &nbsp;{' '}
-									<FontAwesomeIcon icon={faRecycle} />
-								</div>
-								<div
-									className={`${token_data_layout} w-1/2`}
-									onClick={() =>
-										toggleSort('token_increased_percent')
-									}
-								>
-									{sortIconRender('token_increased_percent')}{' '}
-									&nbsp; 24h &nbsp;{' '}
-									<FontAwesomeIcon icon={faRecycle} /> &nbsp;
-									%
+								<div className={`${token_data_group}`}>
+									<div
+										className={`${token_data_layout} w-1/2`}
+										onClick={() =>
+											toggleSort('token_increased_value')
+										}
+									>
+										{sortIconRender(
+											'token_increased_value'
+										)}{' '}
+										&nbsp; 24h &nbsp;{' '}
+										<FontAwesomeIcon icon={faRecycle} />
+									</div>
+									<div
+										className={`${token_data_layout} w-1/2`}
+										onClick={() =>
+											toggleSort(
+												'token_increased_percent'
+											)
+										}
+									>
+										{sortIconRender(
+											'token_increased_percent'
+										)}{' '}
+										&nbsp; 24h &nbsp;{' '}
+										<FontAwesomeIcon icon={faRecycle} />{' '}
+										&nbsp; %
+									</div>
 								</div>
 							</div>
-						</div>
-						<div className={`${token_col}`}>
-							<div
-								className={`${token_data_layout}`}
-								onClick={() => toggleSort('tokens_price_today')}
-							>
-								{sortIconRender('tokens_price_today')} &nbsp;
-								Coin Values
-							</div>
-							<div className={`${token_data_group}`}>
+							<div className={`${token_col}`}>
 								<div
-									className={`${token_data_layout} w-1/2`}
+									className={`${token_data_layout}`}
 									onClick={() =>
-										toggleSort('dollar_increased_value')
+										toggleSort('tokens_price_today')
 									}
 								>
-									{sortIconRender('dollar_increased_value')}{' '}
-									&nbsp; 24h &nbsp;{' '}
-									<FontAwesomeIcon icon={faRecycle} />
+									{sortIconRender('tokens_price_today')}{' '}
+									&nbsp; Coin Values
 								</div>
-								<div
-									className={`${token_data_layout} w-1/2`}
-									onClick={() =>
-										toggleSort('token_increased_percent')
-									}
-								>
-									{sortIconRender('token_increased_percent')}{' '}
-									&nbsp; 24h &nbsp;{' '}
-									<FontAwesomeIcon icon={faRecycle} /> &nbsp;
-									%
+								<div className={`${token_data_group}`}>
+									<div
+										className={`${token_data_layout} w-1/2`}
+										onClick={() =>
+											toggleSort('dollar_increased_value')
+										}
+									>
+										{sortIconRender(
+											'dollar_increased_value'
+										)}{' '}
+										&nbsp; 24h &nbsp;{' '}
+										<FontAwesomeIcon icon={faRecycle} />
+									</div>
+									<div
+										className={`${token_data_layout} w-1/2`}
+										onClick={() =>
+											toggleSort(
+												'token_increased_percent'
+											)
+										}
+									>
+										{sortIconRender(
+											'token_increased_percent'
+										)}{' '}
+										&nbsp; 24h &nbsp;{' '}
+										<FontAwesomeIcon icon={faRecycle} />{' '}
+										&nbsp; %
+									</div>
 								</div>
 							</div>
 						</div>
 					</div>
+					<div className="">
+						{database.chain &&
+							Object.values(database.chain)
+								.sort((a, b) =>
+									chains_map[a.covalent_chain_id]?.label
+										.toString()
+										.localeCompare(
+											chains_map[
+												b.covalent_chain_id
+											]?.label.toString()
+										)
+								)
+								.map((chain) => (
+									<BlockchainAddressGroup
+										key={chain.id}
+										chain={chain}
+										{...blockchain_address_group_params}
+									/>
+								))}
+					</div>
+					<div className="absolute bottom-10 right-10">
+						<Fab
+							color="primary"
+							aria-label="add"
+							onClick={() => changeBreadcrumbView('chart')}
+							disabled={chart_obj_series.length === 0}
+						>
+							<FontAwesomeIcon icon={faChartLine} />
+						</Fab>
+					</div>
 				</div>
-				<div className="">
-					{database.chain &&
-						Object.values(database.chain)
-							.sort((a, b) =>
-								chains_map[a.covalent_chain_id]?.label
-									.toString()
-									.localeCompare(
-										chains_map[
-											b.covalent_chain_id
-										]?.label.toString()
-									)
-							)
-							.map((chain) => (
-								<BlockchainAddressGroup
-									key={chain.id}
-									chain={chain}
-									{...blockchain_address_group_params}
-								/>
-							))}
-				</div>
+				<div
+					className={`${breadcrumb_view !== 'chart' ? 'hidden' : ''}`}
+					ref={chart_ref}
+				></div>
 			</ContentBody>
 		</>
 	);
