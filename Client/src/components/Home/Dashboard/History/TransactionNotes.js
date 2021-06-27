@@ -72,7 +72,9 @@ const TransactionNotes = ({ transaction_selected }) => {
 							},
 						],
 					},
-					onSuccess: () => {
+					onSuccess: (res) => {
+						const tx_hash = res.result[0].id;
+						saveItems(tx_hash);
 						history.goBack();
 					},
 				})
@@ -113,70 +115,79 @@ const TransactionNotes = ({ transaction_selected }) => {
 				);
 			}
 
-			// handling batch edit for items
-			updates = {};
-			Object.values(items_data)
-				.filter((item) => !(item._deleted || item._added))
-				.forEach((item) => {
-					const item_updates = {};
-					if (item.name !== database.item[item.id].name) {
-						item_updates.name = item.name;
-					}
-					if (item.price !== database.item[item.id].price) {
-						item_updates.price = item.price;
-					}
-					if (Object.entries(item_updates).length !== 0) {
-						console.log({ item_updates });
-						updates[item.id] = item_updates;
-					}
-				});
-			if (Object.values(updates).length !== 0) {
-				dispatch(
-					databasePatch({
-						table_name: 'item',
-						req_body: {
-							updates,
-						},
-					})
-				);
-			}
+			saveItems(transaction_selected);
+		}
+	};
 
-			// handling batch add for items
-			const inserts = Object.values(items_data)
-				.filter((item) => item._added)
-				.map((item) => {
-					const { _added, id, ...actual_data } = item;
+	const saveItems = (tx_hash) => {
+		const found = Object.values(database.transaction).find(
+			(transaction) => transaction.transaction_hash === tx_hash
+		);
 
-					return {
-						...actual_data,
-						transaction_id: found.id,
-					};
-				});
-			if (inserts.length !== 0) {
-				dispatch(
-					databasePost({
-						table_name: 'item',
-						req_body: {
-							inserts,
-						},
-					})
-				);
-			}
+		// handling batch edit for items
+		let updates = {};
+		Object.values(items_data)
+			.filter((item) => !(item._deleted || item._added))
+			.forEach((item) => {
+				const item_updates = {};
+				if (item.name !== database.item[item.id].name) {
+					item_updates.name = item.name;
+				}
+				if (item.price !== database.item[item.id].price) {
+					item_updates.price = item.price;
+				}
+				if (Object.entries(item_updates).length !== 0) {
+					console.log({ item_updates });
+					updates[item.id] = item_updates;
+				}
+			});
+		if (Object.values(updates).length !== 0) {
+			dispatch(
+				databasePatch({
+					table_name: 'item',
+					req_body: {
+						updates,
+					},
+				})
+			);
+		}
 
-			// handling batch remove for items
-			const ids = Object.values(items_data)
-				.filter((item) => item._deleted)
-				.map((item) => item.id);
-			if (ids.length !== 0) {
-				dispatch(
-					databaseDelete({
-						table_name: 'item',
-						req_body: {
-							ids,
-						},
-					})
-				);
-			}
+		// handling batch add for items
+		const inserts = Object.values(items_data)
+			.filter((item) => item._added)
+			.map((item) => {
+				console.log(item);
+				const { _added, id, ...actual_data } = item;
+
+				return {
+					...actual_data,
+					transaction_id: found.id,
+				};
+			});
+		if (inserts.length !== 0) {
+			dispatch(
+				databasePost({
+					table_name: 'item',
+					req_body: {
+						inserts,
+					},
+				})
+			);
+		}
+
+		// handling batch remove for items
+		const ids = Object.values(items_data)
+			.filter((item) => item._deleted)
+			.map((item) => item.id);
+		if (ids.length !== 0) {
+			dispatch(
+				databaseDelete({
+					table_name: 'item',
+					req_body: {
+						ids,
+					},
+				})
+			);
 		}
 	};
 
