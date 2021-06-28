@@ -415,7 +415,10 @@ const Portfolio = ({ chains, updateChartTouchstart }) => {
 									/>
 								))}
 					</div>
-					<div className="absolute bottom-10 right-10">
+					<div
+						className="absolute top-10 inset-x-1/2"
+						style={{ marginLeft: '-28px' }}
+					>
 						<Fab
 							color="secondary"
 							aria-label="add"
