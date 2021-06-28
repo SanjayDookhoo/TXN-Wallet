@@ -155,7 +155,7 @@ const Dashboard = () => {
 				window.removeEventListener('touchstart', touchstart);
 			};
 		}
-	}, [app, chart_touch_start]);
+	}, [app, chart_touch_start, dashboard_item]);
 
 	const dashboard_item_params = {
 		chains,
