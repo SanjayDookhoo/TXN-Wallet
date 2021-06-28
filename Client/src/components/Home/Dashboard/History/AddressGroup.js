@@ -74,7 +74,7 @@ const AddressGroup = ({
 				<div></div>
 			</div>
 			<div className={`p-2 ${collapsed && 'hidden'}`}>
-				<table className="w-full border border-yellow-200 mt-2 rounded-lg text-xs md:text-base">
+				<table className="w-full border border-yellow-200 mt-2 rounded-lg text-xs lg:text-base">
 					<thead>
 						<tr>
 							<th className="border border-yellow-200">

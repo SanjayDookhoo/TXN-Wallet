@@ -298,9 +298,9 @@ const Portfolio = ({ chains, updateChartTouchstart }) => {
 						Layout Understanding and Sorting
 					</div>
 					<div
-						className={`token flex justify-start items-center my-4 p-2 rounded-lg border-2 border-yellow-400 bg-gray-400 text-xs md:text-base`}
+						className={`token flex justify-start items-center my-4 p-2 rounded-lg border-2 border-yellow-400 bg-gray-400 text-xs lg:text-base`}
 					>
-						<div className="token-logo hidden md:block">
+						<div className="token-logo hidden lg:block">
 							<img className="h-10" src={coin_fallback} />
 						</div>
 						<div className={`${token_col}`}>

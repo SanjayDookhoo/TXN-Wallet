@@ -295,7 +295,7 @@ const BlockchainAddressGroup = ({ database, chains, chains_map, chain }) => {
 			<div className={`addresses ${collapsed && 'hidden'}`}>
 				{database.address &&
 					Object.values(database.address).length !== 0 && (
-						<table className="w-full border border-yellow-200 mt-2 rounded-lg text-xs md:text-base">
+						<table className="w-full border border-yellow-200 mt-2 rounded-lg text-xs lg:text-base">
 							<thead>
 								<tr>
 									<th className="border border-yellow-200">
