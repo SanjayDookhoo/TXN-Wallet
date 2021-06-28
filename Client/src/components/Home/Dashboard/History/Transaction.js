@@ -113,19 +113,19 @@ const Transaction = ({
 		<>
 			{found ? (
 				<tr
-					className="transaction cursor-pointer p-2"
+					className="transaction cursor-pointer p-2 h-12 hover:bg-yellow-200"
 					onClick={handleOnclick}
 				>
-					<td className="border px-1 border-green-800">
+					<td className="border px-1 border-yellow-200">
 						{transaction_details.category}
 					</td>
-					<td className="border px-1 border-green-800">
+					<td className="border px-1 border-yellow-200">
 						{transaction_details.type}
 					</td>
-					<td className="border px-1 border-green-800">
+					<td className="border px-1 border-yellow-200">
 						{transaction_details.value}
 					</td>
-					<td className="border px-1 border-green-800">
+					<td className="border px-1 border-yellow-200">
 						{transaction_details.timestamp}
 					</td>
 				</tr>

@@ -24,7 +24,7 @@ const BlockchainAddressGroup = ({
 	};
 
 	return (
-		<div className="blockchain-address-group my-4 p-2 bg-green-300">
+		<div className="blockchain-address-group my-4 p-2 rounded-lg border-2 border-yellow-400 bg-gray-300">
 			<div
 				className="blockchain-address-group-header flex justify-between items-center h-12 group cursor-pointer"
 				onClick={toggleCollapsible}

@@ -23,6 +23,7 @@ import {
 import { useHistory } from 'react-router';
 import { createLoadingModal, removeLoadingModal } from '../../LoadingModal';
 import { useSnackbar } from 'notistack';
+import { createDeleteModal } from '../../DeleteModal';
 
 const categories = {
 	housing: 'Housing',
@@ -315,50 +316,61 @@ const TransactionNotes = ({ transaction_selected }) => {
 				<Items {...items_params} />
 				<Images {...images_params} />
 
-				{new_transaction && edit && (
-					<Button variant="primary" type="submit">
-						Create
-					</Button>
-				)}
-				{!new_transaction && edit && (
-					<Button variant="primary" type="submit">
-						Save Edit
-					</Button>
-				)}
-				{/* {new_transaction && !edit  && (
-					<Button variant="primary" type="submit" onClick={handleToggleEdit}>
-						
-					</Button>
-				)} */}
-				{!new_transaction && !edit && (
-					<Button variant="primary" onClick={() => updateEdit(true)}>
-						Edit
-					</Button>
-				)}
+				<div className="buttons flex justify-around items-center">
+					{new_transaction && edit && (
+						<Button variant="secondary" type="submit">
+							Create
+						</Button>
+					)}
+					{!new_transaction && edit && (
+						<Button variant="secondary" type="submit">
+							Save Edit
+						</Button>
+					)}
+					{/* {new_transaction && !edit  && (
+						<Button variant="secondary" type="submit" onClick={handleToggleEdit}>
+							
+						</Button>
+					)} */}
+					{!new_transaction && !edit && (
+						<Button
+							variant="secondary"
+							onClick={() => updateEdit(true)}
+						>
+							Edit
+						</Button>
+					)}
 
-				{new_transaction && edit && (
-					<Button variant="white" onClick={() => history.goBack()}>
-						Cancel
-					</Button>
-				)}
-				{!new_transaction && edit && (
-					<Button
-						variant="white"
-						onClick={cancelEditingExistingTransaction}
-					>
-						Cancel
-					</Button>
-				)}
-				{/* {new_transaction && !edit  && (
-					<Button variant="white" onClick={handleToggleEdit}>
-						
-					</Button>
-				)} */}
-				{!new_transaction && !edit && (
-					<Button variant="white" onClick={() => history.goBack()}>
-						Back
-					</Button>
-				)}
+					{new_transaction && edit && (
+						<Button
+							variant="white"
+							onClick={() => history.goBack()}
+						>
+							Cancel
+						</Button>
+					)}
+					{!new_transaction && edit && (
+						<Button
+							variant="white"
+							onClick={cancelEditingExistingTransaction}
+						>
+							Cancel
+						</Button>
+					)}
+					{/* {new_transaction && !edit  && (
+						<Button variant="white" onClick={handleToggleEdit}>
+							
+						</Button>
+					)} */}
+					{!new_transaction && !edit && (
+						<Button
+							variant="white"
+							onClick={() => history.goBack()}
+						>
+							Back
+						</Button>
+					)}
+				</div>
 			</form>
 		</div>
 	);
@@ -447,18 +459,21 @@ const Items = ({ new_transaction, edit, items_data, updateItemsData }) => {
 	};
 
 	const handleEditDelete = (id) => {
-		updateItemsData({
-			...items_data,
-			[id]: {
-				...items_data[id],
-				_deleted: true,
-			},
-		});
+		const callback = () =>
+			updateItemsData({
+				...items_data,
+				[id]: {
+					...items_data[id],
+					_deleted: true,
+				},
+			});
+
+		createDeleteModal({ callback });
 	};
 
 	return (
 		<div className="items">
-			<table className="w-full">
+			<table className="w-full rounded-lg">
 				<thead>
 					<tr>
 						<th>Item</th>
@@ -499,7 +514,7 @@ const Items = ({ new_transaction, edit, items_data, updateItemsData }) => {
 								</td>
 								<td>
 									<div
-										className="address-delete cursor-pointer waves-effect rounded-lg p-2 hover:text-red-400"
+										className="address-delete flex justify-center items-center cursor-pointer waves-effect rounded-lg p-2 hover:text-red-400"
 										onClick={() =>
 											handleEditDelete(item.id)
 										}
@@ -534,7 +549,7 @@ const Items = ({ new_transaction, edit, items_data, updateItemsData }) => {
 						</td>
 						<td>
 							<div
-								className="address-delete cursor-pointer waves-effect rounded-lg p-2 hover:text-red-400"
+								className="address-delete flex justify-center items-center cursor-pointer waves-effect rounded-lg p-2 hover:text-yellow-400"
 								onClick={addToCurrentState}
 							>
 								<FontAwesomeIcon icon={faPlus} />

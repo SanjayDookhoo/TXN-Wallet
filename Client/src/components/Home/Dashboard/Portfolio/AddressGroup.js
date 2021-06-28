@@ -137,7 +137,7 @@ const AddressGroup = ({
 	};
 
 	return (
-		<div className="address-group my-4 p-2 bg-green-500">
+		<div className="address-group my-4 p-2 rounded-lg border-2 border-yellow-400 bg-gray-400">
 			<div
 				className="address-group-header flex justify-between items-center h-12 group cursor-pointer"
 				onClick={toggleCollapsible}

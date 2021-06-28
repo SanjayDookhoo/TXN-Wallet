@@ -21,13 +21,15 @@ const Address = ({
 }) => {
 	return (
 		<tr
-			className={`address ${editing_id === address.id && 'bg-green-700'}`}
+			className={`address h-12 ${
+				editing_id === address.id && 'bg-green-700'
+			}`}
 		>
-			<td className="px-1 border border-green-800">{address.name}</td>
-			<td className="px-1 break-all border border-green-800">
+			<td className="px-1 border border-yellow-200">{address.name}</td>
+			<td className="px-1 break-all border border-yellow-200">
 				{address.address_hash}
 			</td>
-			<td className="px-1 border border-green-800">
+			<td className="px-1 border border-yellow-200">
 				<div className="flex justify-between items-center">
 					<div
 						className="address-update cursor-pointer waves-effect rounded-lg p-2 hover:text-yellow-400"

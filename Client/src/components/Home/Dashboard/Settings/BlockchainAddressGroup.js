@@ -260,7 +260,7 @@ const BlockchainAddressGroup = ({ database, chains, chains_map, chain }) => {
 	};
 
 	return (
-		<div className="blockchain-address-group my-4 p-2 bg-green-300">
+		<div className="blockchain-address-group my-4 p-2 rounded-lg border-2 border-yellow-400 bg-gray-300">
 			<div
 				className="blockchain-address-group-header flex justify-between items-center h-12 group cursor-pointer"
 				onClick={toggleCollapsible}
@@ -295,16 +295,16 @@ const BlockchainAddressGroup = ({ database, chains, chains_map, chain }) => {
 			<div className={`addresses ${collapsed && 'hidden'}`}>
 				{database.address &&
 					Object.values(database.address).length !== 0 && (
-						<table className="w-full border border-green-800 mt-2 text-xs md:text-base">
+						<table className="w-full border border-yellow-200 mt-2 rounded-lg text-xs md:text-base">
 							<thead>
 								<tr>
-									<th className="border border-green-800">
+									<th className="border border-yellow-200">
 										Name
 									</th>
-									<th className="border border-green-800">
+									<th className="border border-yellow-200">
 										Address
 									</th>
-									<th className="border border-green-800">
+									<th className="border border-yellow-200">
 										Options
 									</th>
 								</tr>

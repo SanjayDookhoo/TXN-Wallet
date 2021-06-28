@@ -143,7 +143,7 @@ const Token = ({
 
 	return (
 		<div
-			className={`token flex justify-start items-center border-t-2 border-yellow-200 waves-effect cursor-pointer text-xs md:text-base`}
+			className={`token flex justify-start items-center m-1 p-1 hover:bg-yellow-200 rounded-lg border-2 border-yellow-200 waves-effect cursor-pointer text-xs md:text-base`}
 			style={{
 				backgroundColor: backgroundColorOnClick(),
 			}}

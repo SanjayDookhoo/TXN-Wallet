@@ -309,113 +309,88 @@ const Portfolio = ({ chains, updateChartTouchstart }) => {
 					<div className="text-center text-gray-500">
 						Layout Understanding and Sorting
 					</div>
-					<div className="bg-green-600">
-						<div
-							className={`token flex justify-start items-center border-t-2 border-yellow-200 px-2 text-xs md:text-base`}
-						>
-							<div className="token-logo hidden md:block">
-								<img className="h-10" src={coin_fallback} />
+					<div
+						className={`token flex justify-start items-center my-4 p-2 rounded-lg border-2 border-yellow-400 bg-gray-400 text-xs md:text-base`}
+					>
+						<div className="token-logo hidden md:block">
+							<img className="h-10" src={coin_fallback} />
+						</div>
+						<div className={`${token_col}`}>
+							<div
+								className={`${token_data_layout}`}
+								onClick={() =>
+									toggleSort('contract_ticker_symbol')
+								}
+							>
+								{sortIconRender('contract_ticker_symbol')}{' '}
+								&nbsp; Token
 							</div>
-							<div className={`${token_col}`}>
-								<div
-									className={`${token_data_layout}`}
-									onClick={() =>
-										toggleSort('contract_ticker_symbol')
-									}
-								>
-									{sortIconRender('contract_ticker_symbol')}{' '}
-									&nbsp; Token
-								</div>
-								<div
-									className={`${token_data_layout}`}
-									onClick={() =>
-										toggleSort('processed_balance')
-									}
-								>
-									{sortIconRender('processed_balance')} &nbsp;
-									Qty
-								</div>
+							<div
+								className={`${token_data_layout}`}
+								onClick={() => toggleSort('processed_balance')}
+							>
+								{sortIconRender('processed_balance')} &nbsp; Qty
 							</div>
-							<div className={`${token_col}`}>
-								<div
-									className={`${token_data_layout}`}
-									onClick={() =>
-										toggleSort('token_price_today')
-									}
-								>
-									{' '}
-									{sortIconRender('token_price_today')} &nbsp;
-									Value/1
-								</div>
+						</div>
+						<div className={`${token_col}`}>
+							<div
+								className={`${token_data_layout}`}
+								onClick={() => toggleSort('token_price_today')}
+							>
+								{' '}
+								{sortIconRender('token_price_today')} &nbsp;
+								Value/1
+							</div>
 
-								<div className={`${token_data_group}`}>
-									<div
-										className={`${token_data_layout}`}
-										onClick={() =>
-											toggleSort('token_increased_value')
-										}
-									>
-										{sortIconRender(
-											'token_increased_value'
-										)}{' '}
-										&nbsp;{' '}
-										<FontAwesomeIcon icon={faRecycle} />
-									</div>
-									<div
-										className={`${token_data_layout}`}
-										onClick={() =>
-											toggleSort(
-												'token_increased_percent'
-											)
-										}
-									>
-										{sortIconRender(
-											'token_increased_percent'
-										)}{' '}
-										&nbsp;{' '}
-										<FontAwesomeIcon icon={faRecycle} />{' '}
-										&nbsp; %
-									</div>
-								</div>
-							</div>
-							<div className={`${token_col}`}>
+							<div className={`${token_data_group}`}>
 								<div
 									className={`${token_data_layout}`}
 									onClick={() =>
-										toggleSort('tokens_price_today')
+										toggleSort('token_increased_value')
 									}
 								>
-									{sortIconRender('tokens_price_today')}{' '}
-									&nbsp; Value/all
+									{sortIconRender('token_increased_value')}{' '}
+									&nbsp; <FontAwesomeIcon icon={faRecycle} />
 								</div>
-								<div className={`${token_data_group}`}>
-									<div
-										className={`${token_data_layout}`}
-										onClick={() =>
-											toggleSort('dollar_increased_value')
-										}
-									>
-										{sortIconRender(
-											'dollar_increased_value'
-										)}{' '}
-										&nbsp;{' '}
-										<FontAwesomeIcon icon={faRecycle} />
-									</div>
-									<div
-										className={`${token_data_layout}`}
-										onClick={() =>
-											toggleSort(
-												'token_increased_percent'
-											)
-										}
-									>
-										{sortIconRender(
-											'token_increased_percent'
-										)}{' '}
-										&nbsp;{' '}
-										<FontAwesomeIcon icon={faRecycle} />{' '}
-										&nbsp; %
-									</div>
+								<div
+									className={`${token_data_layout}`}
+									onClick={() =>
+										toggleSort('token_increased_percent')
+									}
+								>
+									{sortIconRender('token_increased_percent')}{' '}
+									&nbsp; <FontAwesomeIcon icon={faRecycle} />{' '}
+									&nbsp; %
+								</div>
+							</div>
+						</div>
+						<div className={`${token_col}`}>
+							<div
+								className={`${token_data_layout}`}
+								onClick={() => toggleSort('tokens_price_today')}
+							>
+								{sortIconRender('tokens_price_today')} &nbsp;
+								Value/all
+							</div>
+							<div className={`${token_data_group}`}>
+								<div
+									className={`${token_data_layout}`}
+									onClick={() =>
+										toggleSort('dollar_increased_value')
+									}
+								>
+									{sortIconRender('dollar_increased_value')}{' '}
+									&nbsp; <FontAwesomeIcon icon={faRecycle} />
+								</div>
+								<div
+									className={`${token_data_layout}`}
+									onClick={() =>
+										toggleSort('token_increased_percent')
+									}
+								>
+									{sortIconRender('token_increased_percent')}{' '}
+									&nbsp; <FontAwesomeIcon icon={faRecycle} />{' '}
+									&nbsp; %
 								</div>
 							</div>
 						</div>

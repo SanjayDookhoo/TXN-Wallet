@@ -39,7 +39,7 @@ const DeleteModalRender = ({ callback, note }) => {
 				className="bg-white flex rounded-lg w-80"
 				onClick={(e) => e.stopPropagation()}
 			>
-				<div className="flex flex-col items-start">
+				<div className="flex flex-col items-start w-full">
 					<div className="p-4 text-red-500 font-bold">
 						Are you sure you want to remove?
 					</div>

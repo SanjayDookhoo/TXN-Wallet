@@ -57,7 +57,7 @@ const AddressGroup = ({
 	};
 
 	return (
-		<div className="address-group my-4 p-2 bg-green-500">
+		<div className="address-group my-4 p-2 rounded-lg border-2 border-yellow-400 bg-gray-400">
 			<div
 				className="address-group-header flex justify-between items-center h-12 group cursor-pointer"
 				onClick={toggleCollapsible}
@@ -74,17 +74,17 @@ const AddressGroup = ({
 				<div></div>
 			</div>
 			<div className={`p-2 ${collapsed && 'hidden'}`}>
-				<table className="w-full border border-green-800 mt-2 text-xs md:text-base">
+				<table className="w-full border border-yellow-200 mt-2 rounded-lg text-xs md:text-base">
 					<thead>
 						<tr>
-							<th className="border border-green-800">
+							<th className="border border-yellow-200">
 								Category
 							</th>
-							<th className="border border-green-800">
+							<th className="border border-yellow-200">
 								Credit/Debit
 							</th>
-							<th className="border border-green-800">Amount</th>
-							<th className="border border-green-800">
+							<th className="border border-yellow-200">Amount</th>
+							<th className="border border-yellow-200">
 								Timestamp
 							</th>
 						</tr>
