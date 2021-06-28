@@ -64,7 +64,7 @@ const Settings = ({ chains }) => {
 	}, [user]);
 
 	const handleBlockchainOnChange = (e) => {
-		updateBlockchainAddValue('-1');
+		updateBlockchainAddValue('');
 
 		const modal = createLoadingModal();
 		dispatch(
