@@ -151,6 +151,7 @@ const AddressGroup = ({
 	const token_params = {
 		chain,
 		chart_obj_series,
+		breadcrumb_view,
 		...other_params,
 	};
 

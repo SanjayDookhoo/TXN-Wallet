@@ -14,6 +14,7 @@ import { createLoadingModal, removeLoadingModal } from '../../LoadingModal';
 const chart_color_arr = ['#ff8a65', '#4fc3f7', '#9575cd', '#ba68c8', '#e57373'];
 
 const Token = ({
+	breadcrumb_view,
 	token,
 	chain,
 	chart_obj,
@@ -141,7 +142,9 @@ const Token = ({
 
 	return (
 		<div
-			className={`token flex justify-start items-center m-1 p-1 hover:bg-yellow-200 rounded-lg border-2 border-yellow-200 waves-effect cursor-pointer text-xs lg:text-base`}
+			className={`token flex justify-start items-center m-1 p-1 hover:bg-yellow-200 rounded-lg border-2 border-yellow-200 waves-effect cursor-pointer text-xs lg:text-base ${
+				breadcrumb_view === 'chart' ? 'pointer-events-none' : ''
+			}`}
 			style={{
 				backgroundColor: backgroundColorOnClick(),
 			}}
