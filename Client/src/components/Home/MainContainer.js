@@ -72,9 +72,10 @@ const LogoButton = () => {
 
 const LogoutButton = () => {
 	const dispatch = useDispatch();
+	const history = useHistory();
 
 	const handleSignOut = () => {
-		dispatch(signOut({}));
+		dispatch(signOut({ onSuccess: () => history.replace('/') }));
 	};
 
 	return (
