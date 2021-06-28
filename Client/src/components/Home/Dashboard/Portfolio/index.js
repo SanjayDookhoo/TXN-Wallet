@@ -39,6 +39,7 @@ const Portfolio = ({ chains, updateChartTouchstart }) => {
 	const dispatch = useDispatch();
 	const history = useHistory();
 	const location = useLocation();
+	const app = useSelector((state) => state.app);
 	const { enqueueSnackbar } = useSnackbar();
 
 	const database = useSelector((state) => state.database);
@@ -309,7 +310,11 @@ const Portfolio = ({ chains, updateChartTouchstart }) => {
 						</div>
 						<div className={`${token_col}`}>
 							<div
-								className={`${token_data_layout}`}
+								className={`${token_data_layout} ${
+									app.is_mobile_app
+										? ''
+										: 'hover:bg-yellow-200'
+								}`}
 								onClick={() =>
 									toggleSort('contract_ticker_symbol')
 								}
@@ -318,7 +323,11 @@ const Portfolio = ({ chains, updateChartTouchstart }) => {
 								&nbsp; Token
 							</div>
 							<div
-								className={`${token_data_layout}`}
+								className={`${token_data_layout} ${
+									app.is_mobile_app
+										? ''
+										: 'hover:bg-yellow-200'
+								}`}
 								onClick={() => toggleSort('processed_balance')}
 							>
 								{sortIconRender('processed_balance')} &nbsp; Qty
@@ -326,7 +335,11 @@ const Portfolio = ({ chains, updateChartTouchstart }) => {
 						</div>
 						<div className={`${token_col}`}>
 							<div
-								className={`${token_data_layout}`}
+								className={`${token_data_layout} ${
+									app.is_mobile_app
+										? ''
+										: 'hover:bg-yellow-200'
+								}`}
 								onClick={() => toggleSort('token_price_today')}
 							>
 								{' '}
@@ -336,7 +349,11 @@ const Portfolio = ({ chains, updateChartTouchstart }) => {
 
 							<div className={`${token_data_group}`}>
 								<div
-									className={`${token_data_layout}`}
+									className={`${token_data_layout} ${
+										app.is_mobile_app
+											? ''
+											: 'hover:bg-yellow-200'
+									}`}
 									onClick={() =>
 										toggleSort('token_increased_value')
 									}
@@ -345,7 +362,11 @@ const Portfolio = ({ chains, updateChartTouchstart }) => {
 									&nbsp; <FontAwesomeIcon icon={faRecycle} />
 								</div>
 								<div
-									className={`${token_data_layout}`}
+									className={`${token_data_layout} ${
+										app.is_mobile_app
+											? ''
+											: 'hover:bg-yellow-200'
+									}`}
 									onClick={() =>
 										toggleSort('token_increased_percent')
 									}
@@ -358,7 +379,11 @@ const Portfolio = ({ chains, updateChartTouchstart }) => {
 						</div>
 						<div className={`${token_col}`}>
 							<div
-								className={`${token_data_layout}`}
+								className={`${token_data_layout} ${
+									app.is_mobile_app
+										? ''
+										: 'hover:bg-yellow-200'
+								}`}
 								onClick={() => toggleSort('tokens_price_today')}
 							>
 								{sortIconRender('tokens_price_today')} &nbsp;
@@ -366,7 +391,11 @@ const Portfolio = ({ chains, updateChartTouchstart }) => {
 							</div>
 							<div className={`${token_data_group}`}>
 								<div
-									className={`${token_data_layout}`}
+									className={`${token_data_layout} ${
+										app.is_mobile_app
+											? ''
+											: 'hover:bg-yellow-200'
+									}`}
 									onClick={() =>
 										toggleSort('dollar_increased_value')
 									}
@@ -375,7 +404,11 @@ const Portfolio = ({ chains, updateChartTouchstart }) => {
 									&nbsp; <FontAwesomeIcon icon={faRecycle} />
 								</div>
 								<div
-									className={`${token_data_layout}`}
+									className={`${token_data_layout} ${
+										app.is_mobile_app
+											? ''
+											: 'hover:bg-yellow-200'
+									}`}
 									onClick={() =>
 										toggleSort('token_increased_percent')
 									}
