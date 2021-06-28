@@ -68,6 +68,7 @@ export default MainContainer;
 
 const LogoButton = () => {
 	const history = useHistory();
+	const app = useSelector((state) => state.app);
 
 	const handleLogoButtonClick = () => {
 		if (history.location.pathname !== '/') {
@@ -77,7 +78,9 @@ const LogoButton = () => {
 
 	return (
 		<button
-			className="waves-effect w-24 lg:w-24 h-10 lg:h-24 lg:rounded-br-lg shadow ripple hover:shadow-lg focus:outline-none bg-yellow-500"
+			className={`waves-effect w-24 lg:w-24 h-10 lg:h-24 lg:rounded-br-lg shadow ripple ${
+				app.is_mobile_app ? '' : 'hover:shadow-lg'
+			} focus:outline-none bg-yellow-500`}
 			onClick={handleLogoButtonClick}
 		>
 			<img className="hidden lg:block" src={logo} />

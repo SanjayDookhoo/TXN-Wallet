@@ -10,6 +10,7 @@ import {
 } from './utils.js';
 import { valueLengthPreProcessing } from '../utils';
 import { createLoadingModal, removeLoadingModal } from '../../LoadingModal';
+import { useSelector } from 'react-redux';
 
 const chart_color_arr = ['#ff8a65', '#4fc3f7', '#9575cd', '#ba68c8', '#e57373'];
 
@@ -34,6 +35,7 @@ const Token = ({
 		dollar_increased_value,
 	} = token;
 	const { enqueueSnackbar } = useSnackbar();
+	const app = useSelector((state) => state.app);
 
 	const toggleSeriesInChart = async () => {
 		let found_in_series = chart_obj_series.findIndex(
@@ -133,7 +135,9 @@ const Token = ({
 
 	return (
 		<div
-			className={`token flex justify-start items-center m-1 p-1 hover:bg-yellow-200 rounded-lg border-2 border-yellow-200 waves-effect cursor-pointer text-xs lg:text-base ${
+			className={`token flex justify-start items-center m-1 p-1 ${
+				app.is_mobile_app ? '' : 'hover:bg-yellow-200'
+			} rounded-lg border-2 border-yellow-200 waves-effect cursor-pointer text-xs lg:text-base ${
 				breadcrumb_view === 'chart' ? 'pointer-events-none' : ''
 			}`}
 			style={{

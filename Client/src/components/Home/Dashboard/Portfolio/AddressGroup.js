@@ -5,6 +5,7 @@ import covalentAPI from '../../../../ducks/api/covalent';
 import Token from './Token';
 import { createLoadingModal, removeLoadingModal } from '../../LoadingModal';
 import { useSnackbar } from 'notistack';
+import { useSelector } from 'react-redux';
 
 const compare = (asc_order, field, a, b) => {
 	// only string
@@ -40,6 +41,7 @@ const AddressGroup = ({
 	const [collapsed, updateCollapsed] = useState(false);
 	const [historical_prices_map, updateHistoricalPricesMap] = useState({}); // contract-address => today / 1d => price
 	const [tokens_w_prices, updateTokensWPrices] = useState([]);
+	const app = useSelector((state) => state.app);
 
 	// get covalent data
 	useEffect(async () => {
@@ -166,7 +168,11 @@ const AddressGroup = ({
 				onClick={toggleCollapsible}
 			>
 				<div className=""></div>
-				<div className="address-name cursor-pointer rounded-lg p-2 group-hover:text-lg">
+				<div
+					className={`address-name cursor-pointer rounded-lg p-2 ${
+						app.is_mobile_app ? '' : 'group-hover:text-lg'
+					}`}
+				>
 					{collapsed ? (
 						<FontAwesomeIcon icon={faPlus} />
 					) : (

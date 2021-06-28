@@ -3,6 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus, faMinus } from '@fortawesome/free-solid-svg-icons';
 import coin_fallback from '../../../../assets/coin_fallback.png';
 import AddressGroup from './AddressGroup';
+import { useSelector } from 'react-redux';
 
 const BlockchainAddressGroup = ({
 	database,
@@ -11,6 +12,7 @@ const BlockchainAddressGroup = ({
 	chain,
 	...other_params
 }) => {
+	const app = useSelector((state) => state.app);
 	const [collapsed, updateCollapsed] = useState(false);
 
 	const toggleCollapsible = () => {
@@ -39,7 +41,11 @@ const BlockchainAddressGroup = ({
 						}}
 					/>
 				</div>
-				<div className="blockchain-name cursor-pointer rounded-lg p-2 group-hover:text-lg">
+				<div
+					className={`blockchain-name cursor-pointer rounded-lg p-2 ${
+						app.is_mobile_app ? '' : 'group-hover:text-lg'
+					}`}
+				>
 					{collapsed ? (
 						<FontAwesomeIcon icon={faPlus} />
 					) : (

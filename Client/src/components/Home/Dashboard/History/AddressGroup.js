@@ -12,6 +12,7 @@ import Transaction from './Transaction';
 import { createLoadingModal, removeLoadingModal } from '../../LoadingModal';
 import { useSnackbar } from 'notistack';
 import { adjustDecimalPoint, valueLengthPreProcessing } from '../utils';
+import { useSelector } from 'react-redux';
 
 const compare = (asc_order, field, a, b) => {
 	// only string
@@ -41,6 +42,7 @@ const AddressGroup = ({
 	...other_params
 }) => {
 	const { enqueueSnackbar } = useSnackbar();
+	const app = useSelector((state) => state.app);
 	const [collapsed, updateCollapsed] = useState(false);
 	const [transactions, updateTransactions] = useState([]);
 	const [transactions_details, updateTransactionsDetails] = useState([]);
@@ -207,7 +209,11 @@ const AddressGroup = ({
 				onClick={toggleCollapsible}
 			>
 				<div className=""></div>
-				<div className="address-name cursor-pointer rounded-lg p-2 group-hover:text-lg">
+				<div
+					className={`address-name cursor-pointer rounded-lg p-2 ${
+						app.is_mobile_app ? '' : 'group-hover:text-lg'
+					}`}
+				>
 					{collapsed ? (
 						<FontAwesomeIcon icon={faPlus} />
 					) : (

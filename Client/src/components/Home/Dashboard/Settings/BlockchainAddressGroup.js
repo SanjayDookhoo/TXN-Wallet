@@ -328,7 +328,11 @@ const BlockchainAddressGroup = ({ database, chains, chains_map, chain }) => {
 						}}
 					/>
 				</div>
-				<div className="blockchain-name cursor-pointer rounded-lg p-2 group-hover:text-lg">
+				<div
+					className={`blockchain-name cursor-pointer rounded-lg p-2 ${
+						app.is_mobile_app ? '' : 'group-hover:text-lg'
+					}`}
+				>
 					{collapsed ? (
 						<FontAwesomeIcon icon={faPlus} />
 					) : (
@@ -339,7 +343,9 @@ const BlockchainAddressGroup = ({ database, chains, chains_map, chain }) => {
 					</div>
 				</div>
 				<div
-					className="delete-address cursor-pointer waves-effect rounded-lg p-2 hover:text-red-400"
+					className={`delete-address cursor-pointer waves-effect rounded-lg p-2 ${
+						app.is_mobile_app ? '' : 'hover:text-red-400'
+					}`}
 					onClick={handleBlockchainRemove}
 				>
 					<FontAwesomeIcon icon={faTrash} />

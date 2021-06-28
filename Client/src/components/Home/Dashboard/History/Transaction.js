@@ -13,6 +13,7 @@ const Transaction = ({
 }) => {
 	const dispatch = useDispatch();
 	const history = useHistory();
+	const app = useSelector((state) => state.app);
 
 	const handleOnclick = () => {
 		updateTransactionSelected(transaction_details.tx_hash);
@@ -23,7 +24,9 @@ const Transaction = ({
 	return (
 		<>
 			<tr
-				className="transaction cursor-pointer p-2 h-12 hover:bg-yellow-200"
+				className={`transaction cursor-pointer p-2 h-12 ${
+					app.is_mobile_app ? '' : 'hover:bg-yellow-200'
+				}`}
 				onClick={handleOnclick}
 			>
 				<td className="border px-1 border-yellow-200">

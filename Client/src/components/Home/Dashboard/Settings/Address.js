@@ -19,6 +19,8 @@ const Address = ({
 	handleAddressRemove,
 	editing_id,
 }) => {
+	const app = useSelector((state) => state.app);
+
 	return (
 		<tr
 			className={`address h-12 ${
@@ -32,13 +34,17 @@ const Address = ({
 			<td className="px-1 border border-yellow-200">
 				<div className="flex justify-around items-center">
 					<div
-						className="address-update cursor-pointer waves-effect rounded-lg p-2 hover:text-yellow-400"
+						className={`address-update cursor-pointer waves-effect rounded-lg p-2 ${
+							app.is_mobile_app ? '' : 'hover:text-yellow-400'
+						}`}
 						onClick={() => handleAddressUpdate(address.id)}
 					>
 						<FontAwesomeIcon icon={faEdit} />
 					</div>
 					<div
-						className="address-delete cursor-pointer waves-effect rounded-lg p-2 hover:text-red-400"
+						className={`address-delete cursor-pointer waves-effect rounded-lg p-2 ${
+							app.is_mobile_app ? '' : 'hover:text-red-400'
+						}`}
 						onClick={() => handleAddressRemove(address.id)}
 					>
 						<FontAwesomeIcon icon={faTrash} />
