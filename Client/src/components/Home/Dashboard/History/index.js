@@ -146,6 +146,7 @@ const History = ({ chains }) => {
 				>
 					<div className="date-range flex justify-around items-center">
 						<div className="p-2">
+							From:{' '}
 							<input
 								type="date"
 								value={from_date}
@@ -153,6 +154,7 @@ const History = ({ chains }) => {
 							/>
 						</div>
 						<div className="p-2">
+							To:{' '}
 							<input
 								type="date"
 								value={to_date}
