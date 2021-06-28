@@ -31,6 +31,7 @@ const MainContainer = ({ body, navbar, ...props }) => {
 				<div
 					className={`${inner_div_container} ${inner_div_container_mobile} ${inner_div_container_desktop}`}
 				>
+					{/* desktop */}
 					<div className="navbar w-24 hidden md:flex flex-col justify-between items-center">
 						<LogoButton />
 						<div className="flex flex-col justify-between items-center">
@@ -38,15 +39,21 @@ const MainContainer = ({ body, navbar, ...props }) => {
 						</div>
 						<LogoutButton />
 					</div>
+
+					{/* mobile */}
 					<div className="navbar md:hidden h-12 flex flex-row justify-center items-center rounded-tr-lg rounded-tl-lg border-t-2 border-l-2 border-r-2 border-gray-600 bg-yellow-500">
 						<LogoButton />
 					</div>
+
+					{/* both desktop and mobile */}
 					<div
 						id="mobile-content-swipe-anchor"
 						className={`${body_container} ${body_container_desktop} ${body_container_mobile}`}
 					>
 						{body}
 					</div>
+
+					{/* mobile */}
 					<div className="flex md:hidden flex-row justify-between items-center">
 						{navbar}
 						<LogoutButton />

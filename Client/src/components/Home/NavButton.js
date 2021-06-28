@@ -9,7 +9,7 @@ const NavButton = ({ active, children, ...props }) => {
 	return (
 		<button
 			{...props}
-			className={`waves-effect w-16 md:w-24 h-16 md:h-24 md:text-3xl rounded-lg shadow ripple hover:shadow-lg focus:outline-none ${
+			className={`waves-effect w-24 h-16 md:h-24 md:text-3xl rounded-lg shadow ripple hover:shadow-lg focus:outline-none ${
 				active ? 'bg-yellow-300' : ''
 			} ${app.is_mobile_app ? '' : 'hover:bg-yellow-400'} text-black`}
 		>
