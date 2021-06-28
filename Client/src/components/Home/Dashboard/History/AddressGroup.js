@@ -4,6 +4,7 @@ import { faPlus, faMinus } from '@fortawesome/free-solid-svg-icons';
 import covalentAPI from '../../../../ducks/api/covalent';
 import Transaction from './Transaction';
 import { createLoadingModal, removeLoadingModal } from '../../LoadingModal';
+import { useSnackbar } from 'notistack';
 
 const AddressGroup = ({
 	database,
@@ -14,6 +15,7 @@ const AddressGroup = ({
 	to_date,
 	...other_params
 }) => {
+	const { enqueueSnackbar } = useSnackbar();
 	const [collapsed, updateCollapsed] = useState(false);
 	const [transactions, updateTransactions] = useState([]);
 
@@ -35,6 +37,10 @@ const AddressGroup = ({
 					data.data.items.filter((txn) => txn.successful === true)
 				);
 			} catch (error) {
+				console.log({ error });
+				enqueueSnackbar('Something went wrong', {
+					variant: 'error',
+				});
 			} finally {
 				removeLoadingModal(modal);
 			}

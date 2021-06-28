@@ -4,6 +4,7 @@ import { faPlus, faMinus } from '@fortawesome/free-solid-svg-icons';
 import covalentAPI from '../../../../ducks/api/covalent';
 import Token from './Token';
 import { createLoadingModal, removeLoadingModal } from '../../LoadingModal';
+import { useSnackbar } from 'notistack';
 
 const AddressGroup = ({
 	database,
@@ -15,6 +16,7 @@ const AddressGroup = ({
 	asc_order,
 	...other_params
 }) => {
+	const { enqueueSnackbar } = useSnackbar();
 	const [collapsed, updateCollapsed] = useState(false);
 	const [historical_prices_map, updateHistoricalPricesMap] = useState({}); // contract-address => today / 1d => price
 	const [tokens_w_prices, updateTokensWPrices] = useState([]);
@@ -54,6 +56,10 @@ const AddressGroup = ({
 				// console.log({ temp_historical_prices_map });
 				updateHistoricalPricesMap(temp_historical_prices_map);
 			} catch (error) {
+				console.log({ error });
+				enqueueSnackbar('Something went wrong', {
+					variant: 'error',
+				});
 			} finally {
 				removeLoadingModal(modal);
 			}

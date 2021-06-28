@@ -33,10 +33,12 @@ import { adjustDecimalPoint } from '../utils';
 import { Breadcrumbs, Fab } from '@material-ui/core';
 import { useHistory } from 'react-router';
 import { createLoadingModal, removeLoadingModal } from '../../LoadingModal';
+import { useSnackbar } from 'notistack';
 
 const Portfolio = ({ chains, updateChartTouchstart }) => {
 	const dispatch = useDispatch();
 	const history = useHistory();
+	const { enqueueSnackbar } = useSnackbar();
 
 	const database = useSelector((state) => state.database);
 	const [user, updateUser] = useState(
@@ -126,6 +128,10 @@ const Portfolio = ({ chains, updateChartTouchstart }) => {
 
 				updateTokensMap(temp_tokens_map);
 			} catch (error) {
+				console.log({ error });
+				enqueueSnackbar('Something went wrong', {
+					variant: 'error',
+				});
 			} finally {
 				removeLoadingModal(modal);
 			}
