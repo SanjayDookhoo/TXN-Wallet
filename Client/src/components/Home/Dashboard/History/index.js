@@ -21,6 +21,7 @@ import {
 	databaseDelete,
 	databasePatch,
 } from '../../../../ducks/actions/database';
+import { createLoadingModal, removeLoadingModal } from '../../LoadingModal';
 
 const History = ({ chains }) => {
 	const dispatch = useDispatch();
@@ -37,11 +38,15 @@ const History = ({ chains }) => {
 	const [transaction_selected, updateTransactionSelected] = useState(null);
 
 	useEffect(() => {
+		const modal = createLoadingModal();
 		dispatch(
 			databaseGet({
 				table_name: 'transaction',
 				req_params: {
 					created_by_user: user?.result?.id,
+				},
+				onSuccess: () => {
+					removeLoadingModal(modal);
 				},
 			})
 		);

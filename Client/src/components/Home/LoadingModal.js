@@ -4,15 +4,23 @@ import { ReactReduxContext, Provider, useSelector } from 'react-redux';
 import { store } from '../../index';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSpinner } from '@fortawesome/free-solid-svg-icons';
+import { v4 as uuidv4 } from 'uuid';
 
+const main_loading_modal_id = 'loading-modal';
 let minimum_time = 500;
 let minimum_time_up = false;
 
-export const LoadingModal = ({ loading_modal_id }) => {
-	return <div id={`${loading_modal_id}-loading-modal`}></div>;
+export const LoadingModal = () => {
+	return <div id={main_loading_modal_id}></div>;
 };
 
-export const createLoadingModal = ({ loading_modal_id }) => {
+export const createLoadingModal = () => {
+	// ensure no conflicts with any other loading modal
+	const temp_id = uuidv4();
+	const temp_div = document.createElement('div');
+	temp_div.setAttribute('id', temp_id);
+	document.getElementById(main_loading_modal_id).appendChild(temp_div);
+
 	// ensures that the loading modal doesnt flicker if it loads too fast with a minimum load time
 	minimum_time_up = false;
 	setTimeout(() => {
@@ -23,21 +31,25 @@ export const createLoadingModal = ({ loading_modal_id }) => {
 		<Provider context={ReactReduxContext} store={store}>
 			<LoadingModalRender />
 		</Provider>,
-		document.getElementById(`${loading_modal_id}-loading-modal`)
+		temp_div
 	);
+
+	return temp_id;
 };
 
-export const removeLoadingModal = ({ loading_modal_id }) => {
+export const removeLoadingModal = (temp_id) => {
+	const unmount = () => {
+		const temp_dive = document.getElementById(temp_id);
+		ReactDOM.unmountComponentAtNode(temp_dive);
+		temp_dive.parentNode.removeChild(temp_dive);
+	};
+
 	if (minimum_time_up) {
-		ReactDOM.unmountComponentAtNode(
-			document.getElementById(`${loading_modal_id}-loading-modal`)
-		);
+		unmount();
 	} else {
 		// if remove requested too quickly wait at least the length of time the modal supposed to remain up
 		setTimeout(() => {
-			ReactDOM.unmountComponentAtNode(
-				document.getElementById(`${loading_modal_id}-loading-modal`)
-			);
+			unmount();
 		}, minimum_time);
 	}
 };

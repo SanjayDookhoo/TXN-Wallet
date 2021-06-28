@@ -10,6 +10,7 @@ import {
 } from '../../../../ducks/actions/database';
 import { InputLabel, Select, MenuItem } from '@material-ui/core';
 import BlockchainAddressGroup from './BlockchainAddressGroup';
+import { createLoadingModal, removeLoadingModal } from '../../LoadingModal';
 
 const Settings = ({ chains }) => {
 	const dispatch = useDispatch();
@@ -49,11 +50,15 @@ const Settings = ({ chains }) => {
 	}, [user]);
 
 	useEffect(() => {
+		const modal = createLoadingModal();
 		dispatch(
 			databaseGet({
 				table_name: 'chain',
 				req_params: {
 					created_by_user: user?.result?.id,
+				},
+				onSuccess: () => {
+					removeLoadingModal(modal);
 				},
 			})
 		);
@@ -62,6 +67,7 @@ const Settings = ({ chains }) => {
 	const handleBlockchainOnChange = (e) => {
 		updateBlockchainAddValue('-1');
 
+		const modal = createLoadingModal();
 		dispatch(
 			databasePost({
 				table_name: 'chain',
@@ -71,6 +77,9 @@ const Settings = ({ chains }) => {
 							covalent_chain_id: e.target.value,
 						},
 					],
+				},
+				onSuccess: () => {
+					removeLoadingModal(modal);
 				},
 			})
 		);

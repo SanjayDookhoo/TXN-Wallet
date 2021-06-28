@@ -20,6 +20,7 @@ import { createDeleteModal } from '../../DeleteModal';
 import covalentAPI from '../../../../ducks/api/covalent';
 import Address from './Address';
 import coin_fallback from '../../../../assets/coin_fallback.png';
+import { createLoadingModal, removeLoadingModal } from '../../LoadingModal';
 
 const initialState = {
 	name: '',
@@ -37,15 +38,20 @@ const BlockchainAddressGroup = ({ database, chains, chains_map, chain }) => {
 
 	const handleBlockchainRemove = (e) => {
 		e.stopPropagation();
-		const callback = () =>
+		const callback = () => {
+			const modal = createLoadingModal();
 			dispatch(
 				databaseDelete({
 					table_name: 'chain',
 					req_body: {
 						ids: [chain.id],
 					},
+					onSuccess: () => {
+						removeLoadingModal(modal);
+					},
 				})
 			);
+		};
 
 		createDeleteModal({ callback });
 	};
@@ -95,6 +101,7 @@ const BlockchainAddressGroup = ({ database, chains, chains_map, chain }) => {
 
 			if (!flag) {
 				if (form_mode_add) {
+					const modal = createLoadingModal();
 					dispatch(
 						databasePost({
 							table_name: 'address',
@@ -107,6 +114,7 @@ const BlockchainAddressGroup = ({ database, chains, chains_map, chain }) => {
 								],
 							},
 							onSuccess: () => {
+								removeLoadingModal(modal);
 								updateFormData(initialState);
 							},
 						})
@@ -133,6 +141,7 @@ const BlockchainAddressGroup = ({ database, chains, chains_map, chain }) => {
 					}
 
 					if (Object.values(updates[editing_id]).length !== 0) {
+						const modal = createLoadingModal();
 						dispatch(
 							databasePatch({
 								table_name: 'address',
@@ -140,6 +149,7 @@ const BlockchainAddressGroup = ({ database, chains, chains_map, chain }) => {
 									updates,
 								},
 								onSuccess: () => {
+									removeLoadingModal(modal);
 									updateFormData(initialState);
 								},
 							})
@@ -172,15 +182,20 @@ const BlockchainAddressGroup = ({ database, chains, chains_map, chain }) => {
 		updateFormModeAdd(true);
 		updateEditingId(null);
 
-		const callback = () =>
+		const callback = () => {
+			const modal = createLoadingModal();
 			dispatch(
 				databaseDelete({
 					table_name: 'address',
 					req_body: {
 						ids: [id],
 					},
+					onSuccess: () => {
+						removeLoadingModal(modal);
+					},
 				})
 			);
+		};
 
 		createDeleteModal({ callback });
 	};

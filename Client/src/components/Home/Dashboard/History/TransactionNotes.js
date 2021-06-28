@@ -21,6 +21,7 @@ import {
 	databasePatch,
 } from '../../../../ducks/actions/database';
 import { useHistory } from 'react-router';
+import { createLoadingModal, removeLoadingModal } from '../../LoadingModal';
 
 const categories = {
 	housing: 'Housing',
@@ -60,7 +61,7 @@ const TransactionNotes = ({ transaction_selected }) => {
 
 		if (new_transaction && edit) {
 			// create new
-			console.log({ general_data });
+			const modal = createLoadingModal();
 			dispatch(
 				databasePost({
 					table_name: 'transaction',
@@ -73,6 +74,7 @@ const TransactionNotes = ({ transaction_selected }) => {
 						],
 					},
 					onSuccess: (res) => {
+						removeLoadingModal(modal);
 						const tx_hash = res.result[0].id;
 						saveItems(tx_hash);
 						history.goBack();
@@ -105,11 +107,15 @@ const TransactionNotes = ({ transaction_selected }) => {
 			}
 
 			if (Object.values(updates[found.id]).length !== 0) {
+				const modal = createLoadingModal();
 				dispatch(
 					databasePatch({
 						table_name: 'transaction',
 						req_body: {
 							updates,
+						},
+						onSuccess: () => {
+							removeLoadingModal(modal);
 						},
 					})
 				);
@@ -142,11 +148,15 @@ const TransactionNotes = ({ transaction_selected }) => {
 				}
 			});
 		if (Object.values(updates).length !== 0) {
+			const modal = createLoadingModal();
 			dispatch(
 				databasePatch({
 					table_name: 'item',
 					req_body: {
 						updates,
+					},
+					onSuccess: () => {
+						removeLoadingModal(modal);
 					},
 				})
 			);
@@ -165,11 +175,15 @@ const TransactionNotes = ({ transaction_selected }) => {
 				};
 			});
 		if (inserts.length !== 0) {
+			const modal = createLoadingModal();
 			dispatch(
 				databasePost({
 					table_name: 'item',
 					req_body: {
 						inserts,
+					},
+					onSuccess: () => {
+						removeLoadingModal(modal);
 					},
 				})
 			);
@@ -180,11 +194,15 @@ const TransactionNotes = ({ transaction_selected }) => {
 			.filter((item) => item._deleted)
 			.map((item) => item.id);
 		if (ids.length !== 0) {
+			const modal = createLoadingModal();
 			dispatch(
 				databaseDelete({
 					table_name: 'item',
 					req_body: {
 						ids,
+					},
+					onSuccess: () => {
+						removeLoadingModal(modal);
 					},
 				})
 			);

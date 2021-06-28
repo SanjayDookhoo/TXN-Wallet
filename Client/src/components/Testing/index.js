@@ -8,6 +8,7 @@ import {
 	databasePatch,
 	databaseDelete,
 } from '../../ducks/actions/database';
+import { createLoadingModal, removeLoadingModal } from '../Home/LoadingModal';
 
 const Testing = () => {
 	const dispatch = useDispatch();
@@ -23,16 +24,21 @@ const Testing = () => {
 	};
 
 	const handleGet = () => {
+		const modal = createLoadingModal();
 		dispatch(
 			databaseGet({
 				table_name: 'customers',
 				req_params: {
 					name: 'sanjay',
 				},
+				onSuccess: () => {
+					removeLoadingModal(modal);
+				},
 			})
 		);
 	};
 	const handlePost = () => {
+		const modal = createLoadingModal();
 		dispatch(
 			databasePost({
 				table_name: 'customers',
@@ -45,10 +51,14 @@ const Testing = () => {
 						},
 					],
 				},
+				onSuccess: () => {
+					removeLoadingModal(modal);
+				},
 			})
 		);
 	};
 	const handlePatch = () => {
+		const modal = createLoadingModal();
 		dispatch(
 			databasePatch({
 				table_name: 'customers',
@@ -60,15 +70,22 @@ const Testing = () => {
 						},
 					},
 				},
+				onSuccess: () => {
+					removeLoadingModal(modal);
+				},
 			})
 		);
 	};
 	const handleDelete = () => {
+		const modal = createLoadingModal();
 		dispatch(
 			databaseDelete({
 				table_name: 'customers',
 				req_body: {
 					ids: [3],
+				},
+				onSuccess: () => {
+					removeLoadingModal(modal);
 				},
 			})
 		);

@@ -32,6 +32,7 @@ import BlockchainAddressGroup from './BlockchainAddressGroup';
 import { adjustDecimalPoint } from '../utils';
 import { Breadcrumbs, Fab } from '@material-ui/core';
 import { useHistory } from 'react-router';
+import { createLoadingModal, removeLoadingModal } from '../../LoadingModal';
 
 const Portfolio = ({ chains, updateChartTouchstart }) => {
 	const dispatch = useDispatch();
@@ -126,11 +127,15 @@ const Portfolio = ({ chains, updateChartTouchstart }) => {
 	}, [database]);
 
 	useEffect(() => {
+		const modal = createLoadingModal();
 		dispatch(
 			databaseGet({
 				table_name: 'chain',
 				req_params: {
 					created_by_user: user?.result?.id,
+				},
+				onSuccess: () => {
+					removeLoadingModal(modal);
 				},
 			})
 		);
