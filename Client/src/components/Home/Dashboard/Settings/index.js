@@ -130,9 +130,6 @@ const Settings = ({ chains }) => {
 						value={blockchain_add_value}
 						onChange={handleBlockchainOnChange}
 					>
-						<MenuItem value="-1" disabled>
-							Please select
-						</MenuItem>
 						{avail_chains.map((chain) => (
 							<MenuItem
 								key={chain.chain_id}
