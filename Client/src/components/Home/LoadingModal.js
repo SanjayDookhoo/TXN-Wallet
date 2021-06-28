@@ -57,8 +57,8 @@ export const removeLoadingModal = (temp_id) => {
 const LoadingModalRender = () => {
 	return (
 		<div
-			className="absolute w-screen h-screen top-0 left-0 z-10 flex justify-center items-center"
-			style={{ background: '#00000066' }}
+			className="absolute w-screen h-screen top-0 left-0 flex justify-center items-center"
+			style={{ background: '#00000066', zIndex: 5000 }}
 		>
 			<div
 				className="bg-white flex justify-center items-center rounded-lg w-32 h-32"

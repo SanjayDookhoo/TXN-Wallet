@@ -31,8 +31,8 @@ const DeleteModalRender = ({ callback, note }) => {
 
 	return (
 		<div
-			className="absolute w-screen h-screen top-0 left-0 z-10 flex justify-center items-center"
-			style={{ background: '#00000066' }}
+			className="absolute w-screen h-screen top-0 left-0 flex justify-center items-center"
+			style={{ background: '#00000066', zIndex: 5000 }}
 			onClick={handleCancel}
 		>
 			<div
