@@ -75,10 +75,6 @@ const Token = ({
 				);
 
 				if (avail_color) {
-					!chart_obj_series
-						.map((one_series) => one_series.color)
-						.includes(avail_color);
-
 					const new_series = chart_obj.addAreaSeries({
 						topColor: `${avail_color}00`,
 						bottomColor: `${avail_color}00`,
