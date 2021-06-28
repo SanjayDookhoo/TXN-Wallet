@@ -2,9 +2,9 @@ import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
-	faSignOutAlt,
-	faCog,
-	faChartLine,
+	faSort,
+	faSortUp,
+	faSortDown,
 	faHistory,
 	faMoneyBill,
 	faCalculator,
@@ -43,6 +43,24 @@ const initial_general_data = {
 	notes: '',
 };
 
+const compare = (asc_order, field, a, b) => {
+	// only string
+	if (field === 'name') {
+		const new_a = a[field] ? a[field] : '';
+		const new_b = b[field] ? b[field] : '';
+
+		return asc_order
+			? new_a.localeCompare(new_b)
+			: new_b.localeCompare(new_a);
+	} else {
+		// rest is numbers
+		const new_a = a[field] ? a[field] : 0;
+		const new_b = b[field] ? b[field] : 0;
+
+		return asc_order ? new_a - new_b : new_b - new_a;
+	}
+};
+
 const TransactionNotes = ({ transaction_selected }) => {
 	const dispatch = useDispatch();
 	const history = useHistory();
@@ -55,6 +73,8 @@ const TransactionNotes = ({ transaction_selected }) => {
 	const [general_data, updateGeneralData] = useState(initial_general_data);
 	const [items_data, updateItemsData] = useState([]);
 	const [transaction_found, updateTransactionFound] = useState(null);
+	const [sort_criteria, updateSortCriteria] = useState('name');
+	const [asc_order, updateAscOrder] = useState(false);
 
 	useEffect(() => {
 		if (database.transaction) {
@@ -275,6 +295,11 @@ const TransactionNotes = ({ transaction_selected }) => {
 		new_transaction,
 		edit,
 
+		sort_criteria,
+		updateSortCriteria,
+		asc_order,
+		updateAscOrder,
+
 		items_data,
 		updateItemsData,
 	};
@@ -410,6 +435,10 @@ const Items = ({
 	edit,
 	items_data,
 	updateItemsData,
+	sort_criteria,
+	updateSortCriteria,
+	asc_order,
+	updateAscOrder,
 }) => {
 	const [add_data, updateAddDate] = useState(initial_add_data);
 	const [count, updateCount] = useState(0);
@@ -457,13 +486,54 @@ const Items = ({
 		createDeleteModal({ callback });
 	};
 
+	useEffect(() => {
+		console.log({ items_data });
+	}, [items_data]);
+
+	const toggleSort = (toggle_criteria) => {
+		if (sort_criteria === toggle_criteria) {
+			updateAscOrder(!asc_order);
+		} else {
+			if (toggle_criteria === 'name') {
+				// only string value starts at ascending order
+				updateAscOrder(true);
+			} else {
+				// any other value starts at descending order
+				updateAscOrder(false);
+			}
+			updateSortCriteria(toggle_criteria);
+		}
+	};
+
+	const sortIconRender = (toggle_criteria) => {
+		if (sort_criteria !== toggle_criteria) {
+			return <FontAwesomeIcon icon={faSort} />;
+		} else {
+			if (asc_order) {
+				return <FontAwesomeIcon icon={faSortUp} />;
+			} else {
+				return <FontAwesomeIcon icon={faSortDown} />;
+			}
+		}
+	};
+
 	return (
 		<div className="items">
 			<table className="w-full rounded-lg">
 				<thead>
 					<tr>
-						<th>Item</th>
-						<th>Price</th>
+						<th
+							className="cursor-pointer"
+							onClick={() => toggleSort('name')}
+						>
+							{sortIconRender('name')} Item
+						</th>
+						<th
+							className="cursor-pointer"
+							onClick={() => toggleSort('price')}
+						>
+							{sortIconRender('price')} Price
+						</th>
 						<th>Actions</th>
 					</tr>
 				</thead>
@@ -475,6 +545,7 @@ const Items = ({
 								item._added
 						)
 						.filter((item) => !item._deleted)
+						.sort((a, b) => compare(asc_order, sort_criteria, a, b))
 						.map((item) => (
 							<tr key={item.id}>
 								<td>

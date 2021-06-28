@@ -6,6 +6,9 @@ import {
 	faEdit,
 	faPlus,
 	faMinus,
+	faSort,
+	faSortUp,
+	faSortDown,
 } from '@fortawesome/free-solid-svg-icons';
 import { useSnackbar } from 'notistack';
 import {
@@ -27,6 +30,24 @@ const initialState = {
 	address_hash: '',
 };
 
+const compare = (asc_order, field, a, b) => {
+	// only string
+	if (field === 'name' || field === 'address_hash') {
+		const new_a = a[field] ? a[field] : '';
+		const new_b = b[field] ? b[field] : '';
+
+		return asc_order
+			? new_a.localeCompare(new_b)
+			: new_b.localeCompare(new_a);
+	} else {
+		// rest is numbers
+		const new_a = a[field] ? a[field] : 0;
+		const new_b = b[field] ? b[field] : 0;
+
+		return asc_order ? new_a - new_b : new_b - new_a;
+	}
+};
+
 const BlockchainAddressGroup = ({ database, chains, chains_map, chain }) => {
 	const dispatch = useDispatch();
 	const { enqueueSnackbar } = useSnackbar();
@@ -35,6 +56,8 @@ const BlockchainAddressGroup = ({ database, chains, chains_map, chain }) => {
 	const [form_mode_add, updateFormModeAdd] = useState(true);
 	const [editing_id, updateEditingId] = useState(null);
 	const [collapsed, updateCollapsed] = useState(false);
+	const [sort_criteria, updateSortCriteria] = useState('name');
+	const [asc_order, updateAscOrder] = useState(false);
 
 	const handleBlockchainRemove = (e) => {
 		e.stopPropagation();
@@ -259,6 +282,36 @@ const BlockchainAddressGroup = ({ database, chains, chains_map, chain }) => {
 		editing_id,
 	};
 
+	const toggleSort = (toggle_criteria) => {
+		if (sort_criteria === toggle_criteria) {
+			updateAscOrder(!asc_order);
+		} else {
+			if (
+				toggle_criteria === 'name' ||
+				toggle_criteria === 'address_hash'
+			) {
+				// only string value starts at ascending order
+				updateAscOrder(true);
+			} else {
+				// any other value starts at descending order
+				updateAscOrder(false);
+			}
+			updateSortCriteria(toggle_criteria);
+		}
+	};
+
+	const sortIconRender = (toggle_criteria) => {
+		if (sort_criteria !== toggle_criteria) {
+			return <FontAwesomeIcon icon={faSort} />;
+		} else {
+			if (asc_order) {
+				return <FontAwesomeIcon icon={faSortUp} />;
+			} else {
+				return <FontAwesomeIcon icon={faSortDown} />;
+			}
+		}
+	};
+
 	return (
 		<div className="blockchain-address-group my-4 p-2 rounded-lg border-2 border-yellow-400 bg-gray-300">
 			<div
@@ -298,11 +351,19 @@ const BlockchainAddressGroup = ({ database, chains, chains_map, chain }) => {
 						<table className="w-full border border-yellow-200 mt-2 rounded-lg text-xs lg:text-base">
 							<thead>
 								<tr>
-									<th className="border border-yellow-200">
-										Name
+									<th
+										className="border border-yellow-200 cursor-pointer"
+										onClick={() => toggleSort('name')}
+									>
+										{sortIconRender('name')} Name
 									</th>
-									<th className="border border-yellow-200">
-										Address
+									<th
+										className="border border-yellow-200 cursor-pointer"
+										onClick={() =>
+											toggleSort('address_hash')
+										}
+									>
+										{sortIconRender('address_hash')} Address
 									</th>
 									<th className="border border-yellow-200">
 										Actions
@@ -312,6 +373,14 @@ const BlockchainAddressGroup = ({ database, chains, chains_map, chain }) => {
 							<tbody>
 								{database.address &&
 									Object.values(database.address)
+										.sort((a, b) =>
+											compare(
+												asc_order,
+												sort_criteria,
+												a,
+												b
+											)
+										)
 										.filter(
 											(address) =>
 												address.chain_id === chain.id

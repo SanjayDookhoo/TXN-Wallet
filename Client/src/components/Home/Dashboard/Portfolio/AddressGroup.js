@@ -6,6 +6,24 @@ import Token from './Token';
 import { createLoadingModal, removeLoadingModal } from '../../LoadingModal';
 import { useSnackbar } from 'notistack';
 
+const compare = (asc_order, field, a, b) => {
+	// only string
+	if (field === 'contract_ticker_symbol') {
+		const new_a = a[field] ? a[field] : '';
+		const new_b = b[field] ? b[field] : '';
+
+		return asc_order
+			? new_a.localeCompare(new_b)
+			: new_b.localeCompare(new_a);
+	} else {
+		// rest is numbers
+		const new_a = a[field] ? a[field] : 0;
+		const new_b = b[field] ? b[field] : 0;
+
+		return asc_order ? new_a - new_b : new_b - new_a;
+	}
+};
+
 const AddressGroup = ({
 	database,
 	chain,
@@ -152,29 +170,7 @@ const AddressGroup = ({
 			</div>
 			<div className={`p-2 ${collapsed && 'hidden'}`}>
 				{tokens_w_prices
-					.sort((a, b) => {
-						if (sort_criteria === 'contract_ticker_symbol') {
-							const new_a = a[sort_criteria]
-								? a[sort_criteria]
-								: '';
-							const new_b = b[sort_criteria]
-								? b[sort_criteria]
-								: '';
-
-							return asc_order
-								? new_a.localeCompare(new_b)
-								: new_b.localeCompare(new_a);
-						} else {
-							const new_a = a[sort_criteria]
-								? a[sort_criteria]
-								: 0;
-							const new_b = b[sort_criteria]
-								? b[sort_criteria]
-								: 0;
-
-							return asc_order ? new_a - new_b : new_b - new_a;
-						}
-					})
+					.sort((a, b) => compare(asc_order, sort_criteria, a, b))
 					.filter(
 						(token) =>
 							token.contract_name
