@@ -417,7 +417,7 @@ const Portfolio = ({ chains, updateChartTouchstart }) => {
 					</div>
 					<div className="absolute bottom-10 right-10">
 						<Fab
-							color="primary"
+							color="secondary"
 							aria-label="add"
 							onClick={() => changeBreadcrumbView('chart')}
 							disabled={chart_obj_series.length === 0}
@@ -427,7 +427,9 @@ const Portfolio = ({ chains, updateChartTouchstart }) => {
 					</div>
 				</div>
 				<div
-					className={`${breadcrumb_view !== 'chart' ? 'hidden' : ''}`}
+					className={`pt-4 ${
+						breadcrumb_view !== 'chart' ? 'hidden' : ''
+					}`}
 					ref={chart_ref}
 				></div>
 			</ContentBody>

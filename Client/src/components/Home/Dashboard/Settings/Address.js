@@ -30,7 +30,7 @@ const Address = ({
 				{address.address_hash}
 			</td>
 			<td className="px-1 border border-yellow-200">
-				<div className="flex justify-between items-center">
+				<div className="flex justify-around items-center">
 					<div
 						className="address-update cursor-pointer waves-effect rounded-lg p-2 hover:text-yellow-400"
 						onClick={() => handleAddressUpdate(address.id)}

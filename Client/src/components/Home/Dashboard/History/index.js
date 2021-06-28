@@ -148,6 +148,7 @@ const History = ({ chains }) => {
 						<div className="p-2">
 							From:{' '}
 							<input
+								className="p-3 rounded-md"
 								type="date"
 								value={from_date}
 								onChange={(e) => updateFromDate(e.target.value)}
@@ -156,6 +157,7 @@ const History = ({ chains }) => {
 						<div className="p-2">
 							To:{' '}
 							<input
+								className="p-3 rounded-md"
 								type="date"
 								value={to_date}
 								onChange={(e) => updateToDate(e.target.value)}
