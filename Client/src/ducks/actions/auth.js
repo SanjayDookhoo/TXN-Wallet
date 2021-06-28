@@ -2,7 +2,7 @@ import * as actionType from '../constants/actionTypes';
 import * as databaseApi from '../api/database.js';
 
 export const signIn =
-	({ req_body, onSuccess, onFailure }) =>
+	({ req_body, onSuccess, onFailure, onFinish }) =>
 	async (dispatch) => {
 		try {
 			const { data } = await databaseApi.signIn({ req_body });
@@ -13,11 +13,13 @@ export const signIn =
 		} catch (error) {
 			console.log(error);
 			if (onFailure) onFailure(error);
+		} finally {
+			if (onFinish) onFinish();
 		}
 	};
 
 export const signUp =
-	({ req_body, onSuccess, onFailure }) =>
+	({ req_body, onSuccess, onFailure, onFinish }) =>
 	async (dispatch) => {
 		try {
 			const { data } = await databaseApi.signUp({ req_body });
@@ -28,6 +30,8 @@ export const signUp =
 		} catch (error) {
 			console.log(error);
 			if (onFailure) onFailure(error);
+		} finally {
+			if (onFinish) onFinish();
 		}
 	};
 

@@ -7,6 +7,7 @@ import Button from '../../Button';
 import { signIn, signUp } from '../../../ducks/actions/auth';
 import logo from '../../../assets/logo.svg';
 import logo_mobile from '../../../assets/logo_mobile.svg';
+import { createLoadingModal, removeLoadingModal } from '../LoadingModal';
 
 const initialState = {
 	user_name: '',
@@ -38,6 +39,7 @@ const Auth = () => {
 
 		if (is_signup) {
 			if (form_data.password === form_data.confirm_password) {
+				const modal = createLoadingModal();
 				dispatch(
 					signUp({
 						req_body: form_data,
@@ -54,6 +56,9 @@ const Auth = () => {
 								});
 							}
 						},
+						onFinish: () => {
+							removeLoadingModal(modal);
+						},
 					})
 				);
 			} else {
@@ -62,6 +67,7 @@ const Auth = () => {
 				});
 			}
 		} else {
+			const modal = createLoadingModal();
 			dispatch(
 				signIn({
 					req_body: form_data,
@@ -76,6 +82,9 @@ const Auth = () => {
 								variant: 'error',
 							});
 						}
+					},
+					onFinish: () => {
+						removeLoadingModal(modal);
 					},
 				})
 			);
