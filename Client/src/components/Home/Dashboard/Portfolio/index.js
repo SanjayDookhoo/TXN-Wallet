@@ -33,7 +33,6 @@ import { adjustDecimalPoint } from '../utils';
 import { Breadcrumbs, Fab } from '@material-ui/core';
 import { useHistory } from 'react-router';
 import { createLoadingModal, removeLoadingModal } from '../../LoadingModal';
-import { useSnackbar } from 'notistack';
 
 const Portfolio = ({ chains, updateChartTouchstart }) => {
 	const dispatch = useDispatch();
