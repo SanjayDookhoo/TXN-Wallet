@@ -305,7 +305,7 @@ const BlockchainAddressGroup = ({ database, chains, chains_map, chain }) => {
 										Address
 									</th>
 									<th className="border border-yellow-200">
-										Options
+										Actions
 									</th>
 								</tr>
 							</thead>

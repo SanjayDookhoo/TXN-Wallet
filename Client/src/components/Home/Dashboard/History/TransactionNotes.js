@@ -464,7 +464,7 @@ const Items = ({
 					<tr>
 						<th>Item</th>
 						<th>Price</th>
-						<th>Option</th>
+						<th>Actions</th>
 					</tr>
 				</thead>
 				<tbody>

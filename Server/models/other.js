@@ -42,21 +42,6 @@ export const base_models = {
 			on_delete: 'cascade',
 		},
 	},
-	image: {
-		name: {
-			type: 'string',
-		},
-		image_type: {
-			type: 'string',
-		},
-		blob: {
-			type: 'blob',
-		},
-		_foreign_key: {
-			table: 'transaction',
-			on_delete: 'cascade',
-		},
-	},
 };
 
 const other = (sequelize_session) => {
