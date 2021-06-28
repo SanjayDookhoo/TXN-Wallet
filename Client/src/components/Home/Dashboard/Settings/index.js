@@ -11,9 +11,11 @@ import {
 import { InputLabel, Select, MenuItem } from '@material-ui/core';
 import BlockchainAddressGroup from './BlockchainAddressGroup';
 import { createLoadingModal, removeLoadingModal } from '../../LoadingModal';
+import { useSnackbar } from 'notistack';
 
 const Settings = ({ chains }) => {
 	const dispatch = useDispatch();
+	const { enqueueSnackbar } = useSnackbar();
 
 	const database = useSelector((state) => state.database);
 	const [user, updateUser] = useState(
@@ -57,6 +59,12 @@ const Settings = ({ chains }) => {
 				req_params: {
 					created_by_user: user?.result?.id,
 				},
+				onFailure: (error) => {
+					console.log({ error });
+					enqueueSnackbar('Something went wrong', {
+						variant: 'error',
+					});
+				},
 				onFinish: () => {
 					removeLoadingModal(modal);
 				},
@@ -77,6 +85,12 @@ const Settings = ({ chains }) => {
 							covalent_chain_id: e.target.value,
 						},
 					],
+				},
+				onFailure: (error) => {
+					console.log({ error });
+					enqueueSnackbar('Something went wrong', {
+						variant: 'error',
+					});
 				},
 				onFinish: () => {
 					removeLoadingModal(modal);

@@ -46,6 +46,12 @@ const BlockchainAddressGroup = ({ database, chains, chains_map, chain }) => {
 					req_body: {
 						ids: [chain.id],
 					},
+					onFailure: (error) => {
+						console.log({ error });
+						enqueueSnackbar('Something went wrong', {
+							variant: 'error',
+						});
+					},
 					onFinish: () => {
 						removeLoadingModal(modal);
 					},
@@ -117,6 +123,12 @@ const BlockchainAddressGroup = ({ database, chains, chains_map, chain }) => {
 							onSuccess: () => {
 								updateFormData(initialState);
 							},
+							onFailure: (error) => {
+								console.log({ error });
+								enqueueSnackbar('Something went wrong', {
+									variant: 'error',
+								});
+							},
 							onFinish: () => {
 								removeLoadingModal(modal);
 							},
@@ -153,6 +165,12 @@ const BlockchainAddressGroup = ({ database, chains, chains_map, chain }) => {
 								},
 								onSuccess: () => {
 									updateFormData(initialState);
+								},
+								onFailure: (error) => {
+									console.log({ error });
+									enqueueSnackbar('Something went wrong', {
+										variant: 'error',
+									});
 								},
 								onFinish: () => {
 									removeLoadingModal(modal);
@@ -196,6 +214,12 @@ const BlockchainAddressGroup = ({ database, chains, chains_map, chain }) => {
 					table_name: 'address',
 					req_body: {
 						ids: [id],
+					},
+					onFailure: (error) => {
+						console.log({ error });
+						enqueueSnackbar('Something went wrong', {
+							variant: 'error',
+						});
 					},
 					onFinish: () => {
 						removeLoadingModal(modal);

@@ -22,6 +22,7 @@ import {
 } from '../../../../ducks/actions/database';
 import { useHistory } from 'react-router';
 import { createLoadingModal, removeLoadingModal } from '../../LoadingModal';
+import { useSnackbar } from 'notistack';
 
 const categories = {
 	housing: 'Housing',
@@ -44,6 +45,8 @@ const initial_general_data = {
 const TransactionNotes = ({ transaction_selected }) => {
 	const dispatch = useDispatch();
 	const history = useHistory();
+	const { enqueueSnackbar } = useSnackbar();
+
 	const app = useSelector((state) => state.app);
 	const database = useSelector((state) => state.database);
 	const [edit, updateEdit] = useState(false);
@@ -77,6 +80,12 @@ const TransactionNotes = ({ transaction_selected }) => {
 						const tx_hash = res.result[0].id;
 						saveItems(tx_hash);
 						history.goBack();
+					},
+					onFailure: (error) => {
+						console.log({ error });
+						enqueueSnackbar('Something went wrong', {
+							variant: 'error',
+						});
 					},
 					onFinish: (res) => {
 						removeLoadingModal(modal);
@@ -115,6 +124,12 @@ const TransactionNotes = ({ transaction_selected }) => {
 						table_name: 'transaction',
 						req_body: {
 							updates,
+						},
+						onFailure: (error) => {
+							console.log({ error });
+							enqueueSnackbar('Something went wrong', {
+								variant: 'error',
+							});
 						},
 						onFinish: () => {
 							removeLoadingModal(modal);
@@ -157,6 +172,12 @@ const TransactionNotes = ({ transaction_selected }) => {
 					req_body: {
 						updates,
 					},
+					onFailure: (error) => {
+						console.log({ error });
+						enqueueSnackbar('Something went wrong', {
+							variant: 'error',
+						});
+					},
 					onFinish: () => {
 						removeLoadingModal(modal);
 					},
@@ -184,6 +205,12 @@ const TransactionNotes = ({ transaction_selected }) => {
 					req_body: {
 						inserts,
 					},
+					onFailure: (error) => {
+						console.log({ error });
+						enqueueSnackbar('Something went wrong', {
+							variant: 'error',
+						});
+					},
 					onFinish: () => {
 						removeLoadingModal(modal);
 					},
@@ -202,6 +229,12 @@ const TransactionNotes = ({ transaction_selected }) => {
 					table_name: 'item',
 					req_body: {
 						ids,
+					},
+					onFailure: (error) => {
+						console.log({ error });
+						enqueueSnackbar('Something went wrong', {
+							variant: 'error',
+						});
 					},
 					onFinish: () => {
 						removeLoadingModal(modal);

@@ -22,10 +22,12 @@ import {
 	databasePatch,
 } from '../../../../ducks/actions/database';
 import { createLoadingModal, removeLoadingModal } from '../../LoadingModal';
+import { useSnackbar } from 'notistack';
 
 const History = ({ chains }) => {
 	const dispatch = useDispatch();
 	const history = useHistory();
+	const { enqueueSnackbar } = useSnackbar();
 
 	const database = useSelector((state) => state.database);
 	const [user, updateUser] = useState(
@@ -44,6 +46,12 @@ const History = ({ chains }) => {
 				table_name: 'transaction',
 				req_params: {
 					created_by_user: user?.result?.id,
+				},
+				onFailure: (error) => {
+					console.log({ error });
+					enqueueSnackbar('Something went wrong', {
+						variant: 'error',
+					});
 				},
 				onFinish: () => {
 					removeLoadingModal(modal);

@@ -9,10 +9,13 @@ import {
 	databaseDelete,
 } from '../../ducks/actions/database';
 import { createLoadingModal, removeLoadingModal } from '../Home/LoadingModal';
+import { useSnackbar } from 'notistack';
 
 const Testing = () => {
 	const dispatch = useDispatch();
 	const history = useHistory();
+	const { enqueueSnackbar } = useSnackbar();
+
 	const database = useSelector((state) => state.database);
 
 	useEffect(() => {
@@ -30,6 +33,12 @@ const Testing = () => {
 				table_name: 'customers',
 				req_params: {
 					name: 'sanjay',
+				},
+				onFailure: (error) => {
+					console.log({ error });
+					enqueueSnackbar('Something went wrong', {
+						variant: 'error',
+					});
 				},
 				onFinish: () => {
 					removeLoadingModal(modal);
@@ -51,6 +60,12 @@ const Testing = () => {
 						},
 					],
 				},
+				onFailure: (error) => {
+					console.log({ error });
+					enqueueSnackbar('Something went wrong', {
+						variant: 'error',
+					});
+				},
 				onFinish: () => {
 					removeLoadingModal(modal);
 				},
@@ -70,6 +85,12 @@ const Testing = () => {
 						},
 					},
 				},
+				onFailure: (error) => {
+					console.log({ error });
+					enqueueSnackbar('Something went wrong', {
+						variant: 'error',
+					});
+				},
 				onFinish: () => {
 					removeLoadingModal(modal);
 				},
@@ -83,6 +104,12 @@ const Testing = () => {
 				table_name: 'customers',
 				req_body: {
 					ids: [3],
+				},
+				onFailure: (error) => {
+					console.log({ error });
+					enqueueSnackbar('Something went wrong', {
+						variant: 'error',
+					});
 				},
 				onFinish: () => {
 					removeLoadingModal(modal);

@@ -145,6 +145,12 @@ const Portfolio = ({ chains, updateChartTouchstart }) => {
 				req_params: {
 					created_by_user: user?.result?.id,
 				},
+				onFailure: (error) => {
+					console.log({ error });
+					enqueueSnackbar('Something went wrong', {
+						variant: 'error',
+					});
+				},
 				onFinish: () => {
 					removeLoadingModal(modal);
 				},
