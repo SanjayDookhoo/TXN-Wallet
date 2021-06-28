@@ -9,7 +9,6 @@ import {
 	useHistory,
 } from 'react-router-dom';
 import Home from '../src/components/Home';
-import NotFound from '../src/components/NotFound';
 import { updateApp } from '../src/ducks/actions/app';
 
 const App = ({ is_mobile_app }) => {
@@ -31,7 +30,6 @@ const App = ({ is_mobile_app }) => {
 		<MyRouter>
 			<Switch>
 				<CustomRoute {...custom_route_params} />
-				<Route component={NotFound} />
 			</Switch>
 		</MyRouter>
 	);
