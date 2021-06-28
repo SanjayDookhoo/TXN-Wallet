@@ -159,6 +159,7 @@ const Portfolio = ({ chains, updateChartTouchstart }) => {
 		chart_obj_series,
 		sort_criteria,
 		asc_order,
+		breadcrumb_view,
 		updateChartObjSeries,
 	};
 
@@ -289,16 +290,23 @@ const Portfolio = ({ chains, updateChartTouchstart }) => {
 						</div>
 					)}
 				</Breadcrumbs>
+
+				<div
+					className={`pt-4 ${
+						breadcrumb_view !== 'chart' ? 'hidden' : ''
+					}`}
+					ref={chart_ref}
+				></div>
+				<Input
+					name="filter"
+					label="Filter"
+					value={token_filter}
+					handleChange={(e) => updateTokenFilter(e.target.value)}
+					type="text"
+				/>
 				<div
 					className={`${breadcrumb_view !== 'home' ? 'hidden' : ''}`}
 				>
-					<Input
-						name="filter"
-						label="Filter"
-						value={token_filter}
-						handleChange={(e) => updateTokenFilter(e.target.value)}
-						type="text"
-					/>
 					<div className="text-center text-gray-500">
 						Layout Understanding and Sorting
 					</div>
@@ -420,26 +428,6 @@ const Portfolio = ({ chains, updateChartTouchstart }) => {
 							</div>
 						</div>
 					</div>
-					<div className="">
-						{database.chain &&
-							Object.values(database.chain)
-								.sort((a, b) =>
-									chains_map[a.covalent_chain_id]?.label
-										.toString()
-										.localeCompare(
-											chains_map[
-												b.covalent_chain_id
-											]?.label.toString()
-										)
-								)
-								.map((chain) => (
-									<BlockchainAddressGroup
-										key={chain.id}
-										chain={chain}
-										{...blockchain_address_group_params}
-									/>
-								))}
-					</div>
 					<div className="absolute top-16 right-16">
 						<Fab
 							color="secondary"
@@ -451,12 +439,26 @@ const Portfolio = ({ chains, updateChartTouchstart }) => {
 						</Fab>
 					</div>
 				</div>
-				<div
-					className={`pt-4 ${
-						breadcrumb_view !== 'chart' ? 'hidden' : ''
-					}`}
-					ref={chart_ref}
-				></div>
+				<div className="">
+					{database.chain &&
+						Object.values(database.chain)
+							.sort((a, b) =>
+								chains_map[a.covalent_chain_id]?.label
+									.toString()
+									.localeCompare(
+										chains_map[
+											b.covalent_chain_id
+										]?.label.toString()
+									)
+							)
+							.map((chain) => (
+								<BlockchainAddressGroup
+									key={chain.id}
+									chain={chain}
+									{...blockchain_address_group_params}
+								/>
+							))}
+				</div>
 			</ContentBody>
 		</>
 	);

@@ -32,6 +32,8 @@ const AddressGroup = ({
 	token_filter,
 	sort_criteria,
 	asc_order,
+	chart_obj_series,
+	breadcrumb_view,
 	...other_params
 }) => {
 	const { enqueueSnackbar } = useSnackbar();
@@ -148,8 +150,13 @@ const AddressGroup = ({
 
 	const token_params = {
 		chain,
+		chart_obj_series,
 		...other_params,
 	};
+
+	useEffect(() => {
+		console.log({ tokens_w_prices });
+	}, [tokens_w_prices]);
 
 	return (
 		<div className="address-group my-4 p-2 rounded-lg border-2 border-yellow-400 bg-gray-400">
@@ -179,6 +186,17 @@ const AddressGroup = ({
 							token.contract_ticker_symbol
 								.toLowerCase()
 								.includes(token_filter.toLowerCase())
+					)
+					.filter(
+						(token) =>
+							breadcrumb_view === 'home' ||
+							(breadcrumb_view === 'chart' &&
+								chart_obj_series
+									.map(
+										(one_series) =>
+											one_series.contract_address
+									)
+									.includes(token.contract_address))
 					)
 					.map((token) => (
 						<Token
