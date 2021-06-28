@@ -32,7 +32,7 @@ export const base_models = {
 			type: 'string',
 		},
 		price: {
-			type: 'string',
+			type: 'float',
 		},
 		_foreign_key: {
 			table: 'transaction',
