@@ -335,6 +335,7 @@ const BlockchainAddressGroup = ({ database, chains, chains_map, chain }) => {
 						value={form_data.name}
 						handleChange={handleChange}
 						type="text"
+						required={true}
 					/>
 					<Input
 						name="address_hash"
@@ -342,6 +343,7 @@ const BlockchainAddressGroup = ({ database, chains, chains_map, chain }) => {
 						value={form_data.address_hash}
 						handleChange={handleChange}
 						type="text"
+						required={true}
 					/>
 					<div className="address-buttons flex justify-around items-center">
 						<Button variant="secondary" type="submit">

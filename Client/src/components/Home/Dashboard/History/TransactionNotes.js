@@ -391,6 +391,7 @@ const General = ({
 					onChange={handleTransactionDataChange}
 					className="w-full"
 					disabled={!new_transaction && !edit}
+					required={true}
 				>
 					<MenuItem value="-1" disabled>
 						Please select
@@ -485,6 +486,7 @@ const Items = ({ new_transaction, edit, items_data, updateItemsData }) => {
 										}
 										type="text"
 										disabled={!new_transaction && !edit}
+										required={true}
 									/>
 								</td>
 								<td>
@@ -497,6 +499,7 @@ const Items = ({ new_transaction, edit, items_data, updateItemsData }) => {
 										}
 										type="number"
 										disabled={!new_transaction && !edit}
+										required={true}
 									/>
 								</td>
 								<td>

@@ -108,6 +108,7 @@ const Auth = () => {
 									value={form_data.email}
 									handleChange={handleChange}
 									type="email"
+									required={true}
 								/>
 							)}
 							<Input
@@ -116,6 +117,7 @@ const Auth = () => {
 								value={form_data.user_name}
 								handleChange={handleChange}
 								type="text"
+								required={true}
 							/>
 							<Input
 								name="password"
@@ -124,6 +126,7 @@ const Auth = () => {
 								handleChange={handleChange}
 								type={show_password ? 'text' : 'password'}
 								handleShowPassword={handleShowPassword}
+								required={true}
 							/>
 							{is_signup && (
 								<Input
@@ -132,6 +135,7 @@ const Auth = () => {
 									value={form_data.confirm_password}
 									handleChange={handleChange}
 									type="password"
+									required={true}
 								/>
 							)}
 						</div>
