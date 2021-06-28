@@ -31,6 +31,13 @@ const Dashboard = () => {
 	const [chart_touch_start, updateChartTouchstart] = useState(null);
 	const [dashboard_item, updateDashboardItem] = useState('');
 	const app = useSelector((state) => state.app);
+	const database = useSelector((state) => state.database);
+
+	useEffect(() => {
+		if (database.address && Object.values(database.address).length === 0) {
+			updateDashboardItem('settings');
+		}
+	}, [database]);
 
 	// get covalent data
 	useEffect(async () => {
@@ -62,7 +69,11 @@ const Dashboard = () => {
 
 	// swiping navigation for mobile
 	useEffect(() => {
-		if (app.is_mobile_app) {
+		if (
+			app.is_mobile_app &&
+			database.address &&
+			Object.values(database.address).length !== 0
+		) {
 			let original_screen_x;
 			let touch_down = false;
 			let direction = null;
@@ -155,7 +166,7 @@ const Dashboard = () => {
 				window.removeEventListener('touchstart', touchstart);
 			};
 		}
-	}, [app, chart_touch_start, dashboard_item]);
+	}, [app, chart_touch_start, dashboard_item, database]);
 
 	const dashboard_item_params = {
 		chains,
@@ -207,6 +218,11 @@ const Dashboard = () => {
 								)}
 								onClick={() =>
 									handleNav(list_dashboard_item.name)
+								}
+								disabled={
+									i !== list_dashboard_items.length - 1 &&
+									database.address &&
+									Object.values(database.address).length === 0
 								}
 							>
 								<FontAwesomeIcon
