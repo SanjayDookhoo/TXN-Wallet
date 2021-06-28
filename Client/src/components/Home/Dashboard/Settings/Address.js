@@ -22,7 +22,7 @@ const Address = ({
 	return (
 		<tr
 			className={`address h-12 ${
-				editing_id === address.id && 'bg-green-700'
+				editing_id === address.id && 'bg-yellow-200'
 			}`}
 		>
 			<td className="px-1 border border-yellow-200">{address.name}</td>
