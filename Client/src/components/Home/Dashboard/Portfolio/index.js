@@ -34,6 +34,7 @@ import { Breadcrumbs, Fab } from '@material-ui/core';
 import { useHistory } from 'react-router';
 import { createLoadingModal, removeLoadingModal } from '../../LoadingModal';
 import { useLocation } from 'react-router-dom';
+import Button from '../../../Button';
 
 const Portfolio = ({ chains, updateChartTouchstart }) => {
 	const dispatch = useDispatch();
@@ -58,6 +59,7 @@ const Portfolio = ({ chains, updateChartTouchstart }) => {
 	);
 	const [asc_order, updateAscOrder] = useState(true);
 	const [breadcrumb_view, updateBreadcrumbView] = useState('home');
+	const [date_range_limiting, updateDateRangeLimiting] = useState('1y');
 
 	useEffect(() => {
 		if (database.chain) {
@@ -194,7 +196,11 @@ const Portfolio = ({ chains, updateChartTouchstart }) => {
 				var lineSeries = chart.addLineSeries({
 					color,
 				});
-				lineSeries.setData(prices);
+				const new_prices = handleDateRangeLimiting(
+					date_range_limiting,
+					prices
+				);
+				lineSeries.setData(new_prices);
 			});
 			chart.timeScale().fitContent();
 
@@ -206,7 +212,7 @@ const Portfolio = ({ chains, updateChartTouchstart }) => {
 
 			return () => chart.remove();
 		}
-	}, [chart_ref, chart_obj_series]);
+	}, [chart_ref, chart_obj_series, date_range_limiting]);
 
 	useEffect(() => {
 		if (chart_obj) {
@@ -279,6 +285,52 @@ const Portfolio = ({ chains, updateChartTouchstart }) => {
 		}
 	}, [location]);
 
+	const handleDateRangeLimiting = (range, prices) => {
+		const to = new Date();
+
+		const _helper = (months) => {
+			let from = new Date();
+			from.setMonth(from.getMonth() - months);
+
+			const filtered = prices.filter((price) => {
+				console.log(price);
+				let price_date;
+				if (typeof price.time === 'string') {
+					price_date = new Date(price.time);
+				} else {
+					const { year, month, day } = price.time;
+					price_date = new Date(`${year}-${month}-${day}`);
+				}
+
+				return (
+					price_date.getTime() >= from.getTime() &&
+					price_date.getTime() <= to.getTime()
+				);
+			});
+
+			return [...filtered];
+		};
+
+		switch (range) {
+			case '1m':
+				return _helper(1);
+			case '3m':
+				return _helper(3);
+			case '6m':
+				return _helper(6);
+			case '9m':
+				return _helper(9);
+			case '1y':
+				return _helper(12);
+			default:
+				prices;
+		}
+	};
+
+	useEffect(() => {
+		console.log({ date_range_limiting });
+	}, [date_range_limiting]);
+
 	return (
 		<>
 			<ContentHeading>Portfolio</ContentHeading>
@@ -304,8 +356,61 @@ const Portfolio = ({ chains, updateChartTouchstart }) => {
 					className={`pt-4 ${
 						breadcrumb_view !== 'chart' ? 'hidden' : ''
 					}`}
-					ref={chart_ref}
-				></div>
+				>
+					<div ref={chart_ref}></div>
+					<div className="flex justify-around items-center">
+						<Button
+							variant={
+								date_range_limiting === '1m'
+									? 'secondary'
+									: 'light'
+							}
+							onClick={() => updateDateRangeLimiting('1m')}
+						>
+							1M
+						</Button>
+						<Button
+							variant={
+								date_range_limiting === '3m'
+									? 'secondary'
+									: 'light'
+							}
+							onClick={() => updateDateRangeLimiting('3m')}
+						>
+							3M
+						</Button>
+						<Button
+							variant={
+								date_range_limiting === '6m'
+									? 'secondary'
+									: 'light'
+							}
+							onClick={() => updateDateRangeLimiting('6m')}
+						>
+							6M
+						</Button>
+						<Button
+							variant={
+								date_range_limiting === '9m'
+									? 'secondary'
+									: 'light'
+							}
+							onClick={() => updateDateRangeLimiting('9m')}
+						>
+							9M
+						</Button>
+						<Button
+							variant={
+								date_range_limiting === '1y'
+									? 'secondary'
+									: 'light'
+							}
+							onClick={() => updateDateRangeLimiting('1y')}
+						>
+							1Y
+						</Button>
+					</div>
+				</div>
 				<Input
 					name="filter"
 					label="Filter"
