@@ -8,7 +8,7 @@ import {
 	databaseDelete,
 	databasePatch,
 } from '../../../../ducks/actions/database';
-import { InputLabel, Select, MenuItem } from '@material-ui/core';
+import { InputLabel, Select, MenuItem, FormControl } from '@material-ui/core';
 import BlockchainAddressGroup from './BlockchainAddressGroup';
 import { createLoadingModal, removeLoadingModal } from '../../LoadingModal';
 import { useSnackbar } from 'notistack';
@@ -23,7 +23,7 @@ const Settings = ({ chains }) => {
 	);
 	const [chains_map, updateChainsMap] = useState({});
 	const [avail_chains, updateAvailChains] = useState([]);
-	const [blockchain_add_value, updateBlockchainAddValue] = useState('-1');
+	const [blockchain_add_value, updateBlockchainAddValue] = useState('');
 
 	useEffect(() => {
 		console.log({ chains });
@@ -120,17 +120,15 @@ const Settings = ({ chains }) => {
 						))}
 				</div>
 
-				<div className="">
+				<FormControl className="w-full">
 					<InputLabel id="blockchain_add">
 						Select Blockchain to Add
 					</InputLabel>
 					<Select
 						labelId="blockchain_add"
-						label="Please select"
 						id="blockchain_add_id"
 						value={blockchain_add_value}
 						onChange={handleBlockchainOnChange}
-						className="w-full"
 					>
 						<MenuItem value="-1" disabled>
 							Please select
@@ -144,7 +142,7 @@ const Settings = ({ chains }) => {
 							</MenuItem>
 						))}
 					</Select>
-				</div>
+				</FormControl>
 			</ContentBody>
 		</>
 	);

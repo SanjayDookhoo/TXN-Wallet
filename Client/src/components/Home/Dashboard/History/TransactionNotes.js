@@ -12,7 +12,7 @@ import {
 	faPlus,
 } from '@fortawesome/free-solid-svg-icons';
 import Button from '../../..//Button';
-import { InputLabel, Select, MenuItem } from '@material-ui/core';
+import { InputLabel, Select, MenuItem, FormControl } from '@material-ui/core';
 import Input from '../../../Input';
 import {
 	databaseGet,
@@ -38,7 +38,7 @@ const categories = {
 };
 
 const initial_general_data = {
-	category: -1,
+	category: '',
 	notes: '',
 };
 
@@ -380,29 +380,24 @@ const General = ({
 
 	return (
 		<div className="transaction-notes-general">
-			<div className="">
+			<FormControl className="w-full">
 				<InputLabel id="category">Select Category</InputLabel>
 				<Select
 					labelId="category"
 					name="category"
-					label="Please select"
 					id="category_id"
 					value={general_data?.category}
 					onChange={handleTransactionDataChange}
-					className="w-full"
 					disabled={!new_transaction && !edit}
 					required={true}
 				>
-					<MenuItem value="-1" disabled>
-						Please select
-					</MenuItem>
 					{Object.entries(categories).map(([key, value]) => (
 						<MenuItem key={key} value={key}>
 							{value}
 						</MenuItem>
 					))}
 				</Select>
-			</div>
+			</FormControl>
 			<Input
 				name="notes"
 				label="Notes"
