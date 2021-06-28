@@ -23,11 +23,6 @@ import {
 } from '../../../../ducks/actions/database';
 import { createLoadingModal, removeLoadingModal } from '../../LoadingModal';
 import { useSnackbar } from 'notistack';
-import {
-	KeyboardDatePicker,
-	MuiPickersUtilsProvider,
-} from '@material-ui/pickers';
-import DateFnsUtils from '@date-io/date-fns';
 
 const History = ({ chains }) => {
 	const dispatch = useDispatch();
@@ -149,41 +144,21 @@ const History = ({ chains }) => {
 				<div
 					className={`${breadcrumb_view !== 'home' ? 'hidden' : ''}`}
 				>
-					<div className="date-range">
-						<MuiPickersUtilsProvider utils={DateFnsUtils}>
-							<div className="flex justify-around items-center">
-								<div className="p-2">
-									<KeyboardDatePicker
-										margin="normal"
-										id="date-picker-dialog"
-										label="From Date"
-										format="MM/dd/yyyy"
-										value={from_date}
-										onChange={(e) =>
-											updateFromDate(e.target.value)
-										}
-										KeyboardButtonProps={{
-											'aria-label': 'change date',
-										}}
-									/>
-								</div>
-								<div className="p-2">
-									<KeyboardDatePicker
-										margin="normal"
-										id="date-picker-dialog"
-										label="To Date"
-										format="MM/dd/yyyy"
-										value={to_date}
-										onChange={(e) =>
-											updateToDate(e.target.value)
-										}
-										KeyboardButtonProps={{
-											'aria-label': 'change date',
-										}}
-									/>
-								</div>
-							</div>
-						</MuiPickersUtilsProvider>
+					<div className="date-range flex justify-around items-center">
+						<div className="p-2">
+							<input
+								type="date"
+								value={from_date}
+								onChange={(e) => updateFromDate(e.target.value)}
+							/>
+						</div>
+						<div className="p-2">
+							<input
+								type="date"
+								value={to_date}
+								onChange={(e) => updateToDate(e.target.value)}
+							/>
+						</div>
 					</div>
 					<div className="">
 						{database.chain &&
