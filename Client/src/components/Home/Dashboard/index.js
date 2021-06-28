@@ -118,9 +118,9 @@ const Dashboard = () => {
 						direction = null;
 
 						const index = dashboardItemIndex();
-						if (index !== list_dashboard_items.length - 1) {
+						if (index !== 0) {
 							updateDashboardItem(
-								list_dashboard_items[index + 1].name
+								list_dashboard_items[index - 1].name
 							);
 						}
 
@@ -132,9 +132,9 @@ const Dashboard = () => {
 						direction = null;
 
 						const index = dashboardItemIndex();
-						if (index !== 0) {
+						if (index !== list_dashboard_items.length - 1) {
 							updateDashboardItem(
-								list_dashboard_items[index - 1].name
+								list_dashboard_items[index + 1].name
 							);
 						}
 
