@@ -26,7 +26,6 @@ const Settings = ({ chains }) => {
 	const [blockchain_add_value, updateBlockchainAddValue] = useState('');
 
 	useEffect(() => {
-		console.log({ chains });
 		if (database.chain) {
 			const database_chain_ids = Object.values(database.chain).map(
 				(chain) => chain.covalent_chain_id
@@ -42,14 +41,6 @@ const Settings = ({ chains }) => {
 			updateChainsMap(temp_chains_map);
 		}
 	}, [chains, database]);
-
-	useEffect(() => {
-		console.log({ database });
-	}, [database]);
-
-	useEffect(() => {
-		console.log({ user });
-	}, [user]);
 
 	useEffect(() => {
 		const modal = createLoadingModal();

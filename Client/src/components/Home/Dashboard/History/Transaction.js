@@ -21,7 +21,6 @@ const Transaction = ({
 
 	useEffect(() => {
 		const log_events = transaction.log_events;
-		// console.log(log_events);
 
 		const found = log_events.find(
 			(log_event) =>
@@ -30,11 +29,6 @@ const Transaction = ({
 				log_event.decoded.name === 'Transfer'
 		);
 
-		if (found) {
-			console.log({ transaction });
-		}
-
-		// console.log({ found });
 		updateFound(found ? true : false);
 
 		if (found && database.transaction) {

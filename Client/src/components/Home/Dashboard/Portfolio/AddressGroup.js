@@ -28,7 +28,6 @@ const AddressGroup = ({
 			const contract_addresses = Object.keys(tokens_map[address.id]).join(
 				','
 			);
-			// console.log({ contract_addresses });
 			const modal = createLoadingModal();
 			try {
 				const { data, status } = await covalentAPI.get(
@@ -44,7 +43,6 @@ const AddressGroup = ({
 				);
 
 				const temp_historical_prices_map = {};
-				// console.log(temp_historical_prices_map);
 				data.data.forEach((token_prices) => {
 					temp_historical_prices_map[token_prices.contract_address] =
 						{
@@ -53,7 +51,6 @@ const AddressGroup = ({
 						};
 				});
 
-				// console.log({ temp_historical_prices_map });
 				updateHistoricalPricesMap(temp_historical_prices_map);
 			} catch (error) {
 				console.log({ error });

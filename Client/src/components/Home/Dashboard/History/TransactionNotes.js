@@ -56,10 +56,6 @@ const TransactionNotes = ({ transaction_selected }) => {
 	const [images_data, updateImagesData] = useState([]);
 	const [items_data, updateItemsData] = useState([]);
 
-	useEffect(() => {
-		console.log({ items_data });
-	}, [items_data]);
-
 	const handleSubmit = (e) => {
 		e.preventDefault();
 
@@ -95,7 +91,6 @@ const TransactionNotes = ({ transaction_selected }) => {
 			);
 		} else if (!new_transaction && edit) {
 			// edit old
-			console.log({ general_data });
 			const found = Object.values(database.transaction).find(
 				(transaction) =>
 					transaction.transaction_hash === transaction_selected
@@ -161,7 +156,6 @@ const TransactionNotes = ({ transaction_selected }) => {
 					item_updates.price = item.price;
 				}
 				if (Object.entries(item_updates).length !== 0) {
-					console.log({ item_updates });
 					updates[item.id] = item_updates;
 				}
 			});
@@ -190,7 +184,6 @@ const TransactionNotes = ({ transaction_selected }) => {
 		const inserts = Object.values(items_data)
 			.filter((item) => item._added)
 			.map((item) => {
-				console.log(item);
 				const { _added, id, ...actual_data } = item;
 
 				return {
@@ -268,10 +261,6 @@ const TransactionNotes = ({ transaction_selected }) => {
 			}
 		}
 	}, [transaction_selected, database]);
-
-	// useEffect(() => {
-	// 	console.log({ general_data });
-	// }, [general_data]);
 
 	const general_params = {
 		new_transaction,

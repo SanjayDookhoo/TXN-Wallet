@@ -14,7 +14,6 @@ const Home = () => {
 
 	useEffect(() => {
 		const user = JSON.parse(localStorage.getItem('profile'));
-		console.log();
 		const token = user?.token;
 
 		if (token) {

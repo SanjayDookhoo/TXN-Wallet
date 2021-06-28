@@ -102,7 +102,6 @@ const database = (state = {}, action) => {
 						new_state[direct_children_table]
 					)
 						.filter((direct_children_table_record) => {
-							console.log({ direct_children_table_record });
 							return ids.includes(
 								direct_children_table_record[`${table_name}_id`]
 							);

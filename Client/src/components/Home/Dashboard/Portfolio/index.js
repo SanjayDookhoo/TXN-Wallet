@@ -56,18 +56,6 @@ const Portfolio = ({ chains, updateChartTouchstart }) => {
 	const [asc_order, updateAscOrder] = useState(true);
 	const [breadcrumb_view, updateBreadcrumbView] = useState('home');
 
-	// useEffect(() => {
-	// 	console.log({ tokens_map });
-	// }, [tokens_map]);
-
-	useEffect(() => {
-		console.log({ database });
-	}, [database]);
-
-	useEffect(() => {
-		console.log({ user });
-	}, [user]);
-
 	useEffect(() => {
 		if (database.chain) {
 			const temp_chains_map = Object.fromEntries(

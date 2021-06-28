@@ -36,8 +36,6 @@ const Auth = () => {
 	const handleSubmit = (e) => {
 		e.preventDefault();
 
-		console.log({ is_signup });
-
 		if (is_signup) {
 			if (form_data.password === form_data.confirm_password) {
 				dispatch(

@@ -64,6 +64,5 @@ export const valueLengthPreProcessing = (value) => {
 		}
 	}
 
-	console.log({ value });
 	return `TOO LARGE`;
 };

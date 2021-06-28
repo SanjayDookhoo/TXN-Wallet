@@ -88,10 +88,6 @@ const History = ({ chains }) => {
 
 	const transaction_notes_params = {};
 
-	useEffect(() => {
-		console.log({ from_date, to_date });
-	}, [from_date, to_date]);
-
 	const changeBreadcrumbView = (new_breadcrumb_view) => {
 		let pathname = window.location.pathname;
 

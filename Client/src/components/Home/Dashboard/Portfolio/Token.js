@@ -35,7 +35,6 @@ const Token = ({
 	const { enqueueSnackbar } = useSnackbar();
 
 	const toggleSeriesInChart = async () => {
-		console.log({ token });
 		let found_in_series = chart_obj_series.findIndex(
 			(one_series) => one_series.contract_address === contract_address
 		);
@@ -58,7 +57,6 @@ const Token = ({
 					}
 				);
 
-				console.log({ data });
 				const prices = data.data[0].prices
 					.filter(
 						(price) => price.date != null || price.price != null

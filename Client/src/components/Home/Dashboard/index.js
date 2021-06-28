@@ -79,7 +79,6 @@ const Dashboard = () => {
 
 			const touchmove = (event) => {
 				const curr_screenX = event.changedTouches[0].screenX;
-				// console.log({ original_screen_x, curr_screenX });
 				if (touch_down) {
 					if (!direction && curr_screenX > original_screen_x) {
 						direction = 'right';
@@ -189,10 +188,6 @@ const Dashboard = () => {
 			component: <Settings {...dashboard_item_params} />,
 		},
 	];
-
-	useEffect(() => {
-		console.log({ app });
-	}, [app]);
 
 	return (
 		<>
