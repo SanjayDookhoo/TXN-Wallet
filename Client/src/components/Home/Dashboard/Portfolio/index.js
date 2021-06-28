@@ -21,7 +21,7 @@ import ContentBody from '../ContentBody';
 import Input from '../../../Input';
 import covalentAPI from '../../../../ducks/api/covalent';
 import coin_fallback from '../../../../assets/coin_fallback.png';
-import { createChart } from 'lightweight-charts';
+import { createChart, PriceScaleMode } from 'lightweight-charts';
 import {
 	token_col,
 	token_data,
@@ -166,47 +166,53 @@ const Portfolio = ({ chains, updateChartTouchstart }) => {
 	useEffect(() => {
 		if (chart_ref && chart_ref.current) {
 			let width = window.innerWidth;
-			if (width < 780) {
-				width = 350;
+			if (width < 1020) {
+				width = width - 40;
 			} else {
-				width = width - 260;
+				width = width - 250;
 			}
 
 			const chart = createChart(chart_ref.current, {
 				width,
 				height: 300,
 				rightPriceScale: {
-					scaleMargins: {
-						top: 0.1,
-						bottom: 0.1,
-					},
+					mode: PriceScaleMode.Normal,
 					autoScale: true,
+					invertScale: false,
+					alignLabels: true,
+					borderVisible: true,
+					scaleMargins: { top: 0.25, bottom: 0.25 },
 				},
 			});
 			updateChartObj(chart);
+
+			chart_obj_series.forEach((one_series) => {
+				const { color, prices } = one_series;
+				var lineSeries = chart.addLineSeries({
+					color,
+				});
+				lineSeries.setData(prices);
+			});
+			chart.timeScale().fitContent();
 
 			// used to stop propagation of touch gestures, due to the way this charting library handles touch, stopPropagation cant be used without breaking both
 			const handleTouchstart = (e) => {
 				updateChartTouchstart(e.changedTouches[0].screenX);
 			};
 			chart_ref.current.addEventListener('touchstart', handleTouchstart);
-			// return () => {
-			// 	chart_ref.current.removeEventListener(
-			// 		'touchstart',
-			// 		handleTouchstart
-			// 	);
-			// };
+
+			return () => chart.remove();
 		}
-	}, [chart_ref]);
+	}, [chart_ref, chart_obj_series]);
 
 	useEffect(() => {
 		if (chart_obj) {
 			const handleResize = () => {
 				let width = window.innerWidth;
-				if (width < 780) {
-					width = 350;
+				if (width < 1020) {
+					width = width - 40;
 				} else {
-					width = width - 260;
+					width = width - 250;
 				}
 				chart_obj.applyOptions({ width });
 			};

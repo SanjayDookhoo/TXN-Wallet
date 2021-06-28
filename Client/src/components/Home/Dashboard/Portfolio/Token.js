@@ -64,8 +64,11 @@ const Token = ({
 					)
 					.map((price) => ({
 						time: price.date,
-						value: price.price.toFixed(0),
-					}));
+						value:
+							Math.round((price.price + Number.EPSILON) * 100) /
+							100,
+					}))
+					.reverse();
 				const avail_color = chart_color_arr.find(
 					(color) =>
 						!chart_obj_series
@@ -74,25 +77,14 @@ const Token = ({
 				);
 
 				if (avail_color) {
-					const new_series = chart_obj.addAreaSeries({
-						topColor: `${avail_color}00`,
-						bottomColor: `${avail_color}00`,
-						lineColor: `${avail_color}`,
-						lineWidth: 2,
-					});
-
-					new_series.setData(prices);
-
 					updateChartObjSeries([
 						...chart_obj_series,
 						{
 							contract_address,
 							color: avail_color,
-							series: new_series,
+							prices,
 						},
 					]);
-
-					chart_obj.timeScale().fitContent();
 				} else {
 					enqueueSnackbar(
 						`Can only add ${chart_color_arr.length} tokens in chart`,
@@ -109,7 +101,6 @@ const Token = ({
 				removeLoadingModal(modal);
 			}
 		} else {
-			chart_obj.removeSeries(chart_obj_series[found_in_series].series);
 			updateChartObjSeries(
 				chart_obj_series.filter(
 					(one_series) =>
