@@ -56,19 +56,20 @@ const general = async (req, res) => {
 			});
 			// console.log({ filter });
 
-			const promises = children_tables.map((table_name) => {
-				const query = `SELECT * FROM ${table_name} ${
-					temp.length !== 0 ? 'WHERE' : ''
-				} ${filter}`;
-				return sequelize_session.query(query, {
-					type: sequelize.QueryTypes.SELECT,
+			if (temp.length !== 0) {
+				const promises = children_tables.map((table_name) => {
+					const query = `SELECT * FROM ${table_name} WHERE ${filter}`;
+					return sequelize_session.query(query, {
+						type: sequelize.QueryTypes.SELECT,
+					});
 				});
-			});
 
-			const temp_arr = await Promise.all(promises);
-			children_tables.forEach((children_table, i) => {
-				result[children_table] = temp_arr[i];
-			});
+				const temp_arr = await Promise.all(promises);
+				children_tables.forEach((children_table, i) => {
+					result[children_table] = temp_arr[i];
+				});
+			}
+
 			// }
 		};
 
