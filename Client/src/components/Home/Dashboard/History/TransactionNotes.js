@@ -505,7 +505,11 @@ const Items = ({
 								</td>
 								<td>
 									<div
-										className="address-delete flex justify-center items-center cursor-pointer waves-effect rounded-lg p-2 hover:text-red-400"
+										className={`address-delete flex justify-center items-center cursor-pointer waves-effect rounded-lg p-2 ${
+											!new_transaction && !edit
+												? 'text-gray-400 pointer-events-none'
+												: 'hover:text-red-400'
+										}`}
 										onClick={() =>
 											handleEditDelete(item.id)
 										}
@@ -540,7 +544,11 @@ const Items = ({
 						</td>
 						<td>
 							<div
-								className="address-delete flex justify-center items-center cursor-pointer waves-effect rounded-lg p-2 hover:text-yellow-400"
+								className={`address-delete flex justify-center items-center cursor-pointer waves-effect rounded-lg p-2 ${
+									!new_transaction && !edit
+										? 'text-gray-400 pointer-events-none'
+										: 'hover:text-yellow-400'
+								}`}
 								onClick={addToCurrentState}
 							>
 								<FontAwesomeIcon icon={faPlus} />
