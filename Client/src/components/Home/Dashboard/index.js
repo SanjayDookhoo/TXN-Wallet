@@ -20,6 +20,7 @@ import Portfolio from './Portfolio';
 import Settings from './Settings';
 
 import covalentAPI from '../../../ducks/api/covalent';
+import { createLoadingModal, removeLoadingModal } from '../LoadingModal';
 
 const Dashboard = () => {
 	const dispatch = useDispatch();
@@ -33,6 +34,7 @@ const Dashboard = () => {
 
 	// get covalent data
 	useEffect(async () => {
+		const modal = createLoadingModal();
 		try {
 			const { data, status } = await covalentAPI.get(`/chains/`, {
 				params: {},
@@ -46,6 +48,8 @@ const Dashboard = () => {
 			enqueueSnackbar('Something went wrong', {
 				variant: 'error',
 			});
+		} finally {
+			removeLoadingModal(modal);
 		}
 	}, []);
 

@@ -3,6 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus, faMinus } from '@fortawesome/free-solid-svg-icons';
 import covalentAPI from '../../../../ducks/api/covalent';
 import Transaction from './Transaction';
+import { createLoadingModal, removeLoadingModal } from '../../LoadingModal';
 
 const AddressGroup = ({
 	database,
@@ -19,20 +20,24 @@ const AddressGroup = ({
 	// get covalent data
 	useEffect(async () => {
 		if (address && from_date && to_date) {
-			const { data, status } = await covalentAPI.get(
-				`/${chain.covalent_chain_id}/address/${address.address_hash}/transactions_v2/`,
-				{
-					params: {
-						match: `{"block_signed_at": {"$gte": '${from_date}T00:00:00Z', "$lte": '${to_date}T23:59:59Z'}}`,
-					},
-				}
-			);
+			const modal = createLoadingModal();
+			try {
+				const { data, status } = await covalentAPI.get(
+					`/${chain.covalent_chain_id}/address/${address.address_hash}/transactions_v2/`,
+					{
+						params: {
+							match: `{"block_signed_at": {"$gte": '${from_date}T00:00:00Z', "$lte": '${to_date}T23:59:59Z'}}`,
+						},
+					}
+				);
 
-			console.log(data.data.items);
-
-			updateTransactions(
-				data.data.items.filter((txn) => txn.successful === true)
-			);
+				updateTransactions(
+					data.data.items.filter((txn) => txn.successful === true)
+				);
+			} catch (error) {
+			} finally {
+				removeLoadingModal(modal);
+			}
 		}
 	}, [chain, address, from_date, to_date]);
 

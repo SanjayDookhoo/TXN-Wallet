@@ -90,39 +90,45 @@ const Portfolio = ({ chains, updateChartTouchstart }) => {
 				);
 			});
 
-			const promises_res = await Promise.all(promises);
+			const modal = createLoadingModal();
+			try {
+				const promises_res = await Promise.all(promises);
 
-			const address_arr = Object.values(database.address);
-			let temp_tokens_map = {};
-			promises_res.forEach((promise, i) => {
-				if (!temp_tokens_map[address_arr[i].id]) {
-					temp_tokens_map[address_arr[i].id] = {};
-				}
-				const promise_res = promise.data.data.items;
-				const token_map = Object.fromEntries(
-					promise_res.map((promise_token) => {
-						let { balance, contract_decimals } = promise_token;
-						const processed_balance = adjustDecimalPoint(
-							balance,
-							contract_decimals
-						);
+				const address_arr = Object.values(database.address);
+				let temp_tokens_map = {};
+				promises_res.forEach((promise, i) => {
+					if (!temp_tokens_map[address_arr[i].id]) {
+						temp_tokens_map[address_arr[i].id] = {};
+					}
+					const promise_res = promise.data.data.items;
+					const token_map = Object.fromEntries(
+						promise_res.map((promise_token) => {
+							let { balance, contract_decimals } = promise_token;
+							const processed_balance = adjustDecimalPoint(
+								balance,
+								contract_decimals
+							);
 
-						return [
-							promise_token.contract_address,
-							{
-								...promise_token,
-								processed_balance,
-							},
-						];
-					})
-				);
-				temp_tokens_map[address_arr[i].id] = {
-					...temp_tokens_map[address_arr[i].id],
-					...token_map,
-				};
-			});
+							return [
+								promise_token.contract_address,
+								{
+									...promise_token,
+									processed_balance,
+								},
+							];
+						})
+					);
+					temp_tokens_map[address_arr[i].id] = {
+						...temp_tokens_map[address_arr[i].id],
+						...token_map,
+					};
+				});
 
-			updateTokensMap(temp_tokens_map);
+				updateTokensMap(temp_tokens_map);
+			} catch (error) {
+			} finally {
+				removeLoadingModal(modal);
+			}
 		}
 	}, [database]);
 

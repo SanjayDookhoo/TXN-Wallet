@@ -9,6 +9,7 @@ import {
 	token_data_layout,
 } from './utils.js';
 import { valueLengthPreProcessing } from '../utils';
+import { createLoadingModal, removeLoadingModal } from '../../LoadingModal';
 
 const chart_color_arr = ['#ff8a65', '#4fc3f7', '#9575cd', '#ba68c8', '#e57373'];
 
@@ -44,6 +45,8 @@ const Token = ({
 			const to = new Date();
 			const from = new Date();
 			from.setMonth(from.getMonth() - 12);
+
+			const modal = createLoadingModal();
 			try {
 				const { data, status } = await covalentAPI.get(
 					`/pricing/historical_by_addresses_v2/${chain.covalent_chain_id}/${currency}/${contract_address}/`,
@@ -107,6 +110,8 @@ const Token = ({
 				enqueueSnackbar(`Something went wrong`, {
 					variant: 'error',
 				});
+			} finally {
+				removeLoadingModal(modal);
 			}
 		} else {
 			chart_obj.removeSeries(chart_obj_series[found_in_series].series);

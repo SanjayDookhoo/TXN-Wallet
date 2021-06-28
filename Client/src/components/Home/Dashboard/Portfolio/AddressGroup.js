@@ -3,6 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus, faMinus } from '@fortawesome/free-solid-svg-icons';
 import covalentAPI from '../../../../ducks/api/covalent';
 import Token from './Token';
+import { createLoadingModal, removeLoadingModal } from '../../LoadingModal';
 
 const AddressGroup = ({
 	database,
@@ -26,30 +27,36 @@ const AddressGroup = ({
 				','
 			);
 			// console.log({ contract_addresses });
+			const modal = createLoadingModal();
+			try {
+				const { data, status } = await covalentAPI.get(
+					`/pricing/historical_by_addresses_v2/${chain.covalent_chain_id}/${currency}/${contract_addresses}/`,
+					{
+						params: {
+							to: new Date().toISOString().split('T')[0],
+							from: new Date(Date.now() - 86400000) // yesterday
+								.toISOString()
+								.split('T')[0],
+						},
+					}
+				);
 
-			const { data, status } = await covalentAPI.get(
-				`/pricing/historical_by_addresses_v2/${chain.covalent_chain_id}/${currency}/${contract_addresses}/`,
-				{
-					params: {
-						to: new Date().toISOString().split('T')[0],
-						from: new Date(Date.now() - 86400000) // yesterday
-							.toISOString()
-							.split('T')[0],
-					},
-				}
-			);
+				const temp_historical_prices_map = {};
+				// console.log(temp_historical_prices_map);
+				data.data.forEach((token_prices) => {
+					temp_historical_prices_map[token_prices.contract_address] =
+						{
+							today: token_prices?.prices?.[0]?.price,
+							'1d': token_prices?.prices?.[1]?.price,
+						};
+				});
 
-			const temp_historical_prices_map = {};
-			// console.log(temp_historical_prices_map);
-			data.data.forEach((token_prices) => {
-				temp_historical_prices_map[token_prices.contract_address] = {
-					today: token_prices?.prices?.[0]?.price,
-					'1d': token_prices?.prices?.[1]?.price,
-				};
-			});
-
-			// console.log({ temp_historical_prices_map });
-			updateHistoricalPricesMap(temp_historical_prices_map);
+				// console.log({ temp_historical_prices_map });
+				updateHistoricalPricesMap(temp_historical_prices_map);
+			} catch (error) {
+			} finally {
+				removeLoadingModal(modal);
+			}
 		}
 	}, [tokens_map, address]);
 

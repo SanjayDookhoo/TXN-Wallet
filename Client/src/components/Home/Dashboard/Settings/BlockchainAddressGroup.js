@@ -62,6 +62,7 @@ const BlockchainAddressGroup = ({ database, chains, chains_map, chain }) => {
 	const handleSubmit = async (e) => {
 		e.preventDefault();
 
+		const modal = createLoadingModal();
 		try {
 			// check if address_hash is valid
 			const { data, status } = await covalentAPI.get(
@@ -173,6 +174,8 @@ const BlockchainAddressGroup = ({ database, chains, chains_map, chain }) => {
 			enqueueSnackbar('Malformed Address', {
 				variant: 'error',
 			});
+		} finally {
+			removeLoadingModal(modal);
 		}
 	};
 
