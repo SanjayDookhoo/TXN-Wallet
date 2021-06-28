@@ -143,13 +143,13 @@ const Token = ({
 
 	return (
 		<div
-			className={`token flex justify-start items-center border-t-2 border-yellow-200 waves-effect cursor-pointer`}
+			className={`token flex justify-start items-center border-t-2 border-yellow-200 waves-effect cursor-pointer text-xs md:text-base`}
 			style={{
 				backgroundColor: backgroundColorOnClick(),
 			}}
 			onClick={toggleSeriesInChart}
 		>
-			<div className="token-logo">
+			<div className="token-logo hidden md:block">
 				<img
 					className="h-10"
 					src={logo_url}

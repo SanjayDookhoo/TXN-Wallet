@@ -311,9 +311,9 @@ const Portfolio = ({ chains, updateChartTouchstart }) => {
 					</div>
 					<div className="bg-green-600">
 						<div
-							className={`token flex justify-start items-center border-t-2 border-yellow-200`}
+							className={`token flex justify-start items-center border-t-2 border-yellow-200 px-2 text-xs md:text-base`}
 						>
-							<div className="token-logo">
+							<div className="token-logo hidden md:block">
 								<img className="h-10" src={coin_fallback} />
 							</div>
 							<div className={`${token_col}`}>
@@ -324,7 +324,7 @@ const Portfolio = ({ chains, updateChartTouchstart }) => {
 									}
 								>
 									{sortIconRender('contract_ticker_symbol')}{' '}
-									&nbsp; Coin Name
+									&nbsp; Token
 								</div>
 								<div
 									className={`${token_data_layout}`}
@@ -333,7 +333,7 @@ const Portfolio = ({ chains, updateChartTouchstart }) => {
 									}
 								>
 									{sortIconRender('processed_balance')} &nbsp;
-									Qty of Coins
+									Qty
 								</div>
 							</div>
 							<div className={`${token_col}`}>
@@ -345,12 +345,12 @@ const Portfolio = ({ chains, updateChartTouchstart }) => {
 								>
 									{' '}
 									{sortIconRender('token_price_today')} &nbsp;
-									One Coin Value
+									Value/1
 								</div>
 
 								<div className={`${token_data_group}`}>
 									<div
-										className={`${token_data_layout} w-1/2`}
+										className={`${token_data_layout}`}
 										onClick={() =>
 											toggleSort('token_increased_value')
 										}
@@ -358,11 +358,11 @@ const Portfolio = ({ chains, updateChartTouchstart }) => {
 										{sortIconRender(
 											'token_increased_value'
 										)}{' '}
-										&nbsp; 24h &nbsp;{' '}
+										&nbsp;{' '}
 										<FontAwesomeIcon icon={faRecycle} />
 									</div>
 									<div
-										className={`${token_data_layout} w-1/2`}
+										className={`${token_data_layout}`}
 										onClick={() =>
 											toggleSort(
 												'token_increased_percent'
@@ -372,7 +372,7 @@ const Portfolio = ({ chains, updateChartTouchstart }) => {
 										{sortIconRender(
 											'token_increased_percent'
 										)}{' '}
-										&nbsp; 24h &nbsp;{' '}
+										&nbsp;{' '}
 										<FontAwesomeIcon icon={faRecycle} />{' '}
 										&nbsp; %
 									</div>
@@ -386,11 +386,11 @@ const Portfolio = ({ chains, updateChartTouchstart }) => {
 									}
 								>
 									{sortIconRender('tokens_price_today')}{' '}
-									&nbsp; Coin Values
+									&nbsp; Value/all
 								</div>
 								<div className={`${token_data_group}`}>
 									<div
-										className={`${token_data_layout} w-1/2`}
+										className={`${token_data_layout}`}
 										onClick={() =>
 											toggleSort('dollar_increased_value')
 										}
@@ -398,11 +398,11 @@ const Portfolio = ({ chains, updateChartTouchstart }) => {
 										{sortIconRender(
 											'dollar_increased_value'
 										)}{' '}
-										&nbsp; 24h &nbsp;{' '}
+										&nbsp;{' '}
 										<FontAwesomeIcon icon={faRecycle} />
 									</div>
 									<div
-										className={`${token_data_layout} w-1/2`}
+										className={`${token_data_layout}`}
 										onClick={() =>
 											toggleSort(
 												'token_increased_percent'
@@ -412,7 +412,7 @@ const Portfolio = ({ chains, updateChartTouchstart }) => {
 										{sortIconRender(
 											'token_increased_percent'
 										)}{' '}
-										&nbsp; 24h &nbsp;{' '}
+										&nbsp;{' '}
 										<FontAwesomeIcon icon={faRecycle} />{' '}
 										&nbsp; %
 									</div>

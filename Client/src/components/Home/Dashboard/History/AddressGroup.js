@@ -74,13 +74,31 @@ const AddressGroup = ({
 				<div></div>
 			</div>
 			<div className={`p-2 ${collapsed && 'hidden'}`}>
-				{transactions.map((transaction) => (
-					<Transaction
-						key={transaction.tx_hash}
-						transaction={transaction}
-						{...transaction_params}
-					/>
-				))}
+				<table className="w-full border border-green-800 mt-2 text-xs md:text-base">
+					<thead>
+						<tr>
+							<th className="border border-green-800">
+								Category
+							</th>
+							<th className="border border-green-800">
+								Credit/Debit
+							</th>
+							<th className="border border-green-800">Amount</th>
+							<th className="border border-green-800">
+								Timestamp
+							</th>
+						</tr>
+					</thead>
+					<tbody>
+						{transactions.map((transaction) => (
+							<Transaction
+								key={transaction.tx_hash}
+								transaction={transaction}
+								{...transaction_params}
+							/>
+						))}
+					</tbody>
+				</table>
 			</div>
 		</div>
 	);

@@ -49,14 +49,14 @@ const Transaction = ({
 						(param) => param.name === 'amount'
 					);
 					value = param_search?.value;
-					type = 'in';
+					type = 'Credit';
 					break;
 				case 'Deposit':
 					param_search = decoded.params.find(
 						(param) => param.name === 'amount'
 					);
 					value = param_search?.value;
-					type = 'out';
+					type = 'Debit';
 					break;
 				case 'Transfer':
 					param_search = decoded.params.find(
@@ -68,9 +68,9 @@ const Transaction = ({
 						(param) => param.name === 'from'
 					);
 					if (param_search?.value === address.address_hash) {
-						type = 'out';
+						type = 'Debit';
 					} else {
-						type = 'in';
+						type = 'Credit';
 					}
 					break;
 
@@ -112,15 +112,23 @@ const Transaction = ({
 	return (
 		<>
 			{found ? (
-				<div
-					className="transaction flex justify-center items-center waves-effect cursor-pointer p-2"
+				<tr
+					className="transaction cursor-pointer p-2"
 					onClick={handleOnclick}
 				>
-					<div className="w-1/4">{transaction_details.category}</div>
-					<div className="w-1/4">{transaction_details.type}</div>
-					<div className="w-1/4">{transaction_details.value}</div>
-					<div className="w-1/4">{transaction_details.timestamp}</div>
-				</div>
+					<td className="border px-1 border-green-800">
+						{transaction_details.category}
+					</td>
+					<td className="border px-1 border-green-800">
+						{transaction_details.type}
+					</td>
+					<td className="border px-1 border-green-800">
+						{transaction_details.value}
+					</td>
+					<td className="border px-1 border-green-800">
+						{transaction_details.timestamp}
+					</td>
+				</tr>
 			) : null}
 		</>
 	);
