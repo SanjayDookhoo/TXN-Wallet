@@ -183,6 +183,9 @@ const Portfolio = ({ chains, updateChartTouchstart }) => {
 					borderVisible: true,
 					scaleMargins: { top: 0.25, bottom: 0.25 },
 				},
+				localization: {
+					priceFormatter: (price) => '$' + price,
+				},
 			});
 			updateChartObj(chart);
 
