@@ -53,8 +53,18 @@ const TransactionNotes = ({ transaction_selected }) => {
 	const [edit, updateEdit] = useState(false);
 	const [new_transaction, updateNewTransaction] = useState(false);
 	const [general_data, updateGeneralData] = useState(initial_general_data);
-	const [images_data, updateImagesData] = useState([]);
 	const [items_data, updateItemsData] = useState([]);
+	const [transaction_found, updateTransactionFound] = useState(null);
+
+	useEffect(() => {
+		if (database.transaction) {
+			const found = Object.values(database.transaction).find(
+				(transaction) =>
+					transaction.transaction_hash === transaction_selected
+			);
+			updateTransactionFound(found);
+		}
+	}, [transaction_selected]);
 
 	const handleSubmit = (e) => {
 		e.preventDefault();
@@ -74,8 +84,13 @@ const TransactionNotes = ({ transaction_selected }) => {
 						],
 					},
 					onSuccess: (res) => {
-						const tx_hash = res.result[0].id;
-						saveItems(tx_hash);
+						const transaction_id = res.result[0].id;
+						updateTransactionFound({
+							...general_data,
+							transaction_hash: transaction_selected,
+							id: transaction_id,
+						});
+						saveItems(transaction_id);
 						history.goBack();
 					},
 					onFailure: (error) => {
@@ -91,29 +106,24 @@ const TransactionNotes = ({ transaction_selected }) => {
 			);
 		} else if (!new_transaction && edit) {
 			// edit old
-			const found = Object.values(database.transaction).find(
-				(transaction) =>
-					transaction.transaction_hash === transaction_selected
-			);
-
 			let updates = {
-				[found.id]: {},
+				[transaction_found.id]: {},
 			};
 
-			if (general_data.category !== found.category) {
-				updates[found.id] = {
-					...updates[found.id],
+			if (general_data.category !== transaction_found.category) {
+				updates[transaction_found.id] = {
+					...updates[transaction_found.id],
 					category: general_data.category,
 				};
 			}
-			if (general_data.notes !== found.notes) {
-				updates[found.id] = {
-					...updates[found.id],
+			if (general_data.notes !== transaction_found.notes) {
+				updates[transaction_found.id] = {
+					...updates[transaction_found.id],
 					notes: general_data.notes,
 				};
 			}
 
-			if (Object.values(updates[found.id]).length !== 0) {
+			if (Object.values(updates[transaction_found.id]).length !== 0) {
 				const modal = createLoadingModal();
 				dispatch(
 					databasePatch({
@@ -134,15 +144,11 @@ const TransactionNotes = ({ transaction_selected }) => {
 				);
 			}
 
-			saveItems(transaction_selected);
+			saveItems(transaction_found.id);
 		}
 	};
 
-	const saveItems = (tx_hash) => {
-		const found = Object.values(database.transaction).find(
-			(transaction) => transaction.transaction_hash === tx_hash
-		);
-
+	const saveItems = (transaction_id) => {
 		// handling batch edit for items
 		let updates = {};
 		Object.values(items_data)
@@ -188,7 +194,7 @@ const TransactionNotes = ({ transaction_selected }) => {
 
 				return {
 					...actual_data,
-					transaction_id: found.id,
+					transaction_id: transaction_id,
 				};
 			});
 		if (inserts.length !== 0) {
@@ -240,27 +246,21 @@ const TransactionNotes = ({ transaction_selected }) => {
 
 	useEffect(() => {
 		if (database.transaction) {
-			const found = Object.values(database.transaction).find(
-				(transaction) =>
-					transaction.transaction_hash === transaction_selected
-			);
-			if (found) {
+			if (transaction_found) {
 				updateEdit(false);
 				updateNewTransaction(false);
 
-				updateGeneralData(found);
+				updateGeneralData(transaction_found);
 				updateItemsData(database.item);
-				updateImagesData(database.image);
 			} else {
 				updateEdit(true);
 				updateNewTransaction(true);
 
 				updateGeneralData(initial_general_data);
 				updateItemsData([]);
-				updateImagesData([]);
 			}
 		}
-	}, [transaction_selected, database]);
+	}, [transaction_found, database]);
 
 	const general_params = {
 		new_transaction,
@@ -270,15 +270,8 @@ const TransactionNotes = ({ transaction_selected }) => {
 		updateGeneralData,
 	};
 
-	const images_params = {
-		new_transaction,
-		edit,
-
-		images_data,
-		updateImagesData,
-	};
-
 	const items_params = {
+		transaction_found,
 		new_transaction,
 		edit,
 
@@ -289,13 +282,8 @@ const TransactionNotes = ({ transaction_selected }) => {
 	const cancelEditingExistingTransaction = () => {
 		updateEdit(false);
 
-		const found = Object.values(database.transaction).find(
-			(transaction) =>
-				transaction.transaction_hash === transaction_selected
-		);
-		updateGeneralData(found);
+		updateGeneralData(transaction_found);
 		updateItemsData(database.item);
-		updateImagesData(database.image);
 	};
 
 	return (
@@ -303,7 +291,6 @@ const TransactionNotes = ({ transaction_selected }) => {
 			<form onSubmit={handleSubmit}>
 				<General {...general_params} />
 				<Items {...items_params} />
-				<Images {...images_params} />
 
 				<div className="buttons flex justify-around items-center">
 					{new_transaction && edit && (
@@ -417,9 +404,19 @@ const initial_add_data = {
 	price: 0,
 };
 
-const Items = ({ new_transaction, edit, items_data, updateItemsData }) => {
+const Items = ({
+	transaction_found,
+	new_transaction,
+	edit,
+	items_data,
+	updateItemsData,
+}) => {
 	const [add_data, updateAddDate] = useState(initial_add_data);
 	const [count, updateCount] = useState(0);
+
+	useEffect(() => {
+		updateAddDate(initial_add_data);
+	}, [transaction_found]);
 
 	const addToCurrentState = () => {
 		updateItemsData({
@@ -472,6 +469,11 @@ const Items = ({ new_transaction, edit, items_data, updateItemsData }) => {
 				</thead>
 				<tbody>
 					{Object.values(items_data)
+						.filter(
+							(item) =>
+								item.transaction_id === transaction_found?.id ||
+								item._added
+						)
 						.filter((item) => !item._deleted)
 						.map((item) => (
 							<tr key={item.id}>
@@ -549,8 +551,4 @@ const Items = ({ new_transaction, edit, items_data, updateItemsData }) => {
 			</table>
 		</div>
 	);
-};
-
-const Images = ({ new_transaction, edit, images_data, updateImagesData }) => {
-	return <div className="images"></div>;
 };
