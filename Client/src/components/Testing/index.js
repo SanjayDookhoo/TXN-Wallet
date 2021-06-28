@@ -31,7 +31,7 @@ const Testing = () => {
 				req_params: {
 					name: 'sanjay',
 				},
-				onSuccess: () => {
+				onFinish: () => {
 					removeLoadingModal(modal);
 				},
 			})
@@ -51,7 +51,7 @@ const Testing = () => {
 						},
 					],
 				},
-				onSuccess: () => {
+				onFinish: () => {
 					removeLoadingModal(modal);
 				},
 			})
@@ -70,7 +70,7 @@ const Testing = () => {
 						},
 					},
 				},
-				onSuccess: () => {
+				onFinish: () => {
 					removeLoadingModal(modal);
 				},
 			})
@@ -84,7 +84,7 @@ const Testing = () => {
 				req_body: {
 					ids: [3],
 				},
-				onSuccess: () => {
+				onFinish: () => {
 					removeLoadingModal(modal);
 				},
 			})

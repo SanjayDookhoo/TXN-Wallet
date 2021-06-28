@@ -4,7 +4,7 @@ import * as databaseApi from '../api/database.js';
 // as of right now only the dispatch statement differs for all actions, may need to change later
 
 export const databaseGet =
-	({ table_name, req_params, onSuccess, onFailure }) =>
+	({ table_name, req_params, onSuccess, onFailure, onFinish }) =>
 	async (dispatch) => {
 		try {
 			const { data } = await databaseApi.databaseGet({
@@ -21,11 +21,13 @@ export const databaseGet =
 		} catch (error) {
 			console.log(error);
 			if (onFailure) onFailure(error);
+		} finally {
+			if (onFinish) onFinish();
 		}
 	};
 
 export const databasePost =
-	({ table_name, req_body, onSuccess, onFailure }) =>
+	({ table_name, req_body, onSuccess, onFailure, onFinish }) =>
 	async (dispatch) => {
 		try {
 			const { data } = await databaseApi.databasePost({
@@ -42,11 +44,13 @@ export const databasePost =
 		} catch (error) {
 			console.log(error);
 			if (onFailure) onFailure(error);
+		} finally {
+			if (onFinish) onFinish();
 		}
 	};
 
 export const databasePatch =
-	({ table_name, req_body, onSuccess, onFailure }) =>
+	({ table_name, req_body, onSuccess, onFailure, onFinish }) =>
 	async (dispatch) => {
 		try {
 			const { data } = await databaseApi.databasePatch({
@@ -63,11 +67,13 @@ export const databasePatch =
 		} catch (error) {
 			console.log(error);
 			if (onFailure) onFailure(error);
+		} finally {
+			if (onFinish) onFinish();
 		}
 	};
 
 export const databaseDelete =
-	({ table_name, req_body, onSuccess, onFailure }) =>
+	({ table_name, req_body, onSuccess, onFailure, onFinish }) =>
 	async (dispatch) => {
 		try {
 			const { data } = await databaseApi.databaseDelete({
@@ -84,5 +90,7 @@ export const databaseDelete =
 		} catch (error) {
 			console.log(error);
 			if (onFailure) onFailure(error);
+		} finally {
+			if (onFinish) onFinish();
 		}
 	};

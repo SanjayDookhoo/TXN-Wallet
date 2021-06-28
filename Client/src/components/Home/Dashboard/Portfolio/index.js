@@ -134,7 +134,7 @@ const Portfolio = ({ chains, updateChartTouchstart }) => {
 				req_params: {
 					created_by_user: user?.result?.id,
 				},
-				onSuccess: () => {
+				onFinish: () => {
 					removeLoadingModal(modal);
 				},
 			})

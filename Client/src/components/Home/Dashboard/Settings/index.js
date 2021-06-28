@@ -57,7 +57,7 @@ const Settings = ({ chains }) => {
 				req_params: {
 					created_by_user: user?.result?.id,
 				},
-				onSuccess: () => {
+				onFinish: () => {
 					removeLoadingModal(modal);
 				},
 			})
@@ -78,7 +78,7 @@ const Settings = ({ chains }) => {
 						},
 					],
 				},
-				onSuccess: () => {
+				onFinish: () => {
 					removeLoadingModal(modal);
 				},
 			})

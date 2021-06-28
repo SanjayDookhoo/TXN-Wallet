@@ -45,7 +45,7 @@ const History = ({ chains }) => {
 				req_params: {
 					created_by_user: user?.result?.id,
 				},
-				onSuccess: () => {
+				onFinish: () => {
 					removeLoadingModal(modal);
 				},
 			})

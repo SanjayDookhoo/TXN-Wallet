@@ -46,7 +46,7 @@ const BlockchainAddressGroup = ({ database, chains, chains_map, chain }) => {
 					req_body: {
 						ids: [chain.id],
 					},
-					onSuccess: () => {
+					onFinish: () => {
 						removeLoadingModal(modal);
 					},
 				})
@@ -114,8 +114,10 @@ const BlockchainAddressGroup = ({ database, chains, chains_map, chain }) => {
 								],
 							},
 							onSuccess: () => {
-								removeLoadingModal(modal);
 								updateFormData(initialState);
+							},
+							onFinish: () => {
+								removeLoadingModal(modal);
 							},
 						})
 					);
@@ -149,8 +151,10 @@ const BlockchainAddressGroup = ({ database, chains, chains_map, chain }) => {
 									updates,
 								},
 								onSuccess: () => {
-									removeLoadingModal(modal);
 									updateFormData(initialState);
+								},
+								onFinish: () => {
+									removeLoadingModal(modal);
 								},
 							})
 						);
@@ -190,7 +194,7 @@ const BlockchainAddressGroup = ({ database, chains, chains_map, chain }) => {
 					req_body: {
 						ids: [id],
 					},
-					onSuccess: () => {
+					onFinish: () => {
 						removeLoadingModal(modal);
 					},
 				})

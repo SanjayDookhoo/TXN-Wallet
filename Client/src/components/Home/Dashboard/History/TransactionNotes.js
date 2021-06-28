@@ -74,10 +74,12 @@ const TransactionNotes = ({ transaction_selected }) => {
 						],
 					},
 					onSuccess: (res) => {
-						removeLoadingModal(modal);
 						const tx_hash = res.result[0].id;
 						saveItems(tx_hash);
 						history.goBack();
+					},
+					onFinish: (res) => {
+						removeLoadingModal(modal);
 					},
 				})
 			);
@@ -114,7 +116,7 @@ const TransactionNotes = ({ transaction_selected }) => {
 						req_body: {
 							updates,
 						},
-						onSuccess: () => {
+						onFinish: () => {
 							removeLoadingModal(modal);
 						},
 					})
@@ -155,7 +157,7 @@ const TransactionNotes = ({ transaction_selected }) => {
 					req_body: {
 						updates,
 					},
-					onSuccess: () => {
+					onFinish: () => {
 						removeLoadingModal(modal);
 					},
 				})
@@ -182,7 +184,7 @@ const TransactionNotes = ({ transaction_selected }) => {
 					req_body: {
 						inserts,
 					},
-					onSuccess: () => {
+					onFinish: () => {
 						removeLoadingModal(modal);
 					},
 				})
@@ -201,7 +203,7 @@ const TransactionNotes = ({ transaction_selected }) => {
 					req_body: {
 						ids,
 					},
-					onSuccess: () => {
+					onFinish: () => {
 						removeLoadingModal(modal);
 					},
 				})
