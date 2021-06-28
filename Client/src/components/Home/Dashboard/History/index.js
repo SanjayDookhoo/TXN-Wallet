@@ -23,10 +23,12 @@ import {
 } from '../../../../ducks/actions/database';
 import { createLoadingModal, removeLoadingModal } from '../../LoadingModal';
 import { useSnackbar } from 'notistack';
+import { useLocation } from 'react-router-dom';
 
 const History = ({ chains }) => {
 	const dispatch = useDispatch();
 	const history = useHistory();
+	const location = useLocation();
 	const { enqueueSnackbar } = useSnackbar();
 
 	const database = useSelector((state) => state.database);
@@ -89,7 +91,7 @@ const History = ({ chains }) => {
 	const transaction_notes_params = {};
 
 	const changeBreadcrumbView = (new_breadcrumb_view) => {
-		let pathname = window.location.pathname;
+		let pathname = location.pathname;
 
 		if (pathname === '/' && new_breadcrumb_view === 'transaction_notes') {
 			history.push('/transaction_notes');
@@ -104,7 +106,8 @@ const History = ({ chains }) => {
 	};
 
 	useEffect(() => {
-		let pathname = window.location.pathname;
+		let pathname = location.pathname;
+
 		if (pathname === '/') {
 			updateBreadcrumbView('home');
 		}
@@ -112,7 +115,7 @@ const History = ({ chains }) => {
 		if (pathname === '/transaction_notes') {
 			updateBreadcrumbView('transaction_notes');
 		}
-	}, [window.location.pathname]);
+	}, [location.pathname]);
 
 	return (
 		<>

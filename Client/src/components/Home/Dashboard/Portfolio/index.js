@@ -33,10 +33,12 @@ import { adjustDecimalPoint } from '../utils';
 import { Breadcrumbs, Fab } from '@material-ui/core';
 import { useHistory } from 'react-router';
 import { createLoadingModal, removeLoadingModal } from '../../LoadingModal';
+import { useLocation } from 'react-router-dom';
 
 const Portfolio = ({ chains, updateChartTouchstart }) => {
 	const dispatch = useDispatch();
 	const history = useHistory();
+	const location = useLocation();
 	const { enqueueSnackbar } = useSnackbar();
 
 	const database = useSelector((state) => state.database);
@@ -243,7 +245,8 @@ const Portfolio = ({ chains, updateChartTouchstart }) => {
 	};
 
 	const changeBreadcrumbView = (new_breadcrumb_view) => {
-		let pathname = window.location.pathname;
+		let pathname = location.pathname;
+
 		if (pathname === '/' && new_breadcrumb_view === 'chart') {
 			history.push('/chart');
 		}
@@ -254,7 +257,8 @@ const Portfolio = ({ chains, updateChartTouchstart }) => {
 	};
 
 	useEffect(() => {
-		let pathname = window.location.pathname;
+		let pathname = location.pathname;
+
 		if (pathname === '/') {
 			updateBreadcrumbView('home');
 		}
@@ -262,7 +266,7 @@ const Portfolio = ({ chains, updateChartTouchstart }) => {
 		if (pathname === '/chart') {
 			updateBreadcrumbView('chart');
 		}
-	}, [window.location.pathname]);
+	}, [location]);
 
 	return (
 		<>
