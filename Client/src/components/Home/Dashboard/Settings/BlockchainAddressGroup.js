@@ -58,6 +58,7 @@ const BlockchainAddressGroup = ({ database, chains, chains_map, chain }) => {
 	const [collapsed, updateCollapsed] = useState(false);
 	const [sort_criteria, updateSortCriteria] = useState('name');
 	const [asc_order, updateAscOrder] = useState(false);
+	const app = useSelector((state) => state.app);
 
 	const handleBlockchainRemove = (e) => {
 		e.stopPropagation();
