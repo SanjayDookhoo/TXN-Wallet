@@ -323,7 +323,7 @@ const Portfolio = ({ chains, updateChartTouchstart }) => {
 			case '1y':
 				return _helper(12);
 			default:
-				prices;
+				return prices;
 		}
 	};
 
