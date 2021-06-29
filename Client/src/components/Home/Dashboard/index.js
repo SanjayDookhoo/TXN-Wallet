@@ -119,9 +119,7 @@ const Dashboard = () => {
 
 						const index = dashboardItemIndex();
 						if (index !== 0) {
-							updateDashboardItem(
-								list_dashboard_items[index - 1].name
-							);
+							handleNav(list_dashboard_items[index - 1].name);
 						}
 
 						// console.log('swipe right');
@@ -133,9 +131,7 @@ const Dashboard = () => {
 
 						const index = dashboardItemIndex();
 						if (index !== list_dashboard_items.length - 1) {
-							updateDashboardItem(
-								list_dashboard_items[index + 1].name
-							);
+							handleNav(list_dashboard_items[index + 1].name);
 						}
 
 						// console.log('swipe left');
