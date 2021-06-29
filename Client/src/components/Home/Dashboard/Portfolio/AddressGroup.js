@@ -57,7 +57,7 @@ const AddressGroup = ({
 					{
 						params: {
 							to: new Date().toISOString().split('T')[0],
-							from: new Date(Date.now() - 86400000) // yesterday
+							from: new Date(Date.now() - 86400000 * 2) // yesterday (pulls for 2 days, a but in the API seems to not return yesterday values all the time, so ill take whiched i get)
 								.toISOString()
 								.split('T')[0],
 						},
