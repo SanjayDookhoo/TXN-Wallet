@@ -542,7 +542,10 @@ const Portfolio = ({ chains, updateChartTouchstart }) => {
 							</div>
 						</div>
 					</div>
-					<div className="absolute top-16 right-16">
+					<div
+						className="absolute top-16 right-16"
+						style={{ zIndex: 2000 }}
+					>
 						<Fab
 							color="secondary"
 							aria-label="add"
