@@ -16,9 +16,9 @@ const App = ({ is_mobile_app }) => {
 
 	const MyRouter = is_mobile_app ? HashRouter : BrowserRouter; // cordova app works with HashRouter, BrowserRouter URL is familiar to desktop users
 
-	useEffect(() => {
-		console.log({ state });
-	}, [state]);
+	// useEffect(() => {
+	// 	console.log({ state });
+	// }, [state]);
 
 	const custom_route_params = {
 		exact: true,

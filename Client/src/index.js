@@ -28,13 +28,13 @@ if (window.cordova) {
 	document.addEventListener(
 		'deviceready',
 		() => {
-			console.log('deviceready');
+			// console.log('deviceready');
 			renderReactDom({ is_mobile_app: true });
 		},
 		false
 	);
 } else {
-	console.log('normal');
+	// console.log('normal');
 	renderReactDom({ is_mobile_app: false });
 }
 

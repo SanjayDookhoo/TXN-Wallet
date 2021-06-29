@@ -293,7 +293,7 @@ const Portfolio = ({ chains, updateChartTouchstart }) => {
 			from.setMonth(from.getMonth() - months);
 
 			const filtered = prices.filter((price) => {
-				console.log(price);
+				// console.log(price);
 				let price_date;
 				if (typeof price.time === 'string') {
 					price_date = new Date(price.time);
@@ -327,9 +327,9 @@ const Portfolio = ({ chains, updateChartTouchstart }) => {
 		}
 	};
 
-	useEffect(() => {
-		console.log({ date_range_limiting });
-	}, [date_range_limiting]);
+	// useEffect(() => {
+	// 	console.log({ date_range_limiting });
+	// }, [date_range_limiting]);
 
 	return (
 		<>

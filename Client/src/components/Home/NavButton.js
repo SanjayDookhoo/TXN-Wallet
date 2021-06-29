@@ -6,9 +6,9 @@ import { useSelector } from 'react-redux';
 const NavButton = ({ active, children, disabled, ...props }) => {
 	const app = useSelector((state) => state.app);
 
-	useEffect(() => {
-		console.log({ disabled });
-	}, [disabled]);
+	// useEffect(() => {
+	// 	console.log({ disabled });
+	// }, [disabled]);
 
 	return (
 		<button

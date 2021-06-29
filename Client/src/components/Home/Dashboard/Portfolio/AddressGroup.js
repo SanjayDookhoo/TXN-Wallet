@@ -157,9 +157,9 @@ const AddressGroup = ({
 		...other_params,
 	};
 
-	useEffect(() => {
-		console.log({ tokens_w_prices });
-	}, [tokens_w_prices]);
+	// useEffect(() => {
+	// 	console.log({ tokens_w_prices });
+	// }, [tokens_w_prices]);
 
 	return (
 		<div className="address-group my-4 p-2 rounded-lg border-2 border-yellow-400 bg-gray-400">

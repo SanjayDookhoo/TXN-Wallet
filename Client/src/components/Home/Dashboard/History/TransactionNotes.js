@@ -486,9 +486,9 @@ const Items = ({
 		createDeleteModal({ callback });
 	};
 
-	useEffect(() => {
-		console.log({ items_data });
-	}, [items_data]);
+	// useEffect(() => {
+	// 	console.log({ items_data });
+	// }, [items_data]);
 
 	const toggleSort = (toggle_criteria) => {
 		if (sort_criteria === toggle_criteria) {
