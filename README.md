@@ -1,7 +1,7 @@
 # TXN-Wallet
 
 ## Demo
-https://serene-brattain-268de5.netlify.app/
+https://txnwallet.me/
 
 ## Client
 $ cd Client
