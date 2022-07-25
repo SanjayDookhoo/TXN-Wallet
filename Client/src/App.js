@@ -50,6 +50,7 @@ const CustomRoute = ({
 	const [valid_path, updateValidPath] = useState(false);
 
 	useEffect(() => {
+		console.log('test')
 		if (!app.loaded) {
 			dispatch(
 				updateApp({
