@@ -1,0 +1,23 @@
+version: "3.5"
+services:
+  mysql:
+    image: mysql:8.0
+    restart: always
+    volumes:
+      - db_data:/var/lib/txnwallet-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DATABASE_PASSWORD}
+  txn-wallet-server:
+    image: txn-wallet-server
+    ports:
+      - "${PORT}:${PORT}"
+    restart: always
+    environment:
+      PORT: ${PORT}
+      DATABASE_PASSWORD: ${DATABASE_PASSWORD}
+      DATABASE_HOST: ${DATABASE_HOST}
+      DATABASE_NAME: ${DATABASE_NAME}
+      DATABASE_USERNAME: ${DATABASE_USERNAME}
+      JWT_SECRET=: ${JWT_SECRET}
+volumes:
+  db_data:
