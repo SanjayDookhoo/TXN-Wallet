@@ -36,9 +36,7 @@ const compare = (asc_order, field, a, b) => {
 		const new_a = a[field] ? a[field] : '';
 		const new_b = b[field] ? b[field] : '';
 
-		return asc_order
-			? new_a.localeCompare(new_b)
-			: new_b.localeCompare(new_a);
+		return asc_order ? new_a.localeCompare(new_b) : new_b.localeCompare(new_a);
 	} else {
 		// rest is numbers
 		const new_a = a[field] ? a[field] : 0;
@@ -48,7 +46,13 @@ const compare = (asc_order, field, a, b) => {
 	}
 };
 
-const BlockchainAddressGroup = ({ database, chains, chains_map, chain }) => {
+const BlockchainAddressGroup = ({
+	database,
+	chains,
+	chains_map,
+	chain,
+	passDownAddress,
+}) => {
 	const dispatch = useDispatch();
 	const { enqueueSnackbar } = useSnackbar();
 
@@ -59,6 +63,15 @@ const BlockchainAddressGroup = ({ database, chains, chains_map, chain }) => {
 	const [sort_criteria, updateSortCriteria] = useState('name');
 	const [asc_order, updateAscOrder] = useState(false);
 	const app = useSelector((state) => state.app);
+
+	useEffect(() => {
+		if (passDownAddress?.chainId == chain.id) {
+			updateFormData({
+				name: '',
+				address_hash: passDownAddress.address_hash,
+			});
+		}
+	}, [passDownAddress, chain]);
 
 	const handleBlockchainRemove = (e) => {
 		e.stopPropagation();
@@ -120,9 +133,7 @@ const BlockchainAddressGroup = ({ database, chains, chains_map, chain }) => {
 			// check if this address_hash is already existing for the user
 			const found_address_hash = Object.values(database.address)
 				.filter((address) => address.id !== editing_id)
-				.find(
-					(address) => address.address_hash === form_data.address_hash
-				);
+				.find((address) => address.address_hash === form_data.address_hash);
 			if (found_address_hash) {
 				enqueueSnackbar('Address already added', {
 					variant: 'error',
@@ -170,8 +181,7 @@ const BlockchainAddressGroup = ({ database, chains, chains_map, chain }) => {
 						};
 					}
 					if (
-						form_data.address_hash !==
-						database.address[editing_id].address_hash
+						form_data.address_hash !== database.address[editing_id].address_hash
 					) {
 						updates[editing_id] = {
 							...updates[editing_id],
@@ -202,12 +212,9 @@ const BlockchainAddressGroup = ({ database, chains, chains_map, chain }) => {
 							})
 						);
 					} else {
-						enqueueSnackbar(
-							'Data did not change, please cancel instead',
-							{
-								variant: 'error',
-							}
-						);
+						enqueueSnackbar('Data did not change, please cancel instead', {
+							variant: 'error',
+						});
 					}
 				}
 			}
@@ -287,10 +294,7 @@ const BlockchainAddressGroup = ({ database, chains, chains_map, chain }) => {
 		if (sort_criteria === toggle_criteria) {
 			updateAscOrder(!asc_order);
 		} else {
-			if (
-				toggle_criteria === 'name' ||
-				toggle_criteria === 'address_hash'
-			) {
+			if (toggle_criteria === 'name' || toggle_criteria === 'address_hash') {
 				// only string value starts at ascending order
 				updateAscOrder(true);
 			} else {
@@ -353,55 +357,40 @@ const BlockchainAddressGroup = ({ database, chains, chains_map, chain }) => {
 				</div>
 			</div>
 			<div className={`addresses ${collapsed && 'hidden'}`}>
-				{database.address &&
-					Object.values(database.address).length !== 0 && (
-						<table className="w-full border border-yellow-200 mt-2 rounded-lg text-xs lg:text-base">
-							<thead>
-								<tr>
-									<th
-										className="border border-yellow-200 cursor-pointer"
-										onClick={() => toggleSort('name')}
-									>
-										{sortIconRender('name')} Name
-									</th>
-									<th
-										className="border border-yellow-200 cursor-pointer"
-										onClick={() =>
-											toggleSort('address_hash')
-										}
-									>
-										{sortIconRender('address_hash')} Address
-									</th>
-									<th className="border border-yellow-200">
-										Actions
-									</th>
-								</tr>
-							</thead>
-							<tbody>
-								{database.address &&
-									Object.values(database.address)
-										.sort((a, b) =>
-											compare(
-												asc_order,
-												sort_criteria,
-												a,
-												b
-											)
-										)
-										.filter(
-											(address) =>
-												address.chain_id === chain.id
-										)
-										.map((address) => (
-											<Address
-												key={address.id}
-												address={address}
-												{...address_params}
-											/>
-										))}
-							</tbody>
-						</table>
-					)}
+				{database.address && Object.values(database.address).length !== 0 && (
+					<table className="w-full border border-yellow-200 mt-2 rounded-lg text-xs lg:text-base">
+						<thead>
+							<tr>
+								<th
+									className="border border-yellow-200 cursor-pointer"
+									onClick={() => toggleSort('name')}
+								>
+									{sortIconRender('name')} Name
+								</th>
+								<th
+									className="border border-yellow-200 cursor-pointer"
+									onClick={() => toggleSort('address_hash')}
+								>
+									{sortIconRender('address_hash')} Address
+								</th>
+								<th className="border border-yellow-200">Actions</th>
+							</tr>
+						</thead>
+						<tbody>
+							{database.address &&
+								Object.values(database.address)
+									.sort((a, b) => compare(asc_order, sort_criteria, a, b))
+									.filter((address) => address.chain_id === chain.id)
+									.map((address) => (
+										<Address
+											key={address.id}
+											address={address}
+											{...address_params}
+										/>
+									))}
+						</tbody>
+					</table>
+				)}
 			</div>
 			<div className={`add-address ${collapsed && 'hidden'}`}>
 				<form onSubmit={handleSubmit}>

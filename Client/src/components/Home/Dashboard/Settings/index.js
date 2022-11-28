@@ -12,6 +12,7 @@ import { InputLabel, Select, MenuItem, FormControl } from '@material-ui/core';
 import BlockchainAddressGroup from './BlockchainAddressGroup';
 import { createLoadingModal, removeLoadingModal } from '../../LoadingModal';
 import { useSnackbar } from 'notistack';
+import Button from '../../../Button';
 
 const Settings = ({ chains }) => {
 	const dispatch = useDispatch();
@@ -24,6 +25,7 @@ const Settings = ({ chains }) => {
 	const [chains_map, updateChainsMap] = useState({});
 	const [avail_chains, updateAvailChains] = useState([]);
 	const [blockchain_add_value, updateBlockchainAddValue] = useState('');
+	const [passDownAddress, updatePassDownAddress] = useState(null);
 
 	useEffect(() => {
 		if (database.chain) {
@@ -73,7 +75,7 @@ const Settings = ({ chains }) => {
 				req_body: {
 					inserts: [
 						{
-							covalent_chain_id: e.target.value,
+							covalent_chain_id: value,
 						},
 					],
 				},
@@ -90,15 +92,58 @@ const Settings = ({ chains }) => {
 		);
 	};
 
+	const useExample = () => {
+		updateBlockchainAddValue('');
+
+		const modal = createLoadingModal();
+		dispatch(
+			databasePost({
+				table_name: 'chain',
+				req_body: {
+					inserts: [
+						{
+							covalent_chain_id: '250',
+						},
+					],
+				},
+				onFailure: (error) => {
+					console.log({ error });
+					enqueueSnackbar('Something went wrong', {
+						variant: 'error',
+					});
+				},
+				onSuccess: (data) => {
+					updatePassDownAddress({
+						chainId: data.result[0].id,
+						address_hash: '0xe2cDA3991247F7d4b546C6884C26B092AAd38dc2',
+					});
+				},
+				onFinish: () => {
+					removeLoadingModal(modal);
+				},
+			})
+		);
+	};
+
 	const blockchain_address_group_params = {
 		database,
 		chains,
 		chains_map,
+		passDownAddress,
 	};
 
 	return (
 		<>
-			<ContentHeading>Settings</ContentHeading>
+			<div className="flex">
+				<ContentHeading>Settings</ContentHeading>
+				{database.chain && Object.values(database.chain).length == 0 && (
+					<div className="pl-4">
+						<Button variant="info" onClick={useExample}>
+							Use Example
+						</Button>
+					</div>
+				)}
+			</div>
 			<ContentBody>
 				<div className="">
 					{database.chain &&
@@ -112,9 +157,7 @@ const Settings = ({ chains }) => {
 				</div>
 
 				<FormControl className="w-full">
-					<InputLabel id="blockchain_add">
-						Select Blockchain to Add
-					</InputLabel>
+					<InputLabel id="blockchain_add">Select Blockchain to Add</InputLabel>
 					<Select
 						labelId="blockchain_add"
 						id="blockchain_add_id"
@@ -122,10 +165,7 @@ const Settings = ({ chains }) => {
 						onChange={handleBlockchainOnChange}
 					>
 						{avail_chains.map((chain) => (
-							<MenuItem
-								key={chain.chain_id}
-								value={chain.chain_id}
-							>
+							<MenuItem key={chain.chain_id} value={chain.chain_id}>
 								{chain.label}
 							</MenuItem>
 						))}
